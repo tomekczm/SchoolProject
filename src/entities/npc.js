@@ -1,0 +1,1 @@
+// npcty mają zdefiniowaną ilość punktów pomiędzy którymi chodzą w kółko
