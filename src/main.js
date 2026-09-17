@@ -1,4 +1,5 @@
 import kaplay from "kaplay";
+import { addPlayer } from "./entities/player";
 
 export const game = kaplay();
 
@@ -7,6 +8,5 @@ game.loadSprite("bean", "sprites/bean.png");
 
 game.add([game.pos(120, 80), game.sprite("bean")]);
 
-game.onClick(() => k.addKaboom(k.mousePos()));
-
-import "./entities/player"
+game.onClick(() => game.addKaboom(game.mousePos()));
+addPlayer(game)
