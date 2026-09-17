@@ -1,5 +1,7 @@
 import kaplay from "kaplay";
 import { addPlayer } from "./entities/player";
+import { makeNPC } from "./entities/npc";
+
 
 export const game = kaplay();
 
@@ -10,3 +12,4 @@ game.add([game.pos(120, 80), game.sprite("bean")]);
 
 game.onClick(() => game.addKaboom(game.mousePos()));
 addPlayer(game)
+makeNPC(game)
