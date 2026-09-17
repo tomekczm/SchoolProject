@@ -17,5 +17,6 @@ export function addPlayer(game: KAPLAYCtx) {
         
         if(game.isKeyDown('shift')) motion = motion.scale(SHIFT_SPEED_MOVEMENT_MODIFIER)
         player.move(motion)
+    console.log('test')
     })
 }
