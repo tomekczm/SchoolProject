@@ -15,7 +15,7 @@ const globals = {
     player: addPlayer(game)
 }
 
-game.onClick(() => game.addKaboom(game.mousePos()));
+game.onClick(() => game.addKaboom(game.toWorld(game.mousePos())));
 
 makeNPC(game,globals, [
         new game.Vec2(80, 200),
