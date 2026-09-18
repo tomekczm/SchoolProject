@@ -10,13 +10,15 @@ export function addPlayer(game: KAPLAYCtx) {
 
     game.onUpdate(() => {
         let motion = new game.Vec2(0,0)
-        if(game.isKeyDown("d")) motion = motion.add(SPEED, 0);
-        if(game.isKeyDown("a")) motion = motion.add(-SPEED, 0);
-        if(game.isKeyDown("s")) motion = motion.add(0, SPEED);
-        if(game.isKeyDown("w")) motion = motion.add(0, -SPEED);
+        if(game.isKeyDown("d")) motion = motion.add(1, 0);
+        if(game.isKeyDown("a")) motion = motion.add(-1, 0);
+        if(game.isKeyDown("s")) motion = motion.add(0, 1);
+        if(game.isKeyDown("w")) motion = motion.add(0, -1);
         
+        motion = motion.unit().scale(SPEED)
+
         if(game.isKeyDown('shift')) motion = motion.scale(SHIFT_SPEED_MOVEMENT_MODIFIER)
         player.move(motion)
-    console.log('test')
+        game.setCamPos(game.getCamPos().lerp(player.pos, 0.1))
     })
 }
