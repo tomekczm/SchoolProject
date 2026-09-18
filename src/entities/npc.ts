@@ -8,19 +8,22 @@ export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
     let punkt = 0;
     let czeka = false;
     const Npc = game.add([
-        game.rect(32, 32),
         game.pos(punkty[0]),
-        game.color(255, 105, 180),
         game.timer(),
         game.area(),
+        game.sprite("NPC_anim"),
         "NPC"
     ]);
     Npc.onUpdate(() => {
-        if (czeka) return;
+        if (czeka) {
+            Npc.frame = 1;
+            return;}
+
         Npc.moveTo(punkty[punkt], speedNpc);
         if (Npc.pos.dist(punkty[punkt]) == 0) {
             czeka = true
             Npc.wait(2, () => {
+                Npc.frame = 0;
                 czeka = false;
                 punkt++;
             })
@@ -34,6 +37,7 @@ export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
         czeka = true;
         Npc.wait(2, () => {
             czeka = false;
+            Npc.frame = 1;
         })}
     })
 }
