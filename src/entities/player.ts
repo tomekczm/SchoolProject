@@ -1,12 +1,30 @@
 import { KAPLAYCtx, Vec2 } from "kaplay"
 const SPEED = 100
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
+const PUSH_SPEED = 100;
 export function addPlayer(game: KAPLAYCtx) {
     const player = game.add([
         game.rect(32, 32),
+        game.area(),
         game.pos(10, 20),
         "Player"
     ])
+
+    game.onCollideUpdate("Player", "NPC", (_, collidedWith, collision) => {
+        console.log("Colliding")
+        if(collision?.isBottom()) {
+            player.move(0, -PUSH_SPEED)
+        }
+        if(collision?.isTop()) {
+            player.move(0, PUSH_SPEED)
+        }
+        if(collision?.isLeft()) {
+            player.move(-PUSH_SPEED, 0)
+        }
+        if(collision?.isRight()) {
+            player.move(PUSH_SPEED, 0)
+        }
+    })
 
     game.onUpdate(() => {
         let motion = new game.Vec2(0,0)
