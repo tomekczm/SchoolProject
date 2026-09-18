@@ -1,5 +1,5 @@
 import { KAPLAYCtx, Vec2 } from "kaplay"
-const SPEED = 100
+const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
 export function addPlayer(game: KAPLAYCtx) {

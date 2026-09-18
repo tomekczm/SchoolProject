@@ -8,6 +8,7 @@ export const game = kaplay();
 game.loadRoot("./"); // A good idea for Itch.io publishing later
 game.loadSprite("bean", "sprites/bean.png");
 
+testMap(game);
 game.add([game.pos(120, 80), game.sprite("bean")]);
 
 const globals = {
@@ -15,5 +16,6 @@ const globals = {
 }
 
 game.onClick(() => game.addKaboom(game.mousePos()));
-makeNPC(game)
-testMap(game);
+
+makeNPC(game,globals)
+
