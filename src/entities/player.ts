@@ -4,12 +4,11 @@ const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
 export function addPlayer(game: KAPLAYCtx) {
     const player = game.add([
-        game.rect(32, 32),
-        game.color(0,255,0),
         game.area(),
         game.pos(100, 100),
         game.rotate(0),
         game.anchor("center"),
+        game.sprite("Panda"),
         "Player"
     ])
 
