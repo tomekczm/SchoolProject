@@ -2,11 +2,14 @@ import kaplay from "kaplay";
 import { addPlayer } from "./entities/player";
 import { makeNPC } from "./entities/npc";
 import { testMap } from "./interface/map";
+import { KillInterface } from "./interface/KillInterface";
 
 export const game = kaplay();
 
 game.loadRoot("./"); // A good idea for Itch.io publishing later
 game.loadSprite("bean", "sprites/bean.png");
+game.loadSprite("KILL_BACKGROUND", "sprites/KILL_BACKGROUND.png");
+game.loadSprite("KILL_TEXT", "sprites/KILL_TEXT.png");
 game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", {
     sliceX: 2,
 });
@@ -34,3 +37,4 @@ makeNPC(game,globals, [
         new game.Vec2(80, 600)
     ])
 
+KillInterface(game)
