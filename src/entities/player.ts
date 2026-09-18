@@ -6,7 +6,9 @@ export function addPlayer(game: KAPLAYCtx) {
     const player = game.add([
         game.rect(32, 32),
         game.area(),
-        game.pos(10, 20),
+        game.pos(0, 0),
+        game.rotate(0),
+        game.anchor("center"),
         "Player"
     ])
 
@@ -27,6 +29,7 @@ export function addPlayer(game: KAPLAYCtx) {
     })
 
     game.onUpdate(() => {
+        player.rotateTo(player.pos.angle(game.mousePos()))
         let motion = new game.Vec2(0,0)
         if(game.isKeyDown("d")) motion = motion.add(1, 0);
         if(game.isKeyDown("a")) motion = motion.add(-1, 0);
@@ -39,4 +42,5 @@ export function addPlayer(game: KAPLAYCtx) {
         player.move(motion)
         game.setCamPos(game.getCamPos().lerp(player.pos, 0.1))
     })
+    return player
 }
