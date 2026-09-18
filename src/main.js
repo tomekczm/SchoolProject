@@ -1,7 +1,7 @@
 import kaplay from "kaplay";
 import { addPlayer } from "./entities/player";
 import { makeNPC } from "./entities/npc";
-
+import { testMap } from "./interface/map";
 
 export const game = kaplay();
 
@@ -16,3 +16,4 @@ const globals = {
 
 game.onClick(() => game.addKaboom(game.mousePos()));
 makeNPC(game)
+testMap(game);
