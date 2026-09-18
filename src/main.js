@@ -7,6 +7,7 @@ export const game = kaplay();
 
 game.loadRoot("./"); // A good idea for Itch.io publishing later
 game.loadSprite("bean", "sprites/bean.png");
+game.loadSprite("Panda", "sprites/player.png");
 game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", {
     sliceX: 2,
 });
