@@ -14,6 +14,6 @@ const globals = {
     player: addPlayer(game)
 }
 
-game.onClick(() => game.addKaboom(game.mousePos()));
+game.onClick(() => game.addKaboom(game.toWorld(game.mousePos())));
 makeNPC(game)
 testMap(game);
