@@ -7,7 +7,7 @@ export function addPlayer(game: KAPLAYCtx) {
         game.rect(32, 32),
         game.color(0,255,0),
         game.area(),
-        game.pos(0, 0),
+        game.pos(100, 100),
         game.rotate(0),
         game.anchor("center"),
         "Player"
@@ -22,10 +22,26 @@ export function addPlayer(game: KAPLAYCtx) {
             player.move(0, PUSH_SPEED)
         }
         if(collision?.isLeft()) {
-            player.move(-PUSH_SPEED, 0)
+            player.move(PUSH_SPEED, 0)
         }
         if(collision?.isRight()) {
+            player.move(-PUSH_SPEED, 0)
+        }
+    })
+
+    game.onCollideUpdate("Player", "Wall", (_, collidedWith, collision) => {
+        console.log("Colliding")
+        if(collision?.isBottom()) {
+            player.move(0, -PUSH_SPEED)
+        }
+        if(collision?.isTop()) {
+            player.move(0, PUSH_SPEED)
+        }
+        if(collision?.isLeft()) {
             player.move(PUSH_SPEED, 0)
+        }
+        if(collision?.isRight()) {
+            player.move(-PUSH_SPEED, 0)
         }
     })
 
