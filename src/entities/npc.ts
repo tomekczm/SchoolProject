@@ -36,9 +36,11 @@ export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
         if (Npc.isColliding(globals.player)) { 
         czeka = true;
         Npc.wait(2, () => {
+            Npc.frame = 0;
             czeka = false;
-            Npc.frame = 1;
-        })}
+        })
+    }
+        
     })
 }
         
