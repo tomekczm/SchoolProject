@@ -52,6 +52,7 @@ export function addPlayer(game: KAPLAYCtx) {
                 if(!npc.is("Focused")) npc.tag("Focused")
                 break;
             } else {
+                if(npc.is("Focused")) npc.untag("Focused")
                 player.untag("IN_RANGE")
             }
         }
