@@ -11,10 +11,23 @@ export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
         game.pos(punkty[0]),
         game.timer(),
         game.area(),
+        game.anchor("center"),
         game.sprite("NPC_anim"),
         "NPC"
     ]);
+    //Npc po dotknieciu idzie na inne miejsce
+    Npc.on("Event", () => {
+            czeka = true;
+            Npc.frame = 0;
+            game.debug.log("time");
+            Npc.wait(1, () => { 
+                Npc.moveTo(punkty[4], speedNpc);
+            })
+        })
+
     Npc.onUpdate(() => {
+        
+
         if (czeka) {
             Npc.frame = 1;
             return;}
@@ -30,30 +43,24 @@ export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
 
             if (punkt == punkty.length-1) {
                 punkt = -1;
+
             }
         }
 
         if (Npc.isColliding(globals.player)) { 
-        czeka = true;
+            Npc.trigger("Event");
+        /*czeka = true;
         Npc.wait(2, () => {
             Npc.frame = 0;
-            czeka = false;
-        })
+            czeka = false;*/
+        
     }
         
     })
 }
-        
+
     
-    
 
 
 
 
-/*export function addNPC(game) {
-    npc = game.add([
-        game.rect(100, 32),
-        game.pos(10, 20),
-        "Player"
-    ])
-}*/
