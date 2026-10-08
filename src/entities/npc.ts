@@ -1,4 +1,4 @@
-// npcty mają zdefiniowaną ilość punktów pomiędzy którymi chodzą w kółko
+// Odpowiedzialna za npc.ts = Elżbieta Bezulska
 
 import { Game, KAPLAYCtx } from "kaplay";
 
@@ -23,7 +23,7 @@ export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
     function walking() {
         Npc.frame = 0;
         Npc.moveTo(punkty[punkt], speedNpc);
-        game.debug.log(punkt);
+        game.debug.log(game.time());
         if (Npc.pos.dist(punkty[punkt]) == 0) {
             stan = Stand;
             Npc.wait(2, () => {
@@ -61,9 +61,12 @@ export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
 
         if (Npc.isColliding(globals.player)) {
             if(stan === eventtrigger){
+                stan = standCollision;
                 Npc.wait(2, () => {
-                if(stan != Stand) return
-            })
+                    if(stan != standCollision) return
+                    stan = eventtrigger;
+                })
+                return
             }
             stan = standCollision;
             Npc.wait(2, () => {

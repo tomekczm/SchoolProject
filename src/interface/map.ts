@@ -1,4 +1,4 @@
-// dodanie prostych hitboxów itp
+// // Odpowiedzialna za map.ts = Dominik Michocki
 import { KAPLAYCtx } from "kaplay";
 
 export function testMap(game: KAPLAYCtx) {
