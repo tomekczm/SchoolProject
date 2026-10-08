@@ -49,7 +49,7 @@ export function addPlayer(game: KAPLAYCtx) {
             const pos: Vec2 = npc.pos;
             if(pos.dist(player.pos) <= KNIFE_DISTANCE) {
                 if(!player.is("IN_RANGE")) player.tag("IN_RANGE")
-                console.log("IS IN RANGE")
+                if(!npc.is("Focused")) npc.tag("Focused")
                 break;
             } else {
                 player.untag("IN_RANGE")
