@@ -1,6 +1,7 @@
-import { KAPLAYCtx, SpriteData, Vec2 } from "kaplay";
+import { GameObj, KAPLAYCtx, SpriteData, Vec2 } from "kaplay";
 import { Globals } from "../main";
 
+const KNIFE_DISTANCE = 100;
 function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
     return new Promise((resolve, reject) => {
         game.loadSprite(name, path)
@@ -13,6 +14,8 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
     const backgroundSprite = await loadSpriteAsync(game, "KILL_BACKGROUND", "sprites/KILL_BACKGROUND.png");
     game.loadSprite("KILL_TEXT", "sprites/KILL_TEXT.png");
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
+    let targetedNpc: GameObj | undefined = undefined 
+    let isHovered = false;
     const background = game.add([
         game.scale(3.0),
         game.sprite("KILL_BACKGROUND"), 
@@ -20,7 +23,7 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
         game.pos(game.width()-300,game.height()-150),
         game.area(),
         game.shader("Grayscale", () => ({
-            u_enabled: globals.player.is("IN_RANGE") ? 1 : 0
+            u_enabled: targetedNpc !== undefined ? 1 : 0
         }))
     ])
     
@@ -41,8 +44,28 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
         loops: Infinity,
         easing: game.easings.easeInOutSine
     })
+    const player = globals.player;
+    game.onUpdate(() => {
+        let targetFound = false
+        for (const npc of game.get("NPC")) {
+            const pos: Vec2 = npc.pos;
+            if (pos.dist(player.pos) <= KNIFE_DISTANCE) {
+                if (!player.is("IN_RANGE")) player.tag("IN_RANGE")
+                if (!npc.is("Focused")) npc.tag("Focused")
+                targetedNpc = npc;
+                targetFound = true;
+            } else {
+                if (npc.is("Focused") && npc !== targetedNpc) npc.untag("Focused")
+                player.untag("IN_RANGE")
+            }
+        }
+        if(!targetFound) {
+            targetedNpc?.untag("Focused")
+            targetedNpc = undefined;
+        }
+    })
 
-    background.onHover(() => {
-        console.log(globals.player.is("IN_RANGE"))
+    background.onClick(() => {
+        if(targetedNpc) targetedNpc.trigger("Killed")
     })
 }

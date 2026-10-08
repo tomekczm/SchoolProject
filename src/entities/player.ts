@@ -44,18 +44,6 @@ export function addPlayer(game: KAPLAYCtx) {
     })
 
     game.onUpdate(() => {
-
-        for(const npc of game.get("NPC")) {
-            const pos: Vec2 = npc.pos;
-            if(pos.dist(player.pos) <= KNIFE_DISTANCE) {
-                if(!player.is("IN_RANGE")) player.tag("IN_RANGE")
-                if(!npc.is("Focused")) npc.tag("Focused")
-                break;
-            } else {
-                if(npc.is("Focused")) npc.untag("Focused")
-                player.untag("IN_RANGE")
-            }
-        }
         //player.rotateTo(player.pos.angle(game.toWorld(game.mousePos())))
         let motion = new game.Vec2(0,0)
         if(game.isKeyDown("d")) motion = motion.add(1, 0);
