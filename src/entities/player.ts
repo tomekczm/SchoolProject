@@ -2,6 +2,7 @@ import { KAPLAYCtx, Vec2 } from "kaplay"
 const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
+const KNIFE_DISTANCE = 100;
 export function addPlayer(game: KAPLAYCtx) {
     const player = game.add([
         game.area(),
@@ -13,7 +14,6 @@ export function addPlayer(game: KAPLAYCtx) {
     ])
 
     game.onCollideUpdate("Player", "NPC", (_, collidedWith, collision) => {
-        console.log("Colliding")
         if(collision?.isBottom()) {
             player.move(0, -PUSH_SPEED)
         }
@@ -29,7 +29,6 @@ export function addPlayer(game: KAPLAYCtx) {
     })
 
     game.onCollideUpdate("Player", "Wall", (_, collidedWith, collision) => {
-        console.log("Colliding")
         if(collision?.isBottom()) {
             player.move(0, -PUSH_SPEED)
         }
@@ -45,7 +44,18 @@ export function addPlayer(game: KAPLAYCtx) {
     })
 
     game.onUpdate(() => {
-        player.rotateTo(player.pos.angle(game.toWorld(game.mousePos())))
+
+        for(const npc of game.get("NPC")) {
+            const pos: Vec2 = npc.pos;
+            if(pos.dist(player.pos) <= KNIFE_DISTANCE) {
+                if(!player.is("IN_RANGE")) player.tag("IN_RANGE")
+                console.log("IS IN RANGE")
+                break;
+            } else {
+                player.untag("IN_RANGE")
+            }
+        }
+        //player.rotateTo(player.pos.angle(game.toWorld(game.mousePos())))
         let motion = new game.Vec2(0,0)
         if(game.isKeyDown("d")) motion = motion.add(1, 0);
         if(game.isKeyDown("a")) motion = motion.add(-1, 0);

@@ -19,7 +19,7 @@ game.add([game.pos(120, 80), game.sprite("bean")]);
 const globals = {
     player: addPlayer(game)
 }
-
+export type Globals = typeof globals;
 game.onClick(() => game.addKaboom(game.toWorld(game.mousePos())));
 
 makeNPC(game,globals, [
@@ -36,4 +36,4 @@ makeNPC(game,globals, [
         new game.Vec2(80, 600)
     ])
 
-KillInterface(game)
+KillInterface(game, globals)

@@ -1,4 +1,5 @@
 import { KAPLAYCtx, SpriteData, Vec2 } from "kaplay";
+import { Globals } from "../main";
 
 function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
     return new Promise((resolve, reject) => {
@@ -8,7 +9,7 @@ function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<S
     })
 }
 
-export async function KillInterface(game: KAPLAYCtx) {
+export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
     const backgroundSprite = await loadSpriteAsync(game, "KILL_BACKGROUND", "sprites/KILL_BACKGROUND.png");
     game.loadSprite("KILL_TEXT", "sprites/KILL_TEXT.png");
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
@@ -17,8 +18,12 @@ export async function KillInterface(game: KAPLAYCtx) {
         game.sprite("KILL_BACKGROUND"), 
         game.fixed(),
         game.pos(game.width()-300,game.height()-150),
-        game.area()
+        game.area(),
+        game.shader("Grayscale", () => ({
+            u_enabled: globals.player.is("IN_RANGE") ? 1 : 0
+        }))
     ])
+    
     const killText = background.add([
         game.scale(1),
         game.sprite("KILL_TEXT"), 
@@ -26,7 +31,6 @@ export async function KillInterface(game: KAPLAYCtx) {
         game.anchor("center"),
         game.pos(backgroundSprite.width/2, backgroundSprite.height/2),
         game.animate(),
-        game.shader("Grayscale")
     ])
     killText.animate("scale", [ 
         new game.Vec2(1,1), 
@@ -37,7 +41,8 @@ export async function KillInterface(game: KAPLAYCtx) {
         loops: Infinity,
         easing: game.easings.easeInOutSine
     })
-    background.onHover(() => {
 
+    background.onHover(() => {
+        console.log(globals.player.is("IN_RANGE"))
     })
 }
