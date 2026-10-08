@@ -27,7 +27,8 @@ makeNPC(game,globals, [
         new game.Vec2(400, 200),
         new game.Vec2(400, 80),
         new game.Vec2(80, 80),
-        new game.Vec2(85, 85)
+    ], [
+        new game.Vec2(20, 20)
     ])
 
     makeNPC(game,globals, [
@@ -35,6 +36,10 @@ makeNPC(game,globals, [
         new game.Vec2(400, 400),
         new game.Vec2(400, 600),
         new game.Vec2(80, 600)
-    ])
+    ],
+    [
+        new game.Vec2(80, 80)
+    ]
+   )
 
 KillInterface(game, globals)
