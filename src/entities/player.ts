@@ -1,3 +1,4 @@
+// Odpowiedzialna za player.ts = Tomasz Czarnecki
 import { KAPLAYCtx, Vec2 } from "kaplay"
 const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;

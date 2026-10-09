@@ -1,9 +1,9 @@
-// npcty mają zdefiniowaną ilość punktów pomiędzy którymi chodzą w kółko
+// Odpowiedzialna za npc.ts = Elżbieta Bezulska
 
 import { Game, KAPLAYCtx } from "kaplay";
 
 
-export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
+export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
     const speedNpc = 200;
     let punkt = 0;
     let czeka = false;
@@ -11,56 +11,73 @@ export function makeNPC(game: KAPLAYCtx, globals:any, punkty: any) {
         game.pos(punkty[0]),
         game.timer(),
         game.area(),
+        game.color(),
         game.anchor("center"),
         game.sprite("NPC_anim"),
         "NPC"
     ]);
-    //Npc po dotknieciu idzie na inne miejsce
-    Npc.on("Event", () => {
-            czeka = true;
-            Npc.frame = 0;
-            game.debug.log("time");
-            Npc.wait(1, () => { 
-                Npc.moveTo(punkty[4], speedNpc);
-            })
-        })
 
-    Npc.onUpdate(() => {
-        
 
-        if (czeka) {
-            Npc.frame = 1;
-            return;}
-
+    let stan = walking;
+    
+    function walking() {
+        Npc.frame = 0;
         Npc.moveTo(punkty[punkt], speedNpc);
+        game.debug.log(game.time());
         if (Npc.pos.dist(punkty[punkt]) == 0) {
-            czeka = true
+            stan = Stand;
             Npc.wait(2, () => {
-                Npc.frame = 0;
-                czeka = false;
-                punkt++;
+                if(stan != Stand) return
+                stan = walking;
             })
-
-            if (punkt == punkty.length-1) {
-                punkt = -1;
-
+            punkt++;
+            if (punkt == punkty.length) {
+                punkt = 0;
             }
         }
-
-        if (Npc.isColliding(globals.player)) { 
-            Npc.trigger("Event");
-        /*czeka = true;
-        Npc.wait(2, () => {
-            Npc.frame = 0;
-            czeka = false;*/
-        
     }
-        
+    function Stand() {
+
+        Npc.frame = 1;
+    }
+    function standCollision(){
+        Npc.frame = 1;
+    }
+    function eventtrigger() {
+         Npc.moveTo(event[0], speedNpc);
+    }
+    Npc.wait(20, () => {
+        stan = eventtrigger;
     })
-}
+    Npc.onUpdate(() => {
 
-    
 
+        if(Npc.is("Focused")){
+            Npc.color = game.Color.fromHex("#ff0000");
+        }else{
+            Npc.color = game.Color.fromHex("#ffffff");
+        }
+        stan()
+
+        if (Npc.isColliding(globals.player)) {
+            if(stan === eventtrigger){
+                stan = standCollision;
+                Npc.wait(2, () => {
+                    if(stan != standCollision) return
+                    stan = eventtrigger;
+                })
+                return
+            }
+            stan = standCollision;
+            Npc.wait(2, () => {
+                if(stan != standCollision) return
+                stan = walking;
+            })
+        }
+    }
+
+
+    )}
 
 
 
