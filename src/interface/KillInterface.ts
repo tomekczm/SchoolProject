@@ -1,8 +1,10 @@
-import { GameObj, KAPLAYCtx, SpriteData, Vec2 } from "kaplay";
+import { GameObj, KAPLAYCtx, SpriteData, TweenController, Vec2 } from "kaplay";
 import { Globals } from "../main";
+import { createBloodSplatter } from "../effects/BloodSplatter";
+import { createBloodPool } from "../effects/BloodPool";
 
 const KNIFE_DISTANCE = 100;
-function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
+export function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
     return new Promise((resolve, reject) => {
         game.loadSprite(name, path)
             .catch((err) => reject(err))
@@ -15,13 +17,17 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
     game.loadSprite("KILL_TEXT", "sprites/KILL_TEXT.png");
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
     let targetedNpc: GameObj | undefined = undefined 
-    let isHovered = false;
+
+    const BASE_BACKGROUND_SCALE = 3.0;
+
     const background = game.add([
-        game.scale(3.0),
+        game.scale(BASE_BACKGROUND_SCALE),
         game.sprite("KILL_BACKGROUND"), 
+        game.anchor("center"),
         game.fixed(),
-        game.pos(game.width()-300,game.height()-150),
+        game.pos(game.width()-150,game.height()-75),
         game.area(),
+        game.timer(),
         game.shader("Grayscale", () => ({
             u_enabled: targetedNpc !== undefined ? 1 : 0
         }))
@@ -32,7 +38,6 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
         game.sprite("KILL_TEXT"), 
         game.fixed(),
         game.anchor("center"),
-        game.pos(backgroundSprite.width/2, backgroundSprite.height/2),
         game.animate(),
     ])
     killText.animate("scale", [ 
@@ -65,7 +70,44 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
         }
     })
 
+
+    let scaleDown: TweenController | undefined;
+    let scaleUp: TweenController | undefined;
+
+    let scaleFactor = 1.1;
+    let speed = 0.1;
+
+    let upscaled = new game.Vec2(BASE_BACKGROUND_SCALE * scaleFactor);
+    let normal = background.scale;
+    background.onHover(() => {
+        scaleDown?.cancel()
+        scaleUp?.cancel()
+        const dist = background.scale.sub(upscaled).dist()
+        scaleUp = background.tween(
+            background.scale,
+            upscaled,
+            dist * speed,
+            (v) => background.scaleTo(v)
+        )
+    })
+    background.onHoverEnd(() => {
+        scaleDown?.cancel()
+        scaleUp?.cancel()
+        const dist = background.scale.sub(normal).dist()
+        scaleDown = background.tween(
+            background.scale,
+            new game.Vec2(BASE_BACKGROUND_SCALE),
+            dist * speed,
+            (v) => background.scaleTo(v)
+        )
+    })
+
     background.onClick(() => {
-        if(targetedNpc) targetedNpc.trigger("Killed")
+        if(!targetedNpc) return;
+        createBloodSplatter(game, targetedNpc.pos)
+        createBloodPool(game, targetedNpc.pos)
+        targetedNpc.trigger("Killed")
+        targetedNpc = undefined
+
     })
 }

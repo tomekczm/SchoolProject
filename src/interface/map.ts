@@ -2,7 +2,10 @@
 import { KAPLAYCtx } from "kaplay";
 
 export function testMap(game: KAPLAYCtx) {
-    game.add([game.pos(0, 0), game.rect(game.width(), game.height()), game.color(255, 255, 255), game.fixed(), "Background"]);
+    //game.add([game.pos(0, 0), game.rect(game.width(), game.height()), game.color(255, 255, 255), game.layer("backgroud"), game.fixed(), "Background"]);
+    game.setBackground(
+        game.color(255,255,255).color
+    )
 
     const barriers = [
         {"x": 0, "y": 0, "width": 900, "height": 30},

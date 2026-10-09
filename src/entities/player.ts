@@ -1,5 +1,6 @@
 // Odpowiedzialna za player.ts = Tomasz Czarnecki
 import { KAPLAYCtx, Vec2 } from "kaplay"
+import { createBloodSplatter } from "../effects/BloodSplatter";
 const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
