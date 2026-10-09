@@ -3,6 +3,7 @@ import { addPlayer } from "./entities/player";
 import { makeNPC } from "./entities/npc";
 import { testMap } from "./interface/map";
 import { KillInterface, loadSpriteAsync } from "./interface/KillInterface";
+import { Inventory } from "./interface/Inventory";
 
 export const game = kaplay();
 
@@ -12,6 +13,7 @@ game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", {
     sliceX: 3,
 });
 await loadSpriteAsync(game, "Blood", "sprites/BloodYes.png")
+game.loadSprite("Slot", "sprites/slot.png")
 
 testMap(game);
 
@@ -48,3 +50,4 @@ makeNPC(game,globals, [
    )
 
 KillInterface(game, globals)
+Inventory(game, globals)
