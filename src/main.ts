@@ -35,8 +35,10 @@ makeNPC(game,globals, [
         new game.Vec2(400, 80),
         new game.Vec2(80, 80),
     ], [
-        new game.Vec2(20, 20)
-    ])
+        new game.Vec2(20, 20),
+        new game.Vec2(-4, 0)
+    ],
+    )
 
     makeNPC(game,globals, [
         new game.Vec2(80, 400),

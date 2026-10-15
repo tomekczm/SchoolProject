@@ -9,16 +9,19 @@ export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
     const speedNpc = 200;
     let punkt = 0;
     let czeka = false;
+    
     const Npc = game.add([
         game.pos(punkty[0]),
         game.timer(),
         game.area(),
+        game.body(),
         game.color(),
         game.anchor("center"),
         game.sprite("NPC_anim"),
+        game.tile(),
+        game.agent({ speed: 150, allowDiagonals: false }), 
         "NPC"
     ]);
-
 
     let stan = walking;
     
@@ -50,7 +53,7 @@ export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
          Npc.moveTo(event[0], speedNpc);
     }
 
-    Npc.wait(20, () => {
+    Npc.wait(5, () => {
         stan = eventtrigger;
     })
     Npc.onUpdate(() => {
@@ -87,10 +90,15 @@ export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
                 stan = walking;
             })
         }
+
+        
+    })
+    Npc.onCollide("Wall", (wall, col) => {
+        Npc.moveBy(col!.displacement);
+    });
+
+
     }
-
-
-    )}
 
 
 
