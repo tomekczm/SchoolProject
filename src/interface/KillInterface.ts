@@ -2,6 +2,7 @@ import { GameObj, KAPLAYCtx, SpriteData, TweenController, Vec2 } from "kaplay";
 import { Globals } from "../main";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { createBloodPool } from "../effects/BloodPool";
+import { UIHoverEffect } from "../effects/UIHover";
 
 const KNIFE_DISTANCE = 100;
 export function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
@@ -71,36 +72,7 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
     })
 
 
-    let scaleDown: TweenController | undefined;
-    let scaleUp: TweenController | undefined;
-
-    let scaleFactor = 1.1;
-    let speed = 0.1;
-
-    let upscaled = new game.Vec2(BASE_BACKGROUND_SCALE * scaleFactor);
-    let normal = background.scale;
-    background.onHover(() => {
-        scaleDown?.cancel()
-        scaleUp?.cancel()
-        const dist = background.scale.sub(upscaled).dist()
-        scaleUp = background.tween(
-            background.scale,
-            upscaled,
-            dist * speed,
-            (v) => background.scaleTo(v)
-        )
-    })
-    background.onHoverEnd(() => {
-        scaleDown?.cancel()
-        scaleUp?.cancel()
-        const dist = background.scale.sub(normal).dist()
-        scaleDown = background.tween(
-            background.scale,
-            new game.Vec2(BASE_BACKGROUND_SCALE),
-            dist * speed,
-            (v) => background.scaleTo(v)
-        )
-    })
+   UIHoverEffect(game, background)
 
     background.onClick(() => {
         if(!targetedNpc) return;

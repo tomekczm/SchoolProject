@@ -8,7 +8,7 @@ export function createBloodSplatter(game: KAPLAYCtx, pos: any) {
         game.layer("vfx_under"),
         game.particles(
                 {
-                    max: 1000,
+                    max: 100,
                     speed: [125,150],
                     lifeTime: [2,4],
                     angularVelocity: [0, 100],
