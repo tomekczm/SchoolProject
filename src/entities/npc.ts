@@ -3,14 +3,15 @@
 import { Game, KAPLAYCtx } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
+import { Globals } from "../main";
 
 
-export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
+export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:any) {
     const speedNpc = 200;
     let punkt = 0;
     let czeka = false;
     
-    const Npc = game.add([
+    const Npc = globals.map.add([
         game.pos(punkty[0]),
         game.timer(),
         game.area(),
@@ -50,12 +51,14 @@ export function makeNPC(game: KAPLAYCtx, globals: any, punkty: any, event:any) {
         Npc.frame = 1;
     }
     function eventtrigger() {
-         Npc.moveTo(event[0], speedNpc);
+        Npc.setTarget(event[0])
+        game.debug.log(Npc.isTargetReached())
     }
 
-    Npc.wait(5, () => {
+    Npc.wait(10, () => {
         stan = eventtrigger;
     })
+
     Npc.onUpdate(() => {
         
         Npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki

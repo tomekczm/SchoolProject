@@ -17,8 +17,6 @@ game.loadSprite("Slot", "sprites/slot.png", {
     sliceX: 2,
 })
 
-testMap(game);
-
 game.setLayers([
     "backgroud",
     "bodies",
@@ -27,7 +25,8 @@ game.setLayers([
 ], "default")
 
 const globals = {
-    player: addPlayer(game)
+    player: addPlayer(game),
+    map: testMap(game)
 }
 export type Globals = typeof globals;
 
@@ -37,12 +36,11 @@ makeNPC(game,globals, [
         new game.Vec2(400, 80),
         new game.Vec2(80, 80),
     ], [
-        new game.Vec2(20, 20),
-        new game.Vec2(-4, 0)
+        new game.Vec2(500,250),
     ],
     )
 
-    makeNPC(game,globals, [
+    /*makeNPC(game,globals, [
         new game.Vec2(80, 400),
         new game.Vec2(400, 400),
         new game.Vec2(400, 600),
@@ -50,8 +48,8 @@ makeNPC(game,globals, [
     ],
     [
         new game.Vec2(80, 80)
-    ]
-   )
+    ]*/
+   
 
 KillInterface(game, globals)
 Inventory(game, globals)
