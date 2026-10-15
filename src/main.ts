@@ -13,7 +13,9 @@ game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", {
     sliceX: 3,
 });
 await loadSpriteAsync(game, "Blood", "sprites/BloodYes.png")
-game.loadSprite("Slot", "sprites/slot.png")
+game.loadSprite("Slot", "sprites/slot.png", {
+    sliceX: 2,
+})
 
 testMap(game);
 
