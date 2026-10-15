@@ -27,6 +27,7 @@ export function testMap(game: KAPLAYCtx) {
                 game.sprite("Panda"),
                 game.area(),
                 game.body({ isStatic: true }),
+                game.tile({ isObstacle: true }),
                 "Wall"
             ]
         }
