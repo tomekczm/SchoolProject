@@ -7,7 +7,7 @@ export function testMap(game: KAPLAYCtx) {
         game.color(255, 255, 255).color
     )
 
-    game.addLevel([
+    const map = game.addLevel([
         "===========================",
         "=                         =",
         "=                         =",
@@ -26,10 +26,18 @@ export function testMap(game: KAPLAYCtx) {
             "=": () => [
                 game.sprite("Panda"),
                 game.area(),
-                game.body({ isStatic: true }),
+                //game.body({ isStatic: true }),
                 game.tile({ isObstacle: true }),
                 "Wall"
             ]
         }
     })
+    const rect = map.add([
+        game.rect(32,32),
+        game.color(255,255,1),
+        game.pos(64,64),
+        game.tile(),
+        game.agent({ speed: 100, allowDiagonals: true }),
+    ])
+    rect.setTarget(new game.Vec2(500,250))
 }
