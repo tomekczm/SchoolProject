@@ -24,6 +24,18 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         "NPC"
     ]);
 
+    for(const accesoriums of globals.accessoriums) {
+        let rand = game.randi(0, accesoriums.length+1)
+        if(rand === 0) continue;
+        console.log(rand)
+        const accessory = accesoriums[rand-1]
+        console.log("applying", accessory)
+        Npc.add([
+            game.sprite(accessory),
+            game.anchor("center")
+        ])
+    }
+
     let stan = walking;
     
     function walking() {
