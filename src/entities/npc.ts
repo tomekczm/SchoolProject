@@ -51,8 +51,9 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         Npc.frame = 1;
     }
     function eventtrigger() {
-        Npc.setTarget(event[0])
-        game.debug.log(Npc.isTargetReached())
+        // wywala wszystko w chuj
+        //Npc.setTarget(event[0])
+        //game.debug.log(Npc.isTargetReached())
     }
 
     Npc.wait(10, () => {
