@@ -59,13 +59,14 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
     Npc.wait(10, () => {
         stan = eventtrigger;
     })
-
-    Npc.onUpdate(() => {
-        
-        Npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
+    Npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
             spawnDeadNpc(game, Npc.pos)
             Npc.destroy()
         })
+        
+    Npc.onUpdate(() => {
+        
+        
 
         if(Npc.is("Focused")){ // Dodane przez Tomasz Czarnecki
             const ANIMATION_SPEED = 2;
