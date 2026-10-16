@@ -10,6 +10,26 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
     const speedNpc = 200;
     let punkt = 0;
     let czeka = false;
+
+    // generate unique outfit
+    function generateOutfit() {
+        let outfit = []
+        for(const accesoriums of globals.accessoriums) {
+            let rand = game.randi(0, accesoriums.length+1)
+            if(rand === 0) {
+                outfit.push(null)
+                continue;
+            };
+            const accessory = accesoriums[rand-1]
+            outfit.push(accessory)
+        }
+        for(const pastOutfit of globals.alreadyCreatedOutfits) {
+            if(pastOutfit.every((v, i) => v === outfit[i])) return generateOutfit()
+        }
+
+        globals.alreadyCreatedOutfits.push(outfit)
+        return outfit;
+    }
     
     const Npc = globals.map.add([
         game.pos(punkty[0]),
@@ -23,6 +43,15 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         game.agent({ speed: 150, allowDiagonals: false }), 
         "NPC"
     ]);
+
+    const outfit = generateOutfit()
+    for(const clothe of outfit) {
+        if(clothe === null) continue;
+        Npc.add([
+            game.sprite(clothe),
+            game.anchor("center")
+        ])
+    }
 
     let stan = walking;
     
