@@ -1,9 +1,10 @@
 // Odpowiedzialna za npc.ts = Elżbieta Bezulska
 
-import { Game, KAPLAYCtx } from "kaplay";
+import { Game, GameObj, KAPLAYCtx, SpriteComp } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Globals } from "../main";
+import { setTarget } from "./target";
 
 
 export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:any, isTarget: boolean = false) {
@@ -44,19 +45,25 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         "NPC"
     ]);
 
+    const decorationInst: GameObj<SpriteComp>[] = []
     const outfit = generateOutfit()
     for(const clothe of outfit) {
         if(clothe === null) continue;
-        Npc.add([
+        decorationInst.push(Npc.add([
             game.sprite(clothe),
             game.anchor("center")
-        ])
+        ]))
     }
 
     let stan = walking;
     
+    function setFrame(frame: number) {
+        Npc.frame = frame;
+        decorationInst.forEach((d) => d.frame = frame)
+    }
+
     function walking() {
-        Npc.frame = 0;
+        setFrame(0)
         Npc.moveTo(punkty[punkt], speedNpc);
         //game.debug.log(game.time());
         if (Npc.pos.dist(punkty[punkt]) == 0) {
@@ -74,10 +81,10 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
 
     function Stand() {
 
-        Npc.frame = 1;
+        setFrame(1)
     }
     function standCollision(){
-        Npc.frame = 1;
+        setFrame(1)
     }
     function eventtrigger() {
         // wywala wszystko w chuj
@@ -131,8 +138,8 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         Npc.moveBy(col!.displacement);
     });
 
-
-    }
+    if(isTarget) setTarget(globals, outfit)
+}
 
 
 

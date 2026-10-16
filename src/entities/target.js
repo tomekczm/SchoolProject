@@ -1,1 +1,0 @@
-// odliczanie czasu
