@@ -1,12 +1,12 @@
 // Odpowiedzialna za player.ts = Tomasz Czarnecki
-import { KAPLAYCtx, Vec2 } from "kaplay"
+import { GameObj, KAPLAYCtx, LevelComp, PosComp, Vec2 } from "kaplay"
 import { createBloodSplatter } from "../effects/BloodSplatter";
 const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
 const KNIFE_DISTANCE = 100;
-export function addPlayer(game: KAPLAYCtx) {
-    const player = game.add([
+export function addPlayer(game: KAPLAYCtx, map:  GameObj<PosComp | LevelComp>) {
+    const player = map.add([
         game.area(),
         game.pos(100, 100),
         game.rotate(0),

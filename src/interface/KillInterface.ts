@@ -53,7 +53,7 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
     const player = globals.player;
     game.onUpdate(() => {
         let targetFound = false
-        for (const npc of game.get("NPC")) {
+        for (const npc of globals.map.get("NPC")) {
             const pos: Vec2 = npc.pos;
             if (pos.dist(player.pos) <= KNIFE_DISTANCE) {
                 if (!player.is("IN_RANGE")) player.tag("IN_RANGE")

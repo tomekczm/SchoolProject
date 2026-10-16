@@ -24,9 +24,10 @@ game.setLayers([
     "default",
 ], "default")
 
+const map = testMap(game);
 const globals = {
-    player: addPlayer(game),
-    map: testMap(game)
+    map,
+    player: addPlayer(game, map),
 }
 export type Globals = typeof globals;
 
