@@ -4,6 +4,7 @@ import { makeNPC } from "./entities/npc";
 import { testMap } from "./interface/map";
 import { KillInterface, loadSpriteAsync } from "./interface/InterfaceButton";
 import { Inventory } from "./interface/Inventory";
+import { KillButton } from "./interface/KillButton";
 
 export const game = kaplay();
 
@@ -54,6 +55,4 @@ makeNPC(game,globals, [
         new game.Vec2(80, 80)
     ]*/
    
-
-KillInterface(game, globals)
 Inventory(game, globals)

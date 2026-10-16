@@ -3,6 +3,7 @@ import { Globals } from "../main";
 import { UIHoverEffect } from "../effects/UIHover";
 import { knife } from "../items/Knife";
 import { Item } from "../items/Item";
+import { wine } from "../items/Vine";
 
 export async function Inventory(game: KAPLAYCtx, globals: Globals) {
     let offset = 100;
@@ -35,14 +36,17 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
         slots[i] = sprite;
         UIHoverEffect(game, sprite)
         game.onKeyPress(keyMap[i], () => {
-            if(slotEquipped !== undefined)
+            if(slotEquipped !== undefined) {
                 slots[slotEquipped].frame = 0;
+                items[slotEquipped]?.onUnequip(globals);
+            }
             if(slotEquipped === i) {
                 slotEquipped = undefined;
                 return;
             };
             slotEquipped = i;
             slots[i].frame = 1;
+            items[i]?.onEquip(globals)
         })
     }
 
@@ -51,6 +55,7 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
         icons[idx].sprite = item.icon;
     }
     setSlot(0, knife)
+    setSlot(1, wine)
     return {
         
     }

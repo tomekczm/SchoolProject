@@ -5,7 +5,6 @@ import { createBloodPool } from "../effects/BloodPool";
 import { UIHoverEffect } from "../effects/UIHover";
 import { ScreenShake } from "../effects/ScreenShake";
 
-const KNIFE_DISTANCE = 100;
 export function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
     return new Promise((resolve, reject) => {
         game.loadSprite(name, path)
@@ -14,13 +13,16 @@ export function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Pr
     })
 }
 
-export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
+export async function InterfaceButton(globals: Globals) {
+    const game = globals.game;
     const backgroundSprite = await loadSpriteAsync(game, "KILL_BACKGROUND", "sprites/KILL_BACKGROUND.png");
-    game.loadSprite("KILL_TEXT", "sprites/KILL_TEXT.png");
+    game.loadSprite("KILL_TEXT", "sprites/BUTTON_TEXTS.png", {
+        sliceX: 2
+    });
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
-    let targetedNpc: GameObj | undefined = undefined 
 
     const BASE_BACKGROUND_SCALE = 3.0;
+    let isEnabled = false;
 
     const background = game.add([
         game.scale(BASE_BACKGROUND_SCALE),
@@ -31,18 +33,18 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
         game.area(),
         game.timer(),
         game.shader("Grayscale", () => ({
-            u_enabled: targetedNpc !== undefined ? 1 : 0
+            u_enabled: isEnabled ? 1 : 0
         }))
     ])
     
-    const killText = background.add([
+    const text = background.add([
         game.scale(1),
         game.sprite("KILL_TEXT"), 
         game.fixed(),
         game.anchor("center"),
         game.animate(),
     ])
-    killText.animate("scale", [ 
+    text.animate("scale", [ 
         new game.Vec2(1,1), 
         new game.Vec2(1.1,1.1) 
     ], {
@@ -51,37 +53,15 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
         loops: Infinity,
         easing: game.easings.easeInOutSine
     })
-    const player = globals.player;
-    game.onUpdate(() => {
-        let targetFound = false
-        for (const npc of globals.map.get("NPC")) {
-            const pos: Vec2 = npc.pos;
-            if (pos.dist(player.pos) <= KNIFE_DISTANCE) {
-                if (!player.is("IN_RANGE")) player.tag("IN_RANGE")
-                if (!npc.is("Focused")) npc.tag("Focused")
-                targetedNpc = npc;
-                targetFound = true;
-            } else {
-                if (npc.is("Focused") && npc !== targetedNpc) npc.untag("Focused")
-                player.untag("IN_RANGE")
-            }
-        }
-        if(!targetFound) {
-            targetedNpc?.untag("Focused")
-            targetedNpc = undefined;
-        }
-    })
 
+    function enable() { isEnabled = true }
+    function disable() { isEnabled = false; }
 
    UIHoverEffect(game, background)
-
-    background.onClick(() => {
-        if(!targetedNpc) return;
-        ScreenShake(game);
-        createBloodSplatter(game, targetedNpc.pos)
-        createBloodPool(game, targetedNpc.pos)
-        targetedNpc.trigger("Killed")
-        targetedNpc = undefined
-
-    })
+    return {
+        background, text, enable, disable, clear() {
+            background.destroy();
+            text.destroy()
+        }
+    }
 }
