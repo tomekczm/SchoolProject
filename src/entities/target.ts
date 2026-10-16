@@ -2,11 +2,18 @@ import { Globals } from "../main";
 
 // odliczanie czasu
 export function setTarget(ctx: Globals, decorations: (string | null)[]) {
+    const background = ctx.game.add([
+        ctx.game.rect(300,400),
+        ctx.game.color(0,0,0),
+        ctx.game.anchor("center"),
+        ctx.game.fixed(),
+        ctx.game.pos(150, ctx.game.height() - 100),
+    ])
     const Npc = ctx.game.add([
         ctx.game.sprite("NPC_anim"),
         ctx.game.anchor("center"),
         ctx.game.fixed(),
-        ctx.game.pos(ctx.game.width() - 100, ctx.game.height() - 100),
+        ctx.game.pos(150, ctx.game.height() - 100),
         ctx.game.scale(5)
     ])
             Npc.frame = 1
@@ -19,4 +26,11 @@ export function setTarget(ctx: Globals, decorations: (string | null)[]) {
         ])
         inst.frame = 1
     }
+        ctx.game.add([
+        ctx.game.sprite("TARGET"),
+                ctx.game.anchor("center"),
+        ctx.game.fixed(),
+        ctx.game.pos( 150, ctx.game.height() - 150),
+        ctx.game.scale(5)
+    ])
 }

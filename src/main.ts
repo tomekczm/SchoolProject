@@ -21,6 +21,7 @@ game.loadRoot("./"); // A good idea for Itch.io publishing later
 game.loadSprite("Panda", "sprites/player.png");
 game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png");
 game.loadSprite("EMPTY", "sprites/EMPTY_IMAGE.png");
+game.loadSprite("TARGET", "sprites/target-frame.png");
 game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO);
 await loadSpriteAsync(game, "Blood", "sprites/BloodYes.png")
 game.loadSprite("Slot", "sprites/slot.png", {
