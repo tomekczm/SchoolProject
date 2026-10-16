@@ -40,6 +40,16 @@ makeNPC(game,globals, [
         new game.Vec2(500,250),
     ],
     )
+makeNPC(game,globals, [
+    new game.Vec2(500, 200),
+    new game.Vec2(800, 200),
+    new game.Vec2(800, 80),
+    new game.Vec2(500, 80),
+], [
+    new game.Vec2(650,250),
+],
+true
+)
 
     /*makeNPC(game,globals, [
         new game.Vec2(80, 400),

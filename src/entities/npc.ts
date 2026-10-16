@@ -6,7 +6,7 @@ import { spawnDeadNpc } from "./deadNpc";
 import { Globals } from "../main";
 
 
-export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:any) {
+export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:any, isTarget: boolean = false) {
     const speedNpc = 200;
     let punkt = 0;
     let czeka = false;
