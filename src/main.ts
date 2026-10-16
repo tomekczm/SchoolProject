@@ -2,13 +2,15 @@ import kaplay from "kaplay";
 import { addPlayer } from "./entities/player";
 import { makeNPC } from "./entities/npc";
 import { testMap } from "./interface/map";
-import { KillInterface, loadSpriteAsync } from "./interface/KillInterface";
+import { KillInterface, loadSpriteAsync } from "./interface/InterfaceButton";
 import { Inventory } from "./interface/Inventory";
 
 export const game = kaplay();
 
 game.loadRoot("./"); // A good idea for Itch.io publishing later
 game.loadSprite("Panda", "sprites/player.png");
+game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png");
+game.loadSprite("EMPTY", "sprites/EMPTY_IMAGE.png");
 game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", {
     sliceX: 3,
 });
@@ -26,6 +28,7 @@ game.setLayers([
 
 const map = testMap(game);
 const globals = {
+    game,
     map,
     player: addPlayer(game, map),
 }
