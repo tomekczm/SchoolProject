@@ -39,12 +39,14 @@ game.setLayers([
     "default",
 ], "default")
 
+const alreadyCreatedOutfits: (string|null)[][] = []
 const map = testMap(game);
 const globals = {
     game,
     map,
     player: addPlayer(game, map),
-    accessoriums
+    accessoriums,
+    alreadyCreatedOutfits
 }
 export type Globals = typeof globals;
 
