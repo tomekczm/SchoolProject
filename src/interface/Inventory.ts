@@ -1,10 +1,14 @@
-import { Color, GameObj, KAPLAYCtx, Key, SpriteData, TweenController, Vec2 } from "kaplay";
+import { AnchorComp, Color, GameObj, KAPLAYCtx, Key, SpriteComp, SpriteData, TweenController, Vec2 } from "kaplay";
 import { Globals } from "../main";
 import { UIHoverEffect } from "../effects/UIHover";
+import { knife } from "../items/Knife";
+import { Item } from "../items/Item";
 
 export async function Inventory(game: KAPLAYCtx, globals: Globals) {
     let offset = 100;
     let slots = []
+    let items: Item[] = []
+    let icons: GameObj<SpriteComp | AnchorComp>[] = []
     let slotEquipped: number | undefined = undefined;
 
     const keyMap: Key[] = ['1', '2', '3', '4', '5', '6']
@@ -20,6 +24,14 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
             game.area(),
             game.color(),
         ])
+        const icon = sprite.add([
+            game.sprite("EMPTY", {
+                width: 32,
+                height: 32
+            }),
+            game.anchor("center")
+        ])
+        icons[i] = icon;
         slots[i] = sprite;
         UIHoverEffect(game, sprite)
         game.onKeyPress(keyMap[i], () => {
@@ -34,5 +46,12 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
         })
     }
 
-
+    function setSlot(idx: number, item: Item) {
+        items[idx] = item;
+        icons[idx].sprite = item.icon;
+    }
+    setSlot(0, knife)
+    return {
+        
+    }
 }
