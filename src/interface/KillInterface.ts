@@ -3,6 +3,7 @@ import { Globals } from "../main";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { createBloodPool } from "../effects/BloodPool";
 import { UIHoverEffect } from "../effects/UIHover";
+import { ScreenShake } from "../effects/ScreenShake";
 
 const KNIFE_DISTANCE = 100;
 export function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
@@ -76,6 +77,7 @@ export async function KillInterface(game: KAPLAYCtx, globals: Globals) {
 
     background.onClick(() => {
         if(!targetedNpc) return;
+        ScreenShake(game);
         createBloodSplatter(game, targetedNpc.pos)
         createBloodPool(game, targetedNpc.pos)
         targetedNpc.trigger("Killed")
