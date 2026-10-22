@@ -53,6 +53,7 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
     function setSlot(idx: number, item: Item) {
         items[idx] = item;
         icons[idx].sprite = item.icon;
+        icons[idx].frame = item.iconFrame;
     }
     setSlot(0, knife)
     setSlot(1, wine)

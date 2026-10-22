@@ -19,7 +19,9 @@ const SPRITE_GENERAL_INFO = {
 
 game.loadRoot("./"); // A good idea for Itch.io publishing later
 game.loadSprite("Panda", "sprites/player.png");
-game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png");
+game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png", {
+    sliceX: 2
+});
 game.loadSprite("EMPTY", "sprites/EMPTY_IMAGE.png");
 game.loadSprite("TARGET", "sprites/target-frame.png");
 game.loadSprite("Wooden_Planks", "sprites/Planks.png");

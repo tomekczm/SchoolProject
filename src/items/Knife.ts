@@ -6,6 +6,7 @@ let clear: (() => void) | undefined = undefined
 
 export const knife: Item = {
     icon: "KNIFE_ICON",
+    iconFrame: 1,
     onEquip: async function (ctx: Globals): Promise<void> {
         clear?.();
         clear = (await KillButton(ctx)).clear;
