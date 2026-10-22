@@ -17,7 +17,7 @@ export const wine: Item = {
 
         background.onClick(() => {
             clr?.();
-            createBloodPool(ctx.game, ctx.player.pos)
+            createBloodPool(ctx, ctx.player.pos)
         })
 
         clr = clear;

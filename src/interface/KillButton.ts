@@ -40,12 +40,17 @@ export async function KillButton(globals: Globals) {
         if(!targetedNpc) return;
         ScreenShake(game)
         createBloodSplatter(game, targetedNpc.pos)
-        createBloodPool(game, targetedNpc.pos)
+        createBloodPool(globals, targetedNpc.pos)
         targetedNpc.trigger("Killed")
         targetedNpc = undefined
     })
 
+    function clr() {
+        clear()
+        targetedNpc?.untag("Focused")
+    }
+
     return {
-        clear
+        clear: clr
     }
 }

@@ -22,6 +22,8 @@ game.loadSprite("Panda", "sprites/player.png");
 game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png");
 game.loadSprite("EMPTY", "sprites/EMPTY_IMAGE.png");
 game.loadSprite("TARGET", "sprites/target-frame.png");
+game.loadSprite("Wooden_Planks", "sprites/Planks.png");
+game.loadSprite("Wall", "sprites/Wall.png");
 game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO);
 await loadSpriteAsync(game, "Blood", "sprites/BloodYes.png")
 game.loadSprite("Slot", "sprites/slot.png", {
@@ -32,13 +34,6 @@ for(const accessoriumLayer of accessoriums) {
         game.loadSprite(accessory, `sprites/${accessory}.png`,SPRITE_GENERAL_INFO)
     }
 }
-
-game.setLayers([
-    "backgroud",
-    "bodies",
-    "vfx_under",
-    "default",
-], "default")
 
 const alreadyCreatedOutfits: (string|null)[][] = []
 const map = testMap(game);

@@ -6,7 +6,9 @@ const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
 const KNIFE_DISTANCE = 100;
 export function addPlayer(game: KAPLAYCtx, map:  GameObj<PosComp | LevelComp>) {
+    game.setCamScale(2.5)
     const player = map.add([
+        game.z(3),
         game.area(),
         game.pos(100, 100),
         game.rotate(0),

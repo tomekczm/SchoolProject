@@ -31,8 +31,8 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         globals.alreadyCreatedOutfits.push(outfit)
         return outfit;
     }
-    
-    const Npc = globals.map.add([
+
+    const list = [
         game.pos(punkty[0]),
         game.timer(),
         game.area(),
@@ -40,10 +40,15 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         game.color(),
         game.anchor("center"),
         game.sprite("NPC_anim"),
+        game.z(1),
         game.tile(),
         game.agent({ speed: 150, allowDiagonals: false }), 
         "NPC"
-    ]);
+    ]
+    
+    if(isTarget) list.push("Target")
+
+    const Npc = globals.map.add(list);
 
     const decorationInst: GameObj<SpriteComp>[] = []
     const outfit = generateOutfit()
@@ -96,7 +101,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         stan = eventtrigger;
     })
     Npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
-            spawnDeadNpc(game, Npc.pos)
+            spawnDeadNpc(globals, Npc.pos)
             Npc.destroy()
         })
         
