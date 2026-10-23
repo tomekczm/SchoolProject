@@ -17,7 +17,7 @@ export async function createBloodPool(ctx: Context, pos: any) {
             game.color(255,0,0),
             game.anchor("center"),
             game.z(1),
-            "NonUI",
+            ctx.game.drawon(ctx.pipeline.uiBuffer.fb),
         ])
         game.tween(
             0, scale, 5 + div,

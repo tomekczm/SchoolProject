@@ -1,6 +1,8 @@
 import { KAPLAYCtx, Vec2 } from "kaplay";
+import { Context } from "../main";
 
-export function createBloodSplatter(game: KAPLAYCtx, pos: any) {
+export function createBloodSplatter(ctx: Context, pos: any) {
+    const { game } = ctx;
     const sprite = game.getSprite("Blood")!.data!;
   
     const blood = game.add([
@@ -22,7 +24,7 @@ export function createBloodSplatter(game: KAPLAYCtx, pos: any) {
                     spread: 360,
                 },
             ),
-            "NonUI",
+            ctx.game.drawon(ctx.pipeline.uiBuffer.fb),
     ])
     game.wait(5, () => {
         blood.destroy()

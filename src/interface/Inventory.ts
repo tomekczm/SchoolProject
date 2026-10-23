@@ -31,7 +31,7 @@ export async function Inventory(ctx: Context) {
                 width: 32,
                 height: 32
             }),
-            game.anchor("center")
+            game.anchor("center"),
         ])
         icons[i] = icon;
         slots[i] = sprite;

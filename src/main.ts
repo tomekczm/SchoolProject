@@ -10,6 +10,8 @@ export const game = kaplay();
 await loadSprites(game)
 
 export type Context = {
+    pipeline: ReturnType<typeof setupRenderPipeline>;
+    inventory: {};
     game: KAPLAYCtx
     map: GameObj<PosComp | LevelComp>,
     player: GameObj<string | PosComp | ZComp | AreaComp | RotateComp | AnchorComp | SpriteComp>
@@ -19,8 +21,10 @@ const context: Context = {} as Context
 context.game = game;
 context.map = testMap(context);
 context.player = addPlayer(context)
+context.inventory = await Inventory(context);
+context.pipeline = setupRenderPipeline(context)
 
-setupRenderPipeline(context)
+context.pipeline.EnableLight()
 
 makeNPC(context, [
         new game.Vec2(80, 200),
@@ -51,5 +55,3 @@ true
     [
         new game.Vec2(80, 80)
     ]*/
-
-Inventory(context)

@@ -39,7 +39,7 @@ export async function KillButton(context: Context) {
 
         if(!targetedNpc) return;
         ScreenShake(game)
-        createBloodSplatter(game, targetedNpc.pos)
+        createBloodSplatter(context, targetedNpc.pos)
         createBloodPool(context, targetedNpc.pos)
         targetedNpc.trigger("Killed")
         targetedNpc = undefined

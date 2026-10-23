@@ -16,7 +16,7 @@ export function addPlayer(context: Context) {
         game.rotate(0),
         game.anchor("center"),
         game.sprite("Panda"),
-        "NonUI",
+        context.game.drawon(context.pipeline.uiBuffer.fb),,
         "Player"
     ])
 
