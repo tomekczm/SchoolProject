@@ -1,7 +1,7 @@
 import { KAPLAYCtx } from "kaplay";
-import { Globals } from "../main";
+import { Context } from "../main";
 
-export function spawnDeadNpc(ctx: Globals, pos: any) {
+export function spawnDeadNpc(ctx: Context, pos: any) {
     const game = ctx.game
     let sprite = ctx.map.add([
         game.anchor("center"),

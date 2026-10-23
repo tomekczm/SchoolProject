@@ -1,8 +1,8 @@
-import { Globals } from "../main";
+import { Context } from "../main";
 
 export interface Item {
     icon: string,
     iconFrame: number,
-    onEquip: (ctx: Globals) => void,
-    onUnequip: (ctx: Globals) => void,
+    onEquip: (ctx: Context) => void,
+    onUnequip: (ctx: Context) => void,
 }

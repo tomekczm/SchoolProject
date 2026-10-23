@@ -1,7 +1,9 @@
 // // Odpowiedzialna za map.ts = Dominik Michocki
 import { KAPLAYCtx } from "kaplay";
+import { Context } from "../main";
 
-export function testMap(game: KAPLAYCtx) {
+export function testMap(context: Context) {
+    const {game} = context;
     //game.add([game.pos(0, 0), game.rect(game.width(), game.height()), game.color(255, 255, 255), game.layer("backgroud"), game.fixed(), "Background"]);
     game.setBackground(
         game.color(0,0,0).color

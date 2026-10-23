@@ -3,11 +3,18 @@
 import { Game, GameObj, KAPLAYCtx, SpriteComp } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
-import { Globals } from "../main";
+import { Context } from "../main";
 import { setTarget } from "./target";
 
+export const alreadyCreatedOutfits: (string | null)[][] = [];
 
-export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:any, isTarget: boolean = false) {
+export const ACCESSORIUMS = [
+    [ "beanie" ],
+    [ "mustache" ]
+]
+
+export function makeNPC(context: Context, punkty: any, event:any, isTarget: boolean = false) {
+    const {game} = context
     const speedNpc = 200;
     let punkt = 0;
     let czeka = false;
@@ -15,7 +22,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
     // generate unique outfit
     function generateOutfit() {
         let outfit = []
-        for(const accesoriums of globals.accessoriums) {
+        for(const accesoriums of ACCESSORIUMS) {
             let rand = game.randi(0, accesoriums.length+1)
             if(rand === 0) {
                 outfit.push(null)
@@ -24,11 +31,11 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
             const accessory = accesoriums[rand-1]
             outfit.push(accessory)
         }
-        for(const pastOutfit of globals.alreadyCreatedOutfits) {
-            if(pastOutfit.every((v, i) => v === outfit[i])) return generateOutfit()
+        for(const pastOutfit of alreadyCreatedOutfits) {
+            if(pastOutfit?.every((v, i) => v === outfit[i])) return generateOutfit()
         }
 
-        globals.alreadyCreatedOutfits.push(outfit)
+        alreadyCreatedOutfits.push(outfit)
         return outfit;
     }
 
@@ -49,7 +56,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
     
     if(isTarget) list.push("Target")
 
-    const Npc = globals.map.add(list);
+    const Npc = context.map.add(list);
 
     const decorationInst: GameObj<SpriteComp>[] = []
     const outfit = generateOutfit()
@@ -102,7 +109,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         stan = eventtrigger;
     })
     Npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
-            spawnDeadNpc(globals, Npc.pos)
+            spawnDeadNpc(context, Npc.pos)
             Npc.destroy()
         })
         
@@ -122,7 +129,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         }
         stan()
 
-        if (Npc.isColliding(globals.player)) {
+        if (Npc.isColliding(context.player)) {
             if(stan === eventtrigger){
                 stan = standCollision;
                 Npc.wait(2, () => {
@@ -144,7 +151,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         Npc.moveBy(col!.displacement);
     });
 
-    if(isTarget) setTarget(globals, outfit)
+    if(isTarget) setTarget(context, outfit)
 }
 
 
