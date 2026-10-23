@@ -43,6 +43,7 @@ export function makeNPC(game: KAPLAYCtx, globals: Globals, punkty: any, event:an
         game.z(1),
         game.tile(),
         game.agent({ speed: 150, allowDiagonals: false }), 
+        "NonUI",
         "NPC"
     ]
     

@@ -8,6 +8,7 @@ let clr: (() => void) | undefined = undefined
 
 export const wine: Item = {
     icon: "KNIFE_ICON",
+    iconFrame: 0,
     onEquip: async function (ctx: Globals): Promise<void> {
         clr?.();
         const game = ctx.game;

@@ -16,7 +16,8 @@ export async function createBloodPool(globals: Globals, pos: any) {
             game.pos(pos.add(offset)),
             game.color(255,0,0),
             game.anchor("center"),
-            game.z(1)
+            game.z(1),
+            "NonUI",
         ])
         game.tween(
             0, scale, 5 + div,

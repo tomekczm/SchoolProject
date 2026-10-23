@@ -8,6 +8,7 @@ export function spawnDeadNpc(ctx: Globals, pos: any) {
         game.sprite("NPC_anim"),
         game.layer("bodies"),
         game.pos(pos),
+        "NonUI",
         game.z(2)
     ])
     sprite.frame = 2;

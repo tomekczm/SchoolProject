@@ -32,6 +32,7 @@ export function testMap(game: KAPLAYCtx) {
                 game.area(),
                 //game.body({ isStatic: true }),
                 game.tile({ isObstacle: true }),
+                game.z(4),
                 "Wall"
             ]
         }

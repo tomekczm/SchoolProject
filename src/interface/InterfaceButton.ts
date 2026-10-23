@@ -19,7 +19,6 @@ export async function InterfaceButton(globals: Globals) {
     game.loadSprite("KILL_TEXT", "sprites/BUTTON_TEXTS.png", {
         sliceX: 2
     });
-    game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
 
     const BASE_BACKGROUND_SCALE = 3.0;
     let isEnabled = false;
@@ -34,10 +33,12 @@ export async function InterfaceButton(globals: Globals) {
         game.timer(),
         game.shader("Grayscale", () => ({
             u_enabled: isEnabled ? 1 : 0
-        }))
+        })),
+        "UI"
     ])
     
     const text = background.add([
+        "UI",
         game.scale(1),
         game.sprite("KILL_TEXT"), 
         game.fixed(),

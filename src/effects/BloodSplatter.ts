@@ -21,7 +21,8 @@ export function createBloodSplatter(game: KAPLAYCtx, pos: any) {
                     direction: 0,
                     spread: 360,
                 },
-            )
+            ),
+            "NonUI",
     ])
     game.wait(5, () => {
         blood.destroy()

@@ -14,6 +14,7 @@ export function addPlayer(game: KAPLAYCtx, map:  GameObj<PosComp | LevelComp>) {
         game.rotate(0),
         game.anchor("center"),
         game.sprite("Panda"),
+        "NonUI",
         "Player"
     ])
 
