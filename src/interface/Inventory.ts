@@ -1,11 +1,12 @@
 import { AnchorComp, Color, GameObj, KAPLAYCtx, Key, SpriteComp, SpriteData, TweenController, Vec2 } from "kaplay";
-import { Globals } from "../main";
+import { Context } from "../main";
 import { UIHoverEffect } from "../effects/UIHover";
 import { knife } from "../items/Knife";
 import { Item } from "../items/Item";
 import { wine } from "../items/Vine";
 
-export async function Inventory(game: KAPLAYCtx, globals: Globals) {
+export async function Inventory(ctx: Context) {
+    const { game } = ctx;
     let offset = 100;
     let slots = []
     let items: Item[] = []
@@ -38,7 +39,7 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
         game.onKeyPress(keyMap[i], () => {
             if(slotEquipped !== undefined) {
                 slots[slotEquipped].frame = 0;
-                items[slotEquipped]?.onUnequip(globals);
+                items[slotEquipped]?.onUnequip(ctx);
             }
             if(slotEquipped === i) {
                 slotEquipped = undefined;
@@ -46,7 +47,7 @@ export async function Inventory(game: KAPLAYCtx, globals: Globals) {
             };
             slotEquipped = i;
             slots[i].frame = 1;
-            items[i]?.onEquip(globals)
+            items[i]?.onEquip(ctx)
         })
     }
 

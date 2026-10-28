@@ -1,11 +1,13 @@
 // Odpowiedzialna za player.ts = Tomasz Czarnecki
 import { GameObj, KAPLAYCtx, LevelComp, PosComp, Vec2 } from "kaplay"
 import { createBloodSplatter } from "../effects/BloodSplatter";
+import { Context } from "../main";
 const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
 const KNIFE_DISTANCE = 100;
-export function addPlayer(game: KAPLAYCtx, map:  GameObj<PosComp | LevelComp>) {
+export function addPlayer(context: Context) {
+    const {game , map} = context
     game.setCamScale(2.5)
     const player = map.add([
         game.z(3),
@@ -14,6 +16,7 @@ export function addPlayer(game: KAPLAYCtx, map:  GameObj<PosComp | LevelComp>) {
         game.rotate(0),
         game.anchor("center"),
         game.sprite("Panda"),
+        "NonUI",
         "Player"
     ])
 

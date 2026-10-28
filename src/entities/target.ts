@@ -1,7 +1,8 @@
-import { Globals } from "../main";
+import { Context } from "../main";
+import { alreadyCreatedOutfits } from "./npc";
 
 // odliczanie czasu
-export function setTarget(ctx: Globals, decorations: (string | null)[]) {
+export function setTarget(ctx: Context, clothes: (string | null)[]) {
     const background = ctx.game.add([
         ctx.game.rect(300,400),
         ctx.game.color(0,0,0),
@@ -18,7 +19,7 @@ export function setTarget(ctx: Globals, decorations: (string | null)[]) {
     ])
             Npc.frame = 1
 
-    for(const clothe of decorations) {
+    for(const clothe of clothes) {
         if(clothe === null) continue;
         const inst = Npc.add([
             ctx.game.sprite(clothe),
