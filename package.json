@@ -8,8 +8,7 @@
 		"zip": "npm run build && mkdir -p dist && zip -r dist/game.zip dist -x \"**/.DS_Store\""
 	},
 	"dependencies": {
-		"fastnoise-lite": "^1.1.1",
-		"kaplay": "^4000.0.0-alpha.27.1"
+		"kaplay": "^3001.0.19"
 	},
 	"devDependencies": {
 		"@types/node": "^22.20.3",

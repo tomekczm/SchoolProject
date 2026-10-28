@@ -1,5 +1,5 @@
 import { GameObj, Vec2 } from "kaplay";
-import { Context } from "../main";
+import { Globals } from "../main";
 import { InterfaceButton } from "./InterfaceButton";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { createBloodPool } from "../effects/BloodPool";
@@ -7,15 +7,15 @@ import { ScreenShake } from "../effects/ScreenShake";
 
 const KNIFE_DISTANCE = 100;
 
-export async function KillButton(context: Context) {
-    const game = context.game;
-    const { background, enable, disable, text, clear } = await InterfaceButton(context);
+export async function KillButton(globals: Globals) {
+    const game = globals.game;
+    const { background, enable, disable, text, clear } = await InterfaceButton(globals);
 
-    const player = context.player;
+    const player = globals.player;
     let targetedNpc: GameObj | undefined = undefined 
     background.onUpdate(() => {
         let targetFound = false
-        for (const npc of context.map.get("NPC")) {
+        for (const npc of globals.map.get("NPC")) {
             const pos: Vec2 = npc.pos;
             if (pos.dist(player.pos) <= KNIFE_DISTANCE) {
                 if (!player.is("IN_RANGE")) player.tag("IN_RANGE")
@@ -39,8 +39,8 @@ export async function KillButton(context: Context) {
 
         if(!targetedNpc) return;
         ScreenShake(game)
-        createBloodSplatter(context, targetedNpc.pos)
-        createBloodPool(context, targetedNpc.pos)
+        createBloodSplatter(game, targetedNpc.pos)
+        createBloodPool(globals, targetedNpc.pos)
         targetedNpc.trigger("Killed")
         targetedNpc = undefined
     })

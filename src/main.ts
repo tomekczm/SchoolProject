@@ -1,32 +1,54 @@
-import kaplay, { AnchorComp, AreaComp, GameObj, KAPLAYCtx, LevelComp, PosComp, RotateComp, SpriteComp, ZComp } from "kaplay";
+import kaplay from "kaplay";
 import { addPlayer } from "./entities/player";
 import { makeNPC } from "./entities/npc";
 import { testMap } from "./interface/map";
+import { loadSpriteAsync } from "./interface/InterfaceButton";
 import { Inventory } from "./interface/Inventory";
-import { loadSprites } from "./loadSprites";
-import { setupRenderPipeline } from "./pipeline/RenderPipeline";
+import { KillButton } from "./interface/KillButton";
+
 export const game = kaplay();
 
-await loadSprites(game)
+const accessoriums = [
+    [ "beanie" ],
+    [ "mustache" ]
+]
 
-export type Context = {
-    pipeline: ReturnType<typeof setupRenderPipeline>;
-    inventory: {};
-    game: KAPLAYCtx
-    map: GameObj<PosComp | LevelComp>,
-    player: GameObj<string | PosComp | ZComp | AreaComp | RotateComp | AnchorComp | SpriteComp>
+const SPRITE_GENERAL_INFO = {
+    sliceX: 3,
 }
 
-const context: Context = {} as Context
-context.game = game;
-context.map = testMap(context);
-context.player = addPlayer(context)
-context.inventory = await Inventory(context);
-context.pipeline = setupRenderPipeline(context)
+game.loadRoot("./"); // A good idea for Itch.io publishing later
+game.loadSprite("Panda", "sprites/player.png");
+game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png", {
+    sliceX: 2
+});
+game.loadSprite("EMPTY", "sprites/EMPTY_IMAGE.png");
+game.loadSprite("TARGET", "sprites/target-frame.png");
+game.loadSprite("Wooden_Planks", "sprites/Planks.png");
+game.loadSprite("Wall", "sprites/Wall.png");
+game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO);
+await loadSpriteAsync(game, "Blood", "sprites/BloodYes.png")
+game.loadSprite("Slot", "sprites/slot.png", {
+    sliceX: 2,
+})
+for(const accessoriumLayer of accessoriums) {
+    for(const accessory of accessoriumLayer) {
+        game.loadSprite(accessory, `sprites/${accessory}.png`,SPRITE_GENERAL_INFO)
+    }
+}
 
-context.pipeline.EnableLight()
+const alreadyCreatedOutfits: (string|null)[][] = []
+const map = testMap(game);
+const globals = {
+    game,
+    map,
+    player: addPlayer(game, map),
+    accessoriums,
+    alreadyCreatedOutfits
+}
+export type Globals = typeof globals;
 
-makeNPC(context, [
+makeNPC(game,globals, [
         new game.Vec2(80, 200),
         new game.Vec2(400, 200),
         new game.Vec2(400, 80),
@@ -35,7 +57,7 @@ makeNPC(context, [
         new game.Vec2(500,250),
     ],
     )
-makeNPC(context, [
+makeNPC(game,globals, [
     new game.Vec2(500, 200),
     new game.Vec2(800, 200),
     new game.Vec2(800, 80),
@@ -55,3 +77,5 @@ true
     [
         new game.Vec2(80, 80)
     ]*/
+   
+Inventory(game, globals)

@@ -1,9 +1,9 @@
 import { KAPLAYCtx, Vec2 } from "kaplay";
-import { Context } from "../main";
+import { Globals } from "../main";
 
-export async function createBloodPool(ctx: Context, pos: any) {
+export async function createBloodPool(globals: Globals, pos: any) {
     let scale = 30;
-    const game = ctx.game
+    const game = globals.game
     let count = game.randi(4) + 1;
 
     for(let i = 0; i < count; i++) {
@@ -11,13 +11,12 @@ export async function createBloodPool(ctx: Context, pos: any) {
         let offY = game.rand(10, 25);
         let div = i+1
         let offset = i === 0 ? game.vec2(0) : game.vec2(offX, offY)
-        const blood = ctx.map.add([
+        const blood = globals.map.add([
             game.circle(0),
             game.pos(pos.add(offset)),
             game.color(255,0,0),
             game.anchor("center"),
-            game.z(1),
-            ctx.game.drawon(ctx.pipeline.uiBuffer.fb),
+            game.z(1)
         ])
         game.tween(
             0, scale, 5 + div,
