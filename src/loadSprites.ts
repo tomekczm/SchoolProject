@@ -24,7 +24,7 @@ export async function loadSprites(game: KAPLAYCtx) {
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
     
     const spriteLoads = [
-        loadSpriteAsync(game, "Panda", "sprites/player.png"),
+        loadSpriteAsync(game, "Panda", "sprites/player.png", { sliceX: 3 }),
         loadSpriteAsync(game, "KNIFE_ICON", "sprites/KNIFE_ICON.png", { sliceX: 2 }),
         loadSpriteAsync(game, "EMPTY", "sprites/EMPTY_IMAGE.png"),
         loadSpriteAsync(game, "TARGET", "sprites/target-frame.png"),
