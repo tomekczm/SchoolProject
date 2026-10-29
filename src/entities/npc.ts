@@ -76,14 +76,14 @@ export function createNPC(context: Context) {
 
         const decorationInst: GameObj<SpriteComp>[] = []
 
-        /*
+        
         for (const clothe of outfit) {
             if (clothe === null) continue;
             decorationInst.push(npc.add([
                 game.sprite(clothe),
                 game.anchor("center")
             ]))
-        }*/
+        }
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
             spawnDeadNpc(context, npc.pos)

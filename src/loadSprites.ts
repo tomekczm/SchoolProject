@@ -5,9 +5,14 @@ const SPRITE_GENERAL_INFO = {
     sliceX: 3,
 }
 
-export function loadSpriteAsync(game: KAPLAYCtx, name: string, path: string): Promise<SpriteData> {
+export function loadSpriteAsync(
+    game: KAPLAYCtx,
+    name: string,
+    path: string,
+    options?: Parameters<KAPLAYCtx["loadSprite"]>[2],
+): Promise<SpriteData> {
     return new Promise((resolve, reject) => {
-        game.loadSprite(name, path)
+        game.loadSprite(name, path, options)
             .catch((err) => reject(err))
             .onLoad((data) => resolve(data))
     })
@@ -18,24 +23,21 @@ export async function loadSprites(game: KAPLAYCtx) {
     
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
     
-    game.loadSprite("Panda", "sprites/player.png", {
-        sliceX: 3
-    });
-    game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png", {
-        sliceX: 2
-    });
-    game.loadSprite("EMPTY", "sprites/EMPTY_IMAGE.png");
-    game.loadSprite("TARGET", "sprites/target-frame.png");
-    game.loadSprite("Wooden_Planks", "sprites/Planks.png");
-    game.loadSprite("Wall", "sprites/Wall.png");
-    game.loadSprite("NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO);
-    await loadSpriteAsync(game, "Blood", "sprites/BloodYes.png")
-    game.loadSprite("Slot", "sprites/slot.png", {
-        sliceX: 2,
-    })
+    const spriteLoads = [
+        loadSpriteAsync(game, "Panda", "sprites/player.png", { sliceX: 3 }),
+        loadSpriteAsync(game, "KNIFE_ICON", "sprites/KNIFE_ICON.png", { sliceX: 2 }),
+        loadSpriteAsync(game, "EMPTY", "sprites/EMPTY_IMAGE.png"),
+        loadSpriteAsync(game, "TARGET", "sprites/target-frame.png"),
+        loadSpriteAsync(game, "Wooden_Planks", "sprites/Planks.png"),
+        loadSpriteAsync(game, "Wall", "sprites/Wall.png"),
+        loadSpriteAsync(game, "NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO),
+        loadSpriteAsync(game, "Blood", "sprites/BloodYes.png"),
+        loadSpriteAsync(game, "Slot", "sprites/slot.png", { sliceX: 2 }),
+    ]
     for(const accessoriumLayer of ACCESSORIUMS) {
         for(const accessory of accessoriumLayer) {
-            game.loadSprite(accessory, `sprites/${accessory}.png`,SPRITE_GENERAL_INFO)
+            spriteLoads.push(loadSpriteAsync(game, accessory, `sprites/${accessory}.png`, SPRITE_GENERAL_INFO))
         }
     }
+    await Promise.all(spriteLoads)
 }

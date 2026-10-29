@@ -16,56 +16,28 @@ export type Context = {
 
 const context: Context = {} as Context
 context.game = game;
-context.map = testMap(context);
-context.player = addPlayer(context)
-/*
-makeNPC(context, [
-        new game.Vec2(80, 200),
-        new game.Vec2(400, 200),
-        new game.Vec2(400, 80),
-        new game.Vec2(80, 80),
-    ], [
-        new game.Vec2(500,250),
-    ],
-    )
-makeNPC(context, [
-    new game.Vec2(500, 200),
-    new game.Vec2(800, 200),
-    new game.Vec2(800, 80),
-    new game.Vec2(500, 80),
-], [
-    new game.Vec2(650,250),
-],
-true
-)*/
 
-const npc1 = createNPC(context);
-npc1.setPoints([
-        new game.Vec2(80, 200),
-        new game.Vec2(400, 200),
-        new game.Vec2(400, 80),
-        new game.Vec2(80, 80),
-])
-npc1.create()
-const npc2 = createNPC(context);
-npc2.setPoints([
-    new game.Vec2(500, 200),
-    new game.Vec2(800, 200),
-    new game.Vec2(800, 80),
-    new game.Vec2(500, 80),
-])
-npc2.setTarget(true)
-npc2.setType("Walker")
-npc2.create()
+game.scene("menu", () => {
+    game.setBackground(
+        game.color(0,0,0).color
+    );
+    game.add([
+        game.text("Press Space to start"),
+        game.pos(game.width() / 2, game.height() / 2),
+        game.area(),
+        game.anchor("center"),
+        game.color(255, 255, 255),
+    ]);
+    game.onKeyPress("space", () => {
+        game.go("testMapScene");
+    });
+});
+game.scene("testMapScene", () => {
+    context.map = testMap(context);
+    context.player = addPlayer(context);
 
-    /*makeNPC(game,globals, [
-        new game.Vec2(80, 400),
-        new game.Vec2(400, 400),
-        new game.Vec2(400, 600),
-        new game.Vec2(80, 600)
-    ],
-    [
-        new game.Vec2(80, 80)
-    ]*/
+    Inventory(context);
+});
 
-Inventory(context)
+game.go("testMapScene"); // Change to menu for menu scene when implemented
+

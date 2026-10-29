@@ -36,7 +36,8 @@ export async function Inventory(ctx: Context) {
         icons[i] = icon;
         slots[i] = sprite;
         UIHoverEffect(game, sprite)
-        game.onKeyPress(keyMap[i], () => {
+
+        function onInteraction() {
             if(slotEquipped !== undefined) {
                 slots[slotEquipped].frame = 0;
                 items[slotEquipped]?.onUnequip(ctx);
@@ -48,6 +49,15 @@ export async function Inventory(ctx: Context) {
             slotEquipped = i;
             slots[i].frame = 1;
             items[i]?.onEquip(ctx)
+        }
+
+
+        sprite.onClick(() => {
+            onInteraction()
+        })
+
+        game.onKeyPress(keyMap[i], () => {
+            onInteraction()
         })
     }
 
