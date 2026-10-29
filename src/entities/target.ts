@@ -1,8 +1,7 @@
 import { Context } from "../main";
-import { alreadyCreatedOutfits } from "./npc";
 
 // odliczanie czasu
-export function setTarget(ctx: Context, clothes: (string | null)[]) {
+export function setTargetForGame(ctx: Context, clothes: (string | null)[]) {
     const background = ctx.game.add([
         ctx.game.rect(300,400),
         ctx.game.color(0,0,0),
