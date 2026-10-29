@@ -1,158 +1,177 @@
 // Odpowiedzialna za npc.ts = Elżbieta Bezulska
 
-import { Game, GameObj, KAPLAYCtx, SpriteComp } from "kaplay";
+import { Game, GameObj, KAPLAYCtx, SpriteComp, Vec2 } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
-import { setTarget } from "./target";
+import { setTargetForGame } from "./target";
 
 export const alreadyCreatedOutfits: (string | null)[][] = [];
 
 export const ACCESSORIUMS = [
-    [ "beanie" ],
-    [ "mustache" ]
+    ["beanie"],
+    ["mustache"]
 ]
 
-export function makeNPC(context: Context, punkty: any, event:any, isTarget: boolean = false) {
-    const {game} = context
-    const speedNpc = 200;
-    let punkt = 0;
-    let czeka = false;
+export function createNPC(context: Context) {
 
-    // generate unique outfit
-    function generateOutfit() {
+
+    const { game } = context
+    let outfit: (string | null)[] = [];
+
+    function generateOutfit() { //dodał, tomasz Czarnecki losowy outfit akcesorie
         let outfit = []
-        for(const accesoriums of ACCESSORIUMS) {
-            let rand = game.randi(0, accesoriums.length+1)
-            if(rand === 0) {
+        for (const accesoriums of ACCESSORIUMS) {
+            let rand = game.randi(0, accesoriums.length + 1)
+            if (rand === 0) {
                 outfit.push(null)
                 continue;
             };
-            const accessory = accesoriums[rand-1]
+            const accessory = accesoriums[rand - 1]
             outfit.push(accessory)
         }
-        for(const pastOutfit of alreadyCreatedOutfits) {
-            if(pastOutfit?.every((v, i) => v === outfit[i])) return generateOutfit()
+        for (const pastOutfit of alreadyCreatedOutfits) {
+            if (pastOutfit?.every((v, i) => v === outfit[i])) return generateOutfit()
         }
 
         alreadyCreatedOutfits.push(outfit)
         return outfit;
     }
+//punkty, typy, targety
+    let punkty: Array<Vec2> = []
+    let isTarget = false;
+    let type: string = "Walker";
 
-    const list = [
-        game.pos(punkty[0]),
-        game.timer(),
-        game.area(),
-        game.body(),
-        game.color(),
-        game.anchor("center"),
-        game.sprite("NPC_anim"),
-        game.z(1),
-        game.tile(),
-        game.agent({ speed: 150, allowDiagonals: false }), 
-        "NonUI",
-        "NPC"
-    ]
-    
-    if(isTarget) list.push("Target")
-
-    const Npc = context.map.add(list);
-
-    const decorationInst: GameObj<SpriteComp>[] = []
-    const outfit = generateOutfit()
-    for(const clothe of outfit) {
-        if(clothe === null) continue;
-        decorationInst.push(Npc.add([
-            game.sprite(clothe),
-            game.anchor("center")
-        ]))
+    function setPoints(newPunkty: Array<Vec2>) {
+        punkty = newPunkty;
     }
 
-    let stan = walking;
-    
-    function setFrame(frame: number) {
-        Npc.frame = frame;
-        decorationInst.forEach((d) => d.frame = frame)
+    function setType(newType: string) {
+        type = newType;
+    }
+    function setTarget(newTarget: boolean) {
+        isTarget = newTarget;
     }
 
-    function walking() {
-        setFrame(0)
-        Npc.moveTo(punkty[punkt], speedNpc);
-        //game.debug.log(game.time());
-        if (Npc.pos.dist(punkty[punkt]) == 0) {
-            stan = Stand;
-            Npc.wait(2, () => {
-                if(stan != Stand) return
-                stan = walking;
-            })
-            punkt++;
-            if (punkt == punkty.length) {
-                punkt = 0;
-            }
-        }
-    }
+    //tworzenie npc 
+    function create() {
+        let stan: (() => any) | undefined = undefined;
+        if (type === "Walker") stan = walkingFromPointToPoint;
 
-    function Stand() {
+        console.log(punkty)
+        const npc = context.map.add([
+            game.pos(punkty[0]),
+            game.timer(),
+            game.area(),
+            game.body(),
+            game.color(),
+            game.anchor("center"),
+            game.sprite("NPC_anim"),
+            game.z(1),
+            game.tile(),
+            game.agent({ speed: 150, allowDiagonals: false }),
+            "NonUI",
+            "NPC"
+        ])
 
-        setFrame(1)
-    }
-    function standCollision(){
-        setFrame(1)
-    }
-    function eventtrigger() {
-        // wywala wszystko w chuj
-        //Npc.setTarget(event[0])
-        //game.debug.log(Npc.isTargetReached())
-    }
+        const decorationInst: GameObj<SpriteComp>[] = []
 
-    Npc.wait(10, () => {
-        stan = eventtrigger;
-    })
-    Npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
-            spawnDeadNpc(context, Npc.pos)
-            Npc.destroy()
+        /*
+        for (const clothe of outfit) {
+            if (clothe === null) continue;
+            decorationInst.push(npc.add([
+                game.sprite(clothe),
+                game.anchor("center")
+            ]))
+        }*/
+
+        npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
+            spawnDeadNpc(context, npc.pos)
+            npc.destroy()
         })
-        
-    Npc.onUpdate(() => {
-        
-        
 
-        if(Npc.is("Focused")){ // Dodane przez Tomasz Czarnecki
-            const ANIMATION_SPEED = 2;
-            const factor = (Math.sin(game.time()*ANIMATION_SPEED) + 1) / 2
-            Npc.color = new game.Color(255,255/2,255/2).lerp(
-                new game.Color(255, 0, 0),
-                factor
-            );
-        }else{
-            Npc.color = game.Color.fromHex("#ffffff");
-        }
-        stan()
-
-        if (Npc.isColliding(context.player)) {
-            if(stan === eventtrigger){
-                stan = standCollision;
-                Npc.wait(2, () => {
-                    if(stan != standCollision) return
-                    stan = eventtrigger;
-                })
-                return
+        //kolor czerwony na npc jak mozna go zabic yoyoyoyoyoyyoyo
+        
+        function ifTargetedBounceColor() {
+            if (npc.is("Focused")) { // Dodane przez Tomasz Czarnecki
+                const ANIMATION_SPEED = 2;
+                const factor = (Math.sin(game.time() * ANIMATION_SPEED) + 1) / 2
+                npc.color = new game.Color(255, 255 / 2, 255 / 2).lerp(
+                    new game.Color(255, 0, 0),
+                    factor
+                );
+            } else {
+                npc.color = game.Color.fromHex("#ffffff");
             }
-            stan = standCollision;
-            Npc.wait(2, () => {
-                if(stan != standCollision) return
-                stan = walking;
-            })
         }
 
-        
-    })
-    Npc.onCollide("Wall", (wall, col) => {
-        Npc.moveBy(col!.displacement);
-    });
+        function setFrame(frame: number) {
+            npc.frame = frame;
+            decorationInst.forEach((d) => d.frame = frame)
+        }
 
-    if(isTarget) setTarget(context, outfit)
+        function doNothing() {
+            setFrame(1);
+        }
+
+        function walkingFromPointToPoint() {
+            setFrame(0)
+            npc.moveTo(punkty[punkt], speedNpc);
+            if (npc.pos.dist(punkty[punkt]) == 0) {
+                stan = doNothing;
+                npc.wait(2, () => {
+                    if (stan != doNothing) return
+                    stan = walkingFromPointToPoint;
+                })
+                punkt++;
+                if (punkt == punkty.length) {
+                    punkt = 0;
+                }
+            }
+
+        }
+        function Collision() {
+            setFrame(1);
+        }
+
+        if(isTarget) setTargetForGame(context, outfit)
+
+        npc.onUpdate(() => {
+            ifTargetedBounceColor()
+            if (stan !== undefined) stan()
+
+            if (npc.isColliding(context.player)) {
+                stan = Collision;
+                npc.wait(2, () => {
+                    if (stan != Collision) return
+                    stan = walkingFromPointToPoint;
+                })
+            }
+
+        })
+
+    }
+
+    function setOutfitToRandom() {
+        outfit = generateOutfit()
+    }
+
+
+    const speedNpc = 200;
+    let punkt = 0;
+
+
+
+    return {
+        setPoints,
+        isTarget,
+        type,
+        setType,
+        setTarget,
+        setOutfitToRandom,
+        create
+    };
+    // dodajemy wampira ktory wyssa kfrew zabbije targeta, bedzie target vampir ktory musi wypic wino z cozsnkiem by umrzec
 }
-
 
 

@@ -3,6 +3,7 @@ import { addPlayer } from "./entities/player";
 import { testMap } from "./interface/map";
 import { Inventory } from "./interface/Inventory";
 import { loadSprites } from "./loadSprites";
+import { createNPC } from "./entities/npc";
 export const game = kaplay();
 
 await loadSprites(game)
@@ -27,7 +28,6 @@ game.scene("menu", () => {
         game.anchor("center"),
         game.color(255, 255, 255),
     ]);
-
     game.onKeyPress("space", () => {
         game.go("testMapScene");
     });
@@ -40,3 +40,4 @@ game.scene("testMapScene", () => {
 });
 
 game.go("testMapScene"); // Change to menu for menu scene when implemented
+
