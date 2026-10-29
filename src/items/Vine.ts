@@ -10,6 +10,7 @@ export const wine: Item = {
     icon: "KNIFE_ICON",
     iconFrame: 0,
     onEquip: async function (ctx: Context): Promise<void> {
+        ctx.player.frame = 2;
         clr?.();
         const game = ctx.game;
         const { background, enable, disable, text, clear } = await InterfaceButton(ctx);
@@ -19,12 +20,14 @@ export const wine: Item = {
         background.onClick(() => {
             clr?.();
             createBloodPool(ctx, ctx.player.pos)
+            ctx.player.frame = 0;
         })
 
         clr = clear;
     },
     onUnequip: function (ctx: Context): void {
        clr?.();
+       ctx.player.frame = 0;
        clr = undefined;
     }
 }

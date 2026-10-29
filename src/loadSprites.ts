@@ -18,7 +18,9 @@ export async function loadSprites(game: KAPLAYCtx) {
     
     game.loadShaderURL("Grayscale", null, "shaders/Grayscale.frag")
     
-    game.loadSprite("Panda", "sprites/player.png");
+    game.loadSprite("Panda", "sprites/player.png", {
+        sliceX: 3
+    });
     game.loadSprite("KNIFE_ICON", "sprites/KNIFE_ICON.png", {
         sliceX: 2
     });
