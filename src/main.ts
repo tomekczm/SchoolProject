@@ -46,6 +46,7 @@ npc1.setPoints([
         new game.Vec2(400, 80),
         new game.Vec2(80, 80),
 ])
+npc1.setOutfitToRandom()
 npc1.create()
 const npc2 = createNPC(context);
 npc2.setPoints([
@@ -56,6 +57,7 @@ npc2.setPoints([
 ])
 npc2.setTarget(true)
 npc2.setType("Walker")
+npc2.setOutfitToRandom()
 npc2.create()
 
     /*makeNPC(game,globals, [

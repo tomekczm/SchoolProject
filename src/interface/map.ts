@@ -26,7 +26,7 @@ export function testMap(context: Context) {
         tileWidth: 32,
         tiles: {
             " ": () => [
-                                game.z(-100),
+                game.z(-100),
                 game.sprite("Wooden_Planks"),
             ],
             "=": () => [
