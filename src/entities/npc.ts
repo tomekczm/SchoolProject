@@ -19,7 +19,7 @@ export function createNPC(context: Context) {
     const { game } = context
     let outfit: (string | null)[] = [];
 
-    function generateOutfit() {
+    function generateOutfit() { //dodał, tomasz Czarnecki losowy outfit akcesorie
         let outfit = []
         for (const accesoriums of ACCESSORIUMS) {
             let rand = game.randi(0, accesoriums.length + 1)
@@ -37,7 +37,7 @@ export function createNPC(context: Context) {
         alreadyCreatedOutfits.push(outfit)
         return outfit;
     }
-
+//punkty, typy, targety
     let punkty: Array<Vec2> = []
     let isTarget = false;
     let type: string = "Walker";
@@ -53,6 +53,7 @@ export function createNPC(context: Context) {
         isTarget = newTarget;
     }
 
+    //tworzenie npc 
     function create() {
         let stan: (() => any) | undefined = undefined;
         if (type === "Walker") stan = walkingFromPointToPoint;
@@ -89,6 +90,8 @@ export function createNPC(context: Context) {
             npc.destroy()
         })
 
+        //kolor czerwony na npc jak mozna go zabic yoyoyoyoyoyyoyo
+        
         function ifTargetedBounceColor() {
             if (npc.is("Focused")) { // Dodane przez Tomasz Czarnecki
                 const ANIMATION_SPEED = 2;
