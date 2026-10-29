@@ -1,6 +1,7 @@
 // // Odpowiedzialna za map.ts = Dominik Michocki
 import { KAPLAYCtx } from "kaplay";
 import { Context } from "../main";
+import { makeNPC } from "../entities/npc";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -39,5 +40,25 @@ export function testMap(context: Context) {
             ]
         }
     })
+    context.map = map
+    makeNPC(context, [
+        new game.Vec2(80, 200),
+        new game.Vec2(400, 200),
+        new game.Vec2(400, 80),
+        new game.Vec2(80, 80),
+    ], [
+        new game.Vec2(500,250),
+    ],
+    )
+    makeNPC(context, [
+        new game.Vec2(500, 200),
+        new game.Vec2(800, 200),
+        new game.Vec2(800, 80),
+        new game.Vec2(500, 80),
+        ], [
+        new game.Vec2(650,250),
+        ],
+        true
+    )
     return map
 }

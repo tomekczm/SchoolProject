@@ -1,6 +1,5 @@
 import kaplay, { AnchorComp, AreaComp, GameObj, KAPLAYCtx, LevelComp, PosComp, RotateComp, SpriteComp, ZComp } from "kaplay";
 import { addPlayer } from "./entities/player";
-import { makeNPC } from "./entities/npc";
 import { testMap } from "./interface/map";
 import { Inventory } from "./interface/Inventory";
 import { loadSprites } from "./loadSprites";
@@ -16,37 +15,28 @@ export type Context = {
 
 const context: Context = {} as Context
 context.game = game;
-context.map = testMap(context);
-context.player = addPlayer(context)
 
-makeNPC(context, [
-        new game.Vec2(80, 200),
-        new game.Vec2(400, 200),
-        new game.Vec2(400, 80),
-        new game.Vec2(80, 80),
-    ], [
-        new game.Vec2(500,250),
-    ],
-    )
-makeNPC(context, [
-    new game.Vec2(500, 200),
-    new game.Vec2(800, 200),
-    new game.Vec2(800, 80),
-    new game.Vec2(500, 80),
-], [
-    new game.Vec2(650,250),
-],
-true
-)
+game.scene("menu", () => {
+    game.setBackground(
+        game.color(0,0,0).color
+    );
+    game.add([
+        game.text("Press Space to start"),
+        game.pos(game.width() / 2, game.height() / 2),
+        game.area(),
+        game.anchor("center"),
+        game.color(255, 255, 255),
+    ]);
 
-    /*makeNPC(game,globals, [
-        new game.Vec2(80, 400),
-        new game.Vec2(400, 400),
-        new game.Vec2(400, 600),
-        new game.Vec2(80, 600)
-    ],
-    [
-        new game.Vec2(80, 80)
-    ]*/
+    game.onKeyPress("space", () => {
+        game.go("testMapScene");
+    });
+});
+game.scene("testMapScene", () => {
+    context.map = testMap(context);
+    context.player = addPlayer(context);
 
-Inventory(context)
+    Inventory(context);
+});
+
+game.go("testMapScene"); // Change to menu for menu scene when implemented
