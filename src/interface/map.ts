@@ -48,6 +48,7 @@ export function testMap(context: Context) {
             new game.Vec2(400, 80),
             new game.Vec2(80, 80),
     ])
+    npc1.setOutfitToRandom()
     npc1.create()
     const npc2 = createNPC(context);
     npc2.setPoints([
@@ -56,6 +57,7 @@ export function testMap(context: Context) {
         new game.Vec2(800, 80),
         new game.Vec2(500, 80),
     ])
+    npc2.setOutfitToRandom()
     npc2.setTarget(true)
     npc2.setType("Walker")
     npc2.create()
