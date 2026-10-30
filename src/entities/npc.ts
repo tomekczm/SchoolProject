@@ -101,7 +101,7 @@ export function createNPC(context: Context) {
                 npc.pos, 
                 outfit
             )
-            if(isTarget) onTargetKilled() 
+            if(isTarget) onTargetKilled(npc) 
             npc.destroy()
         })
 
@@ -149,7 +149,7 @@ export function createNPC(context: Context) {
             setFrame(1);
         }
 
-        if(isTarget) setTargetForGame(context, outfit)
+        if(isTarget) setTargetForGame(context, npc, outfit)
 
         npc.onUpdate(() => {
             ifTargetedBounceColor()
