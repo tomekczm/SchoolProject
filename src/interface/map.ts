@@ -20,6 +20,10 @@ export function testMap(context: Context) {
         "=           =             =",
         "=           =             =",
         "=           =             =",
+        "=           =             =",
+        "=           =             =",
+        "=           =             =",
+        "=           =             =",
         "===========================",
 
     ], {
@@ -61,5 +65,13 @@ export function testMap(context: Context) {
     npc2.setTarget(true)
     npc2.setType("Walker")
     npc2.create()
+    const npc3 = createNPC(context);
+    npc3.setPoints([
+        new game.Vec2(200, 280),
+    ])
+    npc3.setOutfitToRandom()
+    npc3.setTarget(false)
+    npc3.setType("Stander")
+    npc3.create()
     return map
 }

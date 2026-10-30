@@ -1,6 +1,7 @@
 // Odpowiedzialna za npc.ts = Elżbieta Bezulska
+// jezeli jest cos w type script to tomek to robil yoyoyo
 
-import { Game, GameObj, KAPLAYCtx, SpriteComp, Vec2 } from "kaplay";
+import { Game, GameObj, KAPLAYCtx, PosComp, SpriteComp, Vec2 } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
@@ -74,6 +75,7 @@ export function createNPC(context: Context) {
     function create() {
         let stan: (() => any) | undefined = undefined;
         if (type === "Walker") stan = walkingFromPointToPoint;
+        if (type === "Stander") stan = Standing;
 
         const npc = context.map.add([
             game.pos(punkty[0]),
@@ -87,8 +89,15 @@ export function createNPC(context: Context) {
             game.tile(),
             game.agent({ speed: 150, allowDiagonals: false }),
             "NonUI",
-            "NPC"
+            "NPC",
+            game.sentry({ include: "DeadBody" }, {
+            lineOfSight: true,
+            raycastExclude: ["npc"],
+            fieldOfView: 100
+        })
         ])
+
+        npc.onObjectsSpotted(game.debug.log)
 
 
 
@@ -102,6 +111,11 @@ export function createNPC(context: Context) {
                 outfit
             )
             if(isTarget) onTargetKilled(npc) 
+                if(isTarget === true){
+                    game.debug.log("Target killed");
+                }else{
+                    game.debug.log("Non-Target Killed");
+                }
             npc.destroy()
         })
 
@@ -129,6 +143,10 @@ export function createNPC(context: Context) {
             setFrame(1);
         }
 
+        function Standing(){
+            setFrame(1);
+        }
+
         function walkingFromPointToPoint() {
             setFrame(0)
             npc.moveTo(punkty[punkt], speedNpc);
@@ -148,10 +166,28 @@ export function createNPC(context: Context) {
         function Collision() {
             setFrame(1);
         }
+        function detectedDeadBody(){
+            setFrame(2);
+        }
+
+        
 
         if(isTarget) setTargetForGame(context, npc, outfit)
 
+
+
         npc.onUpdate(() => {
+
+            const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
+            for(const element of deadBodies){
+                if (npc.hasLineOfSight(element)){
+                    stan = detectedDeadBody;
+                    game.debug.log("sda")
+                }
+            }
+             {
+            }
+
             ifTargetedBounceColor()
             if (stan !== undefined) stan()
 
