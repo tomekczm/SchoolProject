@@ -41,16 +41,13 @@ export function setTargetForGame(ctx: Context, npc: GameObj, outfit: NpcOutfit) 
 
         await UIShake(ctx, background) // wait till finished;
 
-        ctx.game.tween(
+        const tween = ctx.game.tween(
             background.pos,
             background.pos.sub(400,0),
             0.5,
             (vec) => background.pos = vec,
             game.easings.easeInBack
         )
-
-        //background.destroy()
-        //Npc.destroy()
-        //targetFrame.destroy()
+        tween.onEnd(() => background.destroy())
     })
 }
