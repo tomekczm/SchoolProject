@@ -65,10 +65,22 @@ export async function Inventory(ctx: Context) {
     }
 
     function setSlot(idx: number, item: Item | undefined) {
+        const previouslySelectedSlot = slotEquipped;
+        const selectedSlotWasEmpty = previouslySelectedSlot !== undefined && items[previouslySelectedSlot] === undefined;
+
         if(item !== undefined) {
             items[idx] = item;
             icons[idx].sprite = item.icon;
             icons[idx].frame = item.iconFrame;
+
+            if(selectedSlotWasEmpty) {
+                if(previouslySelectedSlot !== idx && previouslySelectedSlot !== undefined) {
+                    slots[previouslySelectedSlot].frame = 0;
+                }
+                slotEquipped = idx;
+                slots[idx].frame = 1;
+                item.onEquip(ctx);
+            }
         } else {
             items[idx] = undefined;
             icons[idx].sprite = "EMPTY";
