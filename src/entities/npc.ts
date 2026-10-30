@@ -1,17 +1,35 @@
 // Odpowiedzialna za npc.ts = Elżbieta Bezulska
+// jezeli jest cos w type script to tomek to robil yoyoyo
 
-import { Game, GameObj, KAPLAYCtx, SpriteComp, Vec2 } from "kaplay";
+import { Game, GameObj, KAPLAYCtx, PosComp, SpriteComp, Vec2 } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
-import { setTargetForGame } from "./target";
+import { onTargetKilled, setTargetForGame } from "./target";
 
-export const alreadyCreatedOutfits: (string | null)[][] = [];
+
+export type NpcOutfit = (string | null)[];
+
+export const alreadyCreatedOutfits: NpcOutfit[] = [];
 
 export const ACCESSORIUMS = [
     ["beanie"],
     ["mustache"]
 ]
+
+// Tomasz
+export function dressUpNpc(ctx: Context, npc: GameObj<SpriteComp>, outfit: NpcOutfit) {
+    const decorationInst: GameObj<SpriteComp>[] = []
+    const game = ctx.game;
+    for (const clothe of outfit) {
+        if (clothe === null) continue;
+        decorationInst.push(npc.add([
+            game.sprite(clothe),
+            game.anchor("center")
+        ]))
+    }
+    return decorationInst;
+}
 
 export function createNPC(context: Context) {
 
@@ -57,8 +75,8 @@ export function createNPC(context: Context) {
     function create() {
         let stan: (() => any) | undefined = undefined;
         if (type === "Walker") stan = walkingFromPointToPoint;
+        if (type === "Stander") stan = Standing;
 
-        console.log(punkty)
         const npc = context.map.add([
             game.pos(punkty[0]),
             game.timer(),
@@ -71,22 +89,33 @@ export function createNPC(context: Context) {
             game.tile(),
             game.agent({ speed: 150, allowDiagonals: false }),
             "NonUI",
-            "NPC"
+            "NPC",
+            game.sentry({ include: "DeadBody" }, {
+            lineOfSight: true,
+            raycastExclude: ["npc"],
+            fieldOfView: 100
+        })
         ])
 
-        const decorationInst: GameObj<SpriteComp>[] = []
+        npc.onObjectsSpotted(game.debug.log)
+
+
 
         
-        for (const clothe of outfit) {
-            if (clothe === null) continue;
-            decorationInst.push(npc.add([
-                game.sprite(clothe),
-                game.anchor("center")
-            ]))
-        }
+        const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
-            spawnDeadNpc(context, npc.pos)
+            spawnDeadNpc(
+                context, 
+                npc.pos, 
+                outfit
+            )
+            if(isTarget) onTargetKilled(npc) 
+                if(isTarget === true){
+                    game.debug.log("Target killed");
+                }else{
+                    game.debug.log("Non-Target Killed");
+                }
             npc.destroy()
         })
 
@@ -107,10 +136,14 @@ export function createNPC(context: Context) {
 
         function setFrame(frame: number) {
             npc.frame = frame;
-            decorationInst.forEach((d) => d.frame = frame)
+            outfitSprites.forEach((d) => d.frame = frame)
         }
 
         function doNothing() {
+            setFrame(1);
+        }
+
+        function Standing(){
             setFrame(1);
         }
 
@@ -133,10 +166,28 @@ export function createNPC(context: Context) {
         function Collision() {
             setFrame(1);
         }
+        function detectedDeadBody(){
+            setFrame(2);
+        }
 
-        if(isTarget) setTargetForGame(context, outfit)
+        
+
+        if(isTarget) setTargetForGame(context, npc, outfit)
+
+
 
         npc.onUpdate(() => {
+
+            const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
+            for(const element of deadBodies){
+                if (npc.hasLineOfSight(element)){
+                    stan = detectedDeadBody;
+                    game.debug.log("sda")
+                }
+            }
+             {
+            }
+
             ifTargetedBounceColor()
             if (stan !== undefined) stan()
 

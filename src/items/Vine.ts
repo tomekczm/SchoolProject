@@ -23,15 +23,14 @@ export const wine: Item = {
             createBloodPool(ctx, ctx.player.pos);
             ctx.inventory.consume();
             ctx.player.frame = 0;
-        });
+            ctx.game.debug.log("Zużyłeś wino");
+        })
         clr = clear;
     },
     onUnequip: function (ctx: Context): void {
-        clr?.();
-        ctx.player.frame = 0;
-        clr = undefined;
-    },
-    create: function (ctx: Context, pos: Vec2): void {
-        // This item does not have a specific creation behavior in the game world.
+       clr?.();
+       ctx.player.frame = 0;
+       
+       clr = undefined;
     }
 }

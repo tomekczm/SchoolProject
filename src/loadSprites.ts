@@ -29,6 +29,7 @@ export async function loadSprites(game: KAPLAYCtx) {
         loadSpriteAsync(game, "KNIFE_ICON-highlighted", "sprites/KNIFE_ICON-highlighted.png", { sliceX: 2 }),
         loadSpriteAsync(game, "EMPTY", "sprites/EMPTY_IMAGE.png"),
         loadSpriteAsync(game, "TARGET", "sprites/target-frame.png"),
+        loadSpriteAsync(game, "TARGET_DEAD", "sprites/target-frame-x.png"),
         loadSpriteAsync(game, "Wooden_Planks", "sprites/Planks.png"),
         loadSpriteAsync(game, "Wall", "sprites/Wall.png"),
         loadSpriteAsync(game, "NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO),
