@@ -2,6 +2,7 @@
 import { KAPLAYCtx } from "kaplay";
 import { Context } from "../main";
 import { createNPC } from "../entities/npc";
+import { knife } from "../items/Knife";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -61,5 +62,9 @@ export function testMap(context: Context) {
     npc2.setTarget(true)
     npc2.setType("Walker")
     npc2.create()
+
+    knife.create(context, new game.Vec2(200, 200))
     return map
+
+
 }

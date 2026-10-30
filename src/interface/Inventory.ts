@@ -75,14 +75,22 @@ export async function Inventory(ctx: Context) {
             icons[idx].frame = 0;
         }
     }
-
     function consume() {
         if(slotEquipped !== undefined) setSlot(slotEquipped, undefined)
     }
-    setSlot(0, knife)
-    setSlot(1, wine)
+    function dropEquipped() {
+        if(slotEquipped === undefined) return;
+
+        const equippedSlot = slotEquipped;
+        const equippedItem = items[equippedSlot];
+        slotEquipped = undefined;
+        slots[equippedSlot].frame = 0;
+        setSlot(equippedSlot, undefined);
+        equippedItem?.onUnequip(ctx);
+    }
     return {
         setSlot,
-        consume
+        consume,
+        dropEquipped
     }
 }
