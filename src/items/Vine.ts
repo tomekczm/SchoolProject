@@ -22,12 +22,14 @@ export const wine: Item = {
             createBloodPool(ctx, ctx.player.pos)
             ctx.inventory.consume()
             ctx.player.frame = 0;
+            ctx.game.debug.log("Zużyłeś wino");
         })
         clr = clear;
     },
     onUnequip: function (ctx: Context): void {
        clr?.();
        ctx.player.frame = 0;
+       
        clr = undefined;
     }
 }
