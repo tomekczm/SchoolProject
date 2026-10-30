@@ -12,7 +12,7 @@ export const knife: Item = {
         ctx.player.frame = 1;
         clear?.();
         const killButton = await KillButton(ctx);
-        const dropButton = await InterfaceButton(ctx, 200);
+        const dropButton = await InterfaceButton(ctx, 400);
         dropButton.enable();
         dropButton.text.frame = 3;
         dropButton.background.onClick(() => {
@@ -37,7 +37,7 @@ export const knife: Item = {
             game.pos(pos),
             game.anchor("center"),
             game.area(),
-            game.z(2),
+            game.z(0),
             "Pickup",
         ]);
 
