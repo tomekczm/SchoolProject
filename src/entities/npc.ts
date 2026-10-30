@@ -55,10 +55,11 @@ export function createNPC(context: Context) {
         alreadyCreatedOutfits.push(outfit)
         return outfit;
     }
-//punkty, typy, targety
+    //punkty, typy, targety
     let punkty: Array<Vec2> = []
     let isTarget = false;
     let type: string = "Walker";
+    let wasNearBody = false;
 
     function setPoints(newPunkty: Array<Vec2>) {
         punkty = newPunkty;
@@ -91,36 +92,36 @@ export function createNPC(context: Context) {
             "NonUI",
             "NPC",
             game.sentry({ include: "DeadBody" }, {
-            lineOfSight: true,
-            raycastExclude: ["npc"],
-            fieldOfView: 100
-        })
+                lineOfSight: true,
+                raycastExclude: ["npc", "Player"],
+                fieldOfView: 360,
+            })
         ])
 
         npc.onObjectsSpotted(game.debug.log)
 
 
 
-        
+
         const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
             spawnDeadNpc(
-                context, 
-                npc.pos, 
+                context,
+                npc.pos,
                 outfit
             )
-            if(isTarget) onTargetKilled(npc) 
-                if(isTarget === true){
-                    game.debug.log("Target killed");
-                }else{
-                    game.debug.log("Non-Target Killed");
-                }
+            if (isTarget) onTargetKilled(npc)
+            if (isTarget === true) {
+                game.debug.log("Target killed");
+            } else {
+                game.debug.log("Non-Target Killed");
+            }
             npc.destroy()
         })
 
         //kolor czerwony na npc jak mozna go zabic yoyoyoyoyoyyoyo
-        
+
         function ifTargetedBounceColor() {
             if (npc.is("Focused")) { // Dodane przez Tomasz Czarnecki
                 const ANIMATION_SPEED = 2;
@@ -143,7 +144,7 @@ export function createNPC(context: Context) {
             setFrame(1);
         }
 
-        function Standing(){
+        function Standing() {
             setFrame(1);
         }
 
@@ -163,35 +164,54 @@ export function createNPC(context: Context) {
             }
 
         }
+
         function Collision() {
             setFrame(1);
         }
-        function detectedDeadBody(){
-            setFrame(2);
+        // ucieczka do wybranego miejsca, pozniej to w map dodamy ten punkt
+        function runAway() {
+            const destination = game.vec2(79, 375);
+            setFrame(0)
+            npc.moveTo(destination, speedNpc);
+            if (npc.pos.dist(destination) == 0) {
+                game.debug.log("Am safe from Palestine")
+                stan = doNothing;
+            }
         }
 
-        
+        function detectedDeadBody() {
+            game.debug.log("Npc saw a dead body and is running away");
+            stan = runAway;
+        }
 
-        if(isTarget) setTargetForGame(context, npc, outfit)
+
+
+        if (isTarget) setTargetForGame(context, npc, outfit)
 
 
 
         npc.onUpdate(() => {
 
             const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
-            for(const element of deadBodies){
-                if (npc.hasLineOfSight(element)){
-                    stan = detectedDeadBody;
-                    game.debug.log("sda")
-                }
-            }
-             {
-            }
+            const isNearBody = deadBodies.some(
+                (element) => npc.pos.dist(element.pos) < 100
+            );
+
 
             ifTargetedBounceColor()
             if (stan !== undefined) stan()
 
+            if (isNearBody && !wasNearBody) {
+                detectedDeadBody();
+            }
+            wasNearBody = isNearBody;
+
+
+
             if (npc.isColliding(context.player)) {
+                if (type === "Stander") {
+                    return
+                }
                 stan = Collision;
                 npc.wait(2, () => {
                     if (stan != Collision) return
