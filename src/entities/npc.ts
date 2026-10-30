@@ -168,12 +168,11 @@ export function createNPC(context: Context) {
         function Collision() {
             setFrame(1);
         }
-        // ucieczka do wybranego miejsca, pozniej to w map dodamy ten punkt
+        
         function runAway() {
-            const destination = game.vec2(79, 375);
             setFrame(0)
-            npc.moveTo(destination, speedNpc);
-            if (npc.pos.dist(destination) == 0) {
+            npc.moveTo(punkty[1], speedNpc);
+            if (npc.pos.dist(punkty[1]) == 0) {
                 game.debug.log("Am safe from Palestine")
                 stan = doNothing;
             }
@@ -192,6 +191,11 @@ export function createNPC(context: Context) {
 
         npc.onUpdate(() => {
 
+             /*
+                to gowno sentry nie działa, narazie npc widzi przez sciany ale moze
+                to sie pozniej naprawi albo gre sie zbuduje pod ta mechanike, *dzwieki*
+                !!!!!!!!!!!!! trzeba zrobic globalny punkt ale mi sie juz nie chce
+            */ 
             const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
             const isNearBody = deadBodies.some(
                 (element) => npc.pos.dist(element.pos) < 100

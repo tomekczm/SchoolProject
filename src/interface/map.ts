@@ -73,6 +73,7 @@ export function testMap(context: Context) {
     const npc3 = createNPC(context);
     npc3.setPoints([
         new game.Vec2(200, 280),
+        new game.Vec2(79, 375)
     ])
     npc3.setOutfitToRandom()
     npc3.setTarget(false)
