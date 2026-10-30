@@ -1,5 +1,7 @@
 import { Context } from "../main";
 
+export function onTargetKilled() {}
+
 // odliczanie czasu
 export function setTargetForGame(ctx: Context, clothes: (string | null)[]) {
     const background = ctx.game.add([

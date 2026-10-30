@@ -4,14 +4,31 @@ import { Game, GameObj, KAPLAYCtx, SpriteComp, Vec2 } from "kaplay";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
-import { setTargetForGame } from "./target";
+import { onTargetKilled, setTargetForGame } from "./target";
 
-export const alreadyCreatedOutfits: (string | null)[][] = [];
+
+export type NpcOutfit = (string | null)[];
+
+export const alreadyCreatedOutfits: NpcOutfit[] = [];
 
 export const ACCESSORIUMS = [
     ["beanie"],
     ["mustache"]
 ]
+
+// Tomasz
+export function dressUpNpc(ctx: Context, npc: GameObj<SpriteComp>, outfit: NpcOutfit) {
+    const decorationInst: GameObj<SpriteComp>[] = []
+    const game = ctx.game;
+    for (const clothe of outfit) {
+        if (clothe === null) continue;
+        decorationInst.push(npc.add([
+            game.sprite(clothe),
+            game.anchor("center")
+        ]))
+    }
+    return decorationInst;
+}
 
 export function createNPC(context: Context) {
 
@@ -58,7 +75,6 @@ export function createNPC(context: Context) {
         let stan: (() => any) | undefined = undefined;
         if (type === "Walker") stan = walkingFromPointToPoint;
 
-        console.log(punkty)
         const npc = context.map.add([
             game.pos(punkty[0]),
             game.timer(),
@@ -74,19 +90,18 @@ export function createNPC(context: Context) {
             "NPC"
         ])
 
-        const decorationInst: GameObj<SpriteComp>[] = []
+
 
         
-        for (const clothe of outfit) {
-            if (clothe === null) continue;
-            decorationInst.push(npc.add([
-                game.sprite(clothe),
-                game.anchor("center")
-            ]))
-        }
+        const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
-            spawnDeadNpc(context, npc.pos)
+            spawnDeadNpc(
+                context, 
+                npc.pos, 
+                outfit
+            )
+            if(isTarget) onTargetKilled() 
             npc.destroy()
         })
 
@@ -107,7 +122,7 @@ export function createNPC(context: Context) {
 
         function setFrame(frame: number) {
             npc.frame = frame;
-            decorationInst.forEach((d) => d.frame = frame)
+            outfitSprites.forEach((d) => d.frame = frame)
         }
 
         function doNothing() {
