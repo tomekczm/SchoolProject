@@ -9,6 +9,7 @@ export const game = kaplay();
 await loadSprites(game)
 
 export type Context = {
+    inventory: Awaited<ReturnType<typeof Inventory>>;
     game: KAPLAYCtx
     map: GameObj<PosComp | LevelComp>,
     player: ReturnType<typeof addPlayer>
@@ -32,11 +33,11 @@ game.scene("menu", () => {
         game.go("testMapScene");
     });
 });
-game.scene("testMapScene", () => {
+game.scene("testMapScene", async () => {
     context.map = testMap(context);
     context.player = addPlayer(context);
 
-    Inventory(context);
+    context.inventory = await Inventory(context);
 });
 
 game.go("testMapScene"); // Change to menu for menu scene when implemented

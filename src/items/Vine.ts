@@ -20,9 +20,9 @@ export const wine: Item = {
         background.onClick(() => {
             clr?.();
             createBloodPool(ctx, ctx.player.pos)
+            ctx.inventory.consume()
             ctx.player.frame = 0;
         })
-
         clr = clear;
     },
     onUnequip: function (ctx: Context): void {

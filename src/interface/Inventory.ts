@@ -1,16 +1,19 @@
-import { AnchorComp, Color, GameObj, KAPLAYCtx, Key, SpriteComp, SpriteData, TweenController, Vec2 } from "kaplay";
+import { AnchorComp, AreaComp, Color, ColorComp, FixedComp, GameObj, KAPLAYCtx, Key, PosComp, ScaleComp, SpriteComp, SpriteData, TimerComp, TweenController, Vec2 } from "kaplay";
 import { Context } from "../main";
 import { UIHoverEffect } from "../effects/UIHover";
 import { knife } from "../items/Knife";
 import { Item } from "../items/Item";
 import { wine } from "../items/Vine";
 
+type Slot = GameObj<SpriteComp | AnchorComp | PosComp | ScaleComp | FixedComp | TimerComp | AreaComp | ColorComp>;
+type Icon = GameObj<SpriteComp | AnchorComp>;
+
 export async function Inventory(ctx: Context) {
     const { game } = ctx;
     let offset = 100;
-    let slots = []
-    let items: Item[] = []
-    let icons: GameObj<SpriteComp | AnchorComp>[] = []
+    let slots: Slot[] = []
+    let items: (Item | undefined)[] = []
+    let icons: Icon[] = []
     let slotEquipped: number | undefined = undefined;
 
     const keyMap: Key[] = ['1', '2', '3', '4', '5', '6']
@@ -61,14 +64,25 @@ export async function Inventory(ctx: Context) {
         })
     }
 
-    function setSlot(idx: number, item: Item) {
-        items[idx] = item;
-        icons[idx].sprite = item.icon;
-        icons[idx].frame = item.iconFrame;
+    function setSlot(idx: number, item: Item | undefined) {
+        if(item !== undefined) {
+            items[idx] = item;
+            icons[idx].sprite = item.icon;
+            icons[idx].frame = item.iconFrame;
+        } else {
+            items[idx] = undefined;
+            icons[idx].sprite = "EMPTY";
+            icons[idx].frame = 0;
+        }
+    }
+
+    function consume() {
+        if(slotEquipped !== undefined) setSlot(slotEquipped, undefined)
     }
     setSlot(0, knife)
     setSlot(1, wine)
     return {
-        
+        setSlot,
+        consume
     }
 }
