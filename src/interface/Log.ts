@@ -22,7 +22,7 @@ export function addLogger(ctx: Context) {
         const list = Array.from(messages).reverse()
         for(const message of list) {
             message.pos = game.vec2(0,y)
-            y-= outlineWidth + textSize;
+            y -= outlineWidth + textSize;
         }
     }
     function Log(
@@ -52,7 +52,8 @@ export function addLogger(ctx: Context) {
                 1,
                 0,
                 1.0,
-                (p) => message.opacity = p
+                (p) => message.opacity = p,
+                game.easings.easeOutCubic
             )
         })
 
