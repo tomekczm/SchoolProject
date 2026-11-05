@@ -60,9 +60,15 @@ export function createNPC(context: Context) {
     let isTarget = false;
     let type: string = "Walker";
     let wasNearBody = false;
+    let wasNearBlood = false;
+    let role = "Runner";
+    const safePlace = game.vec2(80,375);
 
     function setPoints(newPunkty: Array<Vec2>) {
         punkty = newPunkty;
+    }
+    function setRole(newRole: string) {
+        role = newRole;
     }
 
     function setType(newType: string) {
@@ -171,8 +177,8 @@ export function createNPC(context: Context) {
         
         function runAway() {
             setFrame(0)
-            npc.moveTo(punkty[1], speedNpc);
-            if (npc.pos.dist(punkty[1]) == 0) {
+            npc.moveTo(safePlace, speedNpc);
+            if (npc.pos.dist(safePlace) == 0) {
                 game.debug.log("Am safe from Palestine")
                 stan = doNothing;
             }
@@ -180,7 +186,14 @@ export function createNPC(context: Context) {
 
         function detectedDeadBody() {
             game.debug.log("Npc saw a dead body and is running away");
-            stan = runAway;
+            if(role === "Runner"){
+                stan = runAway;
+            }
+            
+            
+        }
+        function detectedBloodSplit(){
+            game.debug.log("Npc saw blood split")
         }
 
 
@@ -210,6 +223,14 @@ export function createNPC(context: Context) {
             }
             wasNearBody = isNearBody;
 
+            const BloodSplatt = context.map.get("Blood") as GameObj<PosComp>[]
+            const isNearBlood = BloodSplatt.some(
+                (element) => npc.pos.dist(element.pos) < 100
+            );
+             if (isNearBlood && !wasNearBlood) {
+                detectedBloodSplit();
+            }
+            wasNearBlood = isNearBlood;
 
 
             if (npc.isColliding(context.player)) {
@@ -244,7 +265,8 @@ export function createNPC(context: Context) {
         setType,
         setTarget,
         setOutfitToRandom,
-        create
+        create,
+        setRole
     };
     // dodajemy wampira ktory wyssa kfrew zabbije targeta, bedzie target vampir ktory musi wypic wino z cozsnkiem by umrzec
 }

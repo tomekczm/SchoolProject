@@ -79,6 +79,7 @@ export function testMap(context: Context) {
     npc3.setTarget(false)
     npc3.setType("Stander")
     npc3.create()
+    npc3.setRole("Runner")
     return map
 
 
