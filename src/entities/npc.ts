@@ -23,6 +23,7 @@ export function dressUpNpc(ctx: Context, npc: GameObj<SpriteComp>, outfit: NpcOu
     const game = ctx.game;
     for (const clothe of outfit) {
         if (clothe === null) continue;
+        // @ts-ignore
         decorationInst.push(npc.add([
             game.sprite(clothe),
             game.anchor("center")
@@ -108,8 +109,8 @@ export function createNPC(context: Context) {
 
 
 
-
-        const outfitSprites = dressUpNpc(context, npc, outfit);
+        //@ts-ignore
+        const outfitSprites = dressUpNpc(context,  npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
             spawnDeadNpc(
@@ -207,7 +208,6 @@ export function createNPC(context: Context) {
              /*
                 to gowno sentry nie działa, narazie npc widzi przez sciany ale moze
                 to sie pozniej naprawi albo gre sie zbuduje pod ta mechanike, *dzwieki*
-                !!!!!!!!!!!!! trzeba zrobic globalny punkt ale mi sie juz nie chce
             */ 
             const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
             const isNearBody = deadBodies.some(
