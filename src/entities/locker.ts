@@ -16,7 +16,7 @@ export const createLocker = (ctx: Context, pos: any) => {
     locker.onUpdate(() => {
         const isPlayerNearby = locker.pos.dist(ctx.player.pos) <= USE_RANGE;
 
-        if (!isPlayerNearby) {
+        if (!isPlayerNearby || playerInLocker) {
             locker.use(game.sprite("Locker", { frame: 0 }));
             return;
         }
