@@ -5,14 +5,19 @@ import { Inventory } from "./interface/Inventory";
 import { loadSprites } from "./loadSprites";
 import { createNPC } from "./entities/npc";
 import { addLogger } from "./interface/Log";
-export const game = kaplay();
+import { styledTextPlugin } from 'kaplay-plugin-text';
+
+
+export const game = kaplay({
+    plugins: [styledTextPlugin],
+});
 
 await loadSprites(game)
 
 export type Context = {
     logger: ReturnType<typeof  addLogger>;
     inventory: Awaited<ReturnType<typeof Inventory>>;
-    game: KAPLAYCtx
+    game: typeof game,
     map: GameObj<PosComp | LevelComp>,
     player: ReturnType<typeof addPlayer>
 }
@@ -41,7 +46,6 @@ game.scene("testMapScene", async () => {
 
     context.logger = addLogger(context)
     context.inventory = await Inventory(context);
-    context.logger.Log("aa")
 });
 
 game.go("testMapScene"); // Change to menu for menu scene when implemented

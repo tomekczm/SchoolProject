@@ -16,7 +16,7 @@ export async function createBloodPool(ctx: Context, pos: any) {
             game.pos(pos.add(offset)),
             game.color(255,0,0),
             game.anchor("center"),
-            game.z(1),
+            game.z(0),
             "NonUI",
             "Blood"
         ])
