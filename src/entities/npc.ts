@@ -6,6 +6,7 @@ import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
 import { onTargetKilled, setTargetForGame } from "./target";
+import { NpcDialogue } from "./NpcDialogue";
 
 
 export type NpcOutfit = (string | null)[];
@@ -97,6 +98,7 @@ export function createNPC(context: Context) {
             game.color(),
             game.anchor("center"),
             game.sprite("NPC_anim"),
+            NpcDialogue(context),
             game.z(1),
             game.tile(),
             game.agent({ speed: 150, allowDiagonals: false }),
