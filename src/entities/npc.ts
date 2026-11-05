@@ -63,8 +63,8 @@ export function createNPC(context: Context) {
     let wasNearBody = false;
     let wasNearBlood = false;
     let role = "Runner";
-    const safePlace = game.vec2(80,375);
-    let goToBlood = game.vec2(0,0);
+    const safePlace = game.vec2(80, 375);
+    let goToBlood = game.vec2(0, 0);
     let isbloodOrNot = false;
 
 
@@ -116,7 +116,7 @@ export function createNPC(context: Context) {
 
 
 
-        const outfitSprites = dressUpNpc(context,  npc, outfit);
+        const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
             spawnDeadNpc(
@@ -126,9 +126,9 @@ export function createNPC(context: Context) {
             )
             if (isTarget) onTargetKilled(npc)
             if (isTarget === true) {
-                game.debug.log("Target killed");
+                 context.logger.ImportantMessage("Target killed");
             } else {
-                game.debug.log("Non-Target Killed");
+                 context.logger.ImportantMessage("Non-Target Killed");
             }
             npc.destroy()
         })
@@ -181,51 +181,50 @@ export function createNPC(context: Context) {
         function Collision() {
             setFrame(1);
         }
-        
+
         function runAway() {
             setFrame(0)
             npc.moveTo(safePlace, speedNpc);
             if (npc.pos.dist(safePlace) == 0) {
-                game.debug.log("Am safe from Palestine")
+                 context.logger.ImportantMessage("Am safe from Palestine")
                 stan = doNothing;
             }
         }
 
         function detectedDeadBody() {
-            game.debug.log("Npc saw a dead body and is running away");
-            if(role === "Runner"){
+            context.logger.ImportantMessage("Npc saw a dead body and is running away");
+            if (role === "Runner") {
                 stan = runAway;
             }
-            
-        
-        
+
+
+
         }
-        function detectedBloodSplit(){
-            game.debug.log("Npc saw blood split")
+        function detectedBloodSplit() {
+            context.logger.ImportantMessage("Npc saw smth suspicious")
             stan = investigateBlood;
-            
+
         }
-        function investigateBlood(){
+        function investigateBlood() {
 
             npc.moveTo(goToBlood, speedNpc);
-                if (npc.pos.dist(goToBlood) == 0) {
-                game.debug.log("sss");
+            if (npc.pos.dist(goToBlood) == 0) {
                 stan = bloodOrNot;
-                            npc.wait(3, () => {
-                if(isbloodOrNot === true){
-                game.debug.log("omg to kref");
-            }else{
-                    game.debug.log("To wino");
-                stan = walkingFromPointToPoint;   
-            }
+                npc.wait(3, () => {
+                    if (isbloodOrNot === true) {
+                         context.logger.ImportantMessage("npc discover the Blood stain!");
+                    } else {
+                         context.logger.ImportantMessage("Npc recognize that it was only Wine");
+                        stan = walkingFromPointToPoint;
+                    }
 
-            })
+                })
             }
         }
-        function bloodOrNot(){
+        function bloodOrNot() {
             setFrame(1);
 
-            
+
         }
 
 
@@ -236,10 +235,10 @@ export function createNPC(context: Context) {
 
         npc.onUpdate(() => {
 
-             /*
-                to gowno sentry nie działa, narazie npc widzi przez sciany ale moze
-                to sie pozniej naprawi albo gre sie zbuduje pod ta mechanike, *dzwieki*
-            */ 
+            /*
+               to gowno sentry nie działa, narazie npc widzi przez sciany ale moze
+               to sie pozniej naprawi albo gre sie zbuduje pod ta mechanike, *dzwieki*
+           */
             const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
             const isNearBody = deadBodies.some(
                 (element) => npc.pos.dist(element.pos) < 100
@@ -258,10 +257,10 @@ export function createNPC(context: Context) {
             const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa 
                 (element) => npc.pos.dist(element.pos) < 100
             );
-            
+
 
             const isNearBlood = BloodNearby.length !== 0
-             if (isNearBlood && !wasNearBlood) {
+            if (isNearBlood && !wasNearBlood) {
                 goToBlood = game.vec2(BloodNearby[0].pos.x, BloodNearby[0].pos.y);
                 isbloodOrNot = BloodNearby[0].is("Blood");
                 detectedBloodSplit();
@@ -282,7 +281,7 @@ export function createNPC(context: Context) {
 
         })
 
-       return npc
+        return npc
     }
 
     function setOutfitToRandom() {

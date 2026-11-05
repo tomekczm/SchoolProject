@@ -23,7 +23,7 @@ export const wine: Item = {
             createBloodPool(ctx, ctx.player.pos, false);
             ctx.inventory.consume();
             ctx.player.frame = 0;
-            ctx.game.debug.log("Zużyłeś wino");
+            ctx.logger.Log("Zużyłeś wino");
         });
 
         const dropButton = await InterfaceButton(ctx, 400);

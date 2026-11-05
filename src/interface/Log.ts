@@ -9,7 +9,7 @@ export function addLogger(ctx: Context) {
     const game = ctx.game;
     const messages = new Set<Message>();
     const spawnPoint = map.add([
-        game.pos(game.center().add(game.vec2(0, -100))),
+        game.pos(game.center().add(game.vec2(0, -300))),
         game.fixed(),
         game.z(100)
     ])
