@@ -35,6 +35,7 @@ export async function loadSprites(game: KAPLAYCtx) {
         loadSpriteAsync(game, "NPC_anim", "sprites/Kirk_walking-sheet.png", SPRITE_GENERAL_INFO),
         loadSpriteAsync(game, "Blood", "sprites/BloodYes.png"),
         loadSpriteAsync(game, "Slot", "sprites/slot.png", { sliceX: 2 }),
+        loadSpriteAsync(game, "Locker", "sprites/locker-sheet.png", { sliceX: 2 }),
     ]
     for(const accessoriumLayer of ACCESSORIUMS) {
         for(const accessory of accessoriumLayer) {

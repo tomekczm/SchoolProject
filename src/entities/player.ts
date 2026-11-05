@@ -19,8 +19,10 @@ export function addPlayer(context: Context) {
         "NonUI",
         "Player"
     ])
-
     game.onCollideUpdate("Player", "NPC", (_, collidedWith, collision) => {
+        if (player.hidden) {
+            return;
+        }
         if(collision?.isBottom()) {
             player.move(0, -PUSH_SPEED)
         }
@@ -36,6 +38,7 @@ export function addPlayer(context: Context) {
     })
 
     game.onCollideUpdate("Player", "Wall", (_, collidedWith, collision) => {
+        if (player.hidden) return;
         if(collision?.isBottom()) {
             player.move(0, -PUSH_SPEED)
         }
@@ -51,6 +54,13 @@ export function addPlayer(context: Context) {
     })
 
     game.onUpdate(() => {
+        const smoothing = 1 - Math.exp(-6 * game.dt());
+        const targetScale = player.hidden ? 5 : 2.5;
+        game.setCamScale(
+            game.getCamScale().lerp(game.vec2(targetScale, targetScale), smoothing)
+        );
+
+        if (player.hidden) return;
         //player.rotateTo(player.pos.angle(game.toWorld(game.mousePos())))
         let motion = new game.Vec2(0,0)
         if(game.isKeyDown("d")) motion = motion.add(1, 0);

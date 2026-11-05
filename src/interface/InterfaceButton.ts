@@ -23,8 +23,12 @@ export async function InterfaceButton(context: Context, offsetY = 0) {
         game.shader("Grayscale", () => ({
             u_enabled: isEnabled ? 1 : 0
         })),
+        game.z(100),
         "UI"
     ])
+    background.onUpdate(() => {
+        background.hidden = context.player.hidden;
+    });
     
     const text = background.add([
         "UI",

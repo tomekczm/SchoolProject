@@ -16,6 +16,7 @@ export const knife: Item = {
         dropButton.enable();
         dropButton.text.frame = 3;
         dropButton.background.onClick(() => {
+            if (ctx.player.hidden) return;
             const dropPosition = ctx.game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
             void knife.create(ctx, dropPosition);
@@ -70,6 +71,7 @@ export const knife: Item = {
                 button.enable();
                 button.text.frame = 2;
                 button.background.onClick(() => {
+                    if (ctx.player.hidden) return;
                     pickupButton?.clear();
                     pickupButton = undefined;
                     ctx.inventory.setSlot(0, knife);

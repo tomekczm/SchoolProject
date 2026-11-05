@@ -5,11 +5,9 @@ import { Inventory } from "./interface/Inventory";
 import { loadSprites } from "./loadSprites";
 import { createNPC } from "./entities/npc";
 import { addLogger } from "./interface/Log";
-import { styledTextPlugin } from 'kaplay-plugin-text';
 
 
 export const game = kaplay({
-    plugins: [styledTextPlugin],
 });
 
 await loadSprites(game)

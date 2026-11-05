@@ -19,6 +19,7 @@ export const wine: Item = {
         useButton.text.frame = 1;
 
         useButton.background.onClick(() => {
+            if (ctx.player.hidden) return;
             clr?.();
             createBloodPool(ctx, ctx.player.pos);
             ctx.inventory.consume();
@@ -30,6 +31,7 @@ export const wine: Item = {
         dropButton.enable();
         dropButton.text.frame = 3;
         dropButton.background.onClick(() => {
+            if (ctx.player.hidden) return;
             const dropPosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
             void wine.create(ctx, dropPosition);
@@ -86,6 +88,7 @@ export const wine: Item = {
                 button.enable();
                 button.text.frame = 2;
                 button.background.onClick(() => {
+                    if (ctx.player.hidden) return;
                     pickupButton?.clear();
                     pickupButton = undefined;
                     ctx.inventory.setSlot(1, wine);

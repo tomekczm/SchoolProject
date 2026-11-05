@@ -28,6 +28,7 @@ export async function Inventory(ctx: Context) {
             game.timer(),
             game.area(),
             game.color(),
+            game.z(100),
         ])
         const icon = sprite.add([
             game.sprite("EMPTY", {
