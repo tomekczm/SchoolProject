@@ -65,6 +65,7 @@ export function createNPC(context: Context) {
     const safePlace = game.vec2(80, 375);
     let goToBlood = game.vec2(0, 0);
     let isbloodOrNot = false;
+    let checkedSplits = new Set();
 
 
 
@@ -213,7 +214,9 @@ export function createNPC(context: Context) {
                          context.logger.ImportantMessage("npc discover the Blood stain!");
                     } else {
                          context.logger.ImportantMessage("Npc recognize that it was only Wine");
+                      
                         stan = walkingFromPointToPoint;
+
                     }
 
                 })
@@ -253,7 +256,7 @@ export function createNPC(context: Context) {
 
             const BloodSplatt = context.map.get("Stain") as GameObj<PosComp>[]
             const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa 
-                (element) => npc.pos.dist(element.pos) < 100
+                (element) => npc.pos.dist(element.pos) < 100 && !checkedSplits.has(element)
             );
 
 
@@ -261,6 +264,7 @@ export function createNPC(context: Context) {
             if (isNearBlood && !wasNearBlood) {
                 goToBlood = game.vec2(BloodNearby[0].pos.x, BloodNearby[0].pos.y);
                 isbloodOrNot = BloodNearby[0].is("Blood");
+                checkedSplits.add(BloodNearby[0])
                 detectedBloodSplit();
             }
             wasNearBlood = isNearBlood;
