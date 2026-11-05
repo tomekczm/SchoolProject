@@ -11,6 +11,7 @@ export async function KillButton(context: Context) {
     const game = context.game;
     const { background, enable, text, clear } = await InterfaceButton(context);
     enable();
+    background.hidden = true;
 
     const player = context.player;
     let targetedNpc: GameObj | undefined = undefined 
@@ -32,6 +33,7 @@ export async function KillButton(context: Context) {
             targetedNpc?.untag("Focused")
             targetedNpc = undefined;
         }
+        background.hidden = !targetFound;
         text.frame = 0;
     })
 
