@@ -20,7 +20,7 @@ export const wine: Item = {
 
         useButton.background.onClick(() => {
             clr?.();
-            createBloodPool(ctx, ctx.player.pos);
+            createBloodPool(ctx, ctx.player.pos, false);
             ctx.inventory.consume();
             ctx.player.frame = 0;
             ctx.game.debug.log("Zużyłeś wino");
