@@ -2,6 +2,8 @@
 import { KAPLAYCtx } from "kaplay";
 import { Context } from "../main";
 import { createNPC } from "../entities/npc";
+import { knife } from "../items/Knife";
+import { wine } from "../items/Vine";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -65,13 +67,19 @@ export function testMap(context: Context) {
     npc2.setTarget(true)
     npc2.setType("Walker")
     npc2.create()
+
+    knife.create(context, new game.Vec2(200, 200));
+    wine.create(context, new game.Vec2(500,200));
     const npc3 = createNPC(context);
     npc3.setPoints([
         new game.Vec2(200, 280),
+        new game.Vec2(79, 375)
     ])
     npc3.setOutfitToRandom()
     npc3.setTarget(false)
     npc3.setType("Stander")
     npc3.create()
     return map
+
+
 }

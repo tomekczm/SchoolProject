@@ -9,7 +9,8 @@ const KNIFE_DISTANCE = 100;
 
 export async function KillButton(context: Context) {
     const game = context.game;
-    const { background, enable, disable, text, clear } = await InterfaceButton(context);
+    const { background, enable, text, clear } = await InterfaceButton(context);
+    enable();
 
     const player = context.player;
     let targetedNpc: GameObj | undefined = undefined 
@@ -31,8 +32,7 @@ export async function KillButton(context: Context) {
             targetedNpc?.untag("Focused")
             targetedNpc = undefined;
         }
-        if(targetedNpc !== undefined) enable() 
-            else disable()
+        text.frame = 0;
     })
 
     background.onClick(() => {

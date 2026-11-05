@@ -2,11 +2,11 @@ import { Context } from "../main";
 import { UIHoverEffect } from "../effects/UIHover";
 import { loadSpriteAsync } from "../loadSprites";
 
-export async function InterfaceButton(context: Context) {
+export async function InterfaceButton(context: Context, offsetY = 0) {
     const game = context.game;
     const backgroundSprite = await loadSpriteAsync(game, "KILL_BACKGROUND", "sprites/KILL_BACKGROUND.png");
     game.loadSprite("KILL_TEXT", "sprites/BUTTON_TEXTS.png", {
-        sliceX: 2
+        sliceX: 4
     });
 
     const BASE_BACKGROUND_SCALE = 3.0;
@@ -17,7 +17,7 @@ export async function InterfaceButton(context: Context) {
         game.sprite("KILL_BACKGROUND"), 
         game.anchor("center"),
         game.fixed(),
-        game.pos(game.width()-150,game.height()-75),
+        game.pos(game.width()-150,game.height()-75-offsetY),
         game.area(),
         game.timer(),
         game.shader("Grayscale", () => ({
@@ -51,7 +51,6 @@ export async function InterfaceButton(context: Context) {
     return {
         background, text, enable, disable, clear() {
             background.destroy();
-            text.destroy()
         }
     }
 }

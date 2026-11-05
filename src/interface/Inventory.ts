@@ -65,24 +65,44 @@ export async function Inventory(ctx: Context) {
     }
 
     function setSlot(idx: number, item: Item | undefined) {
+        const previouslySelectedSlot = slotEquipped;
+        const selectedSlotWasEmpty = previouslySelectedSlot !== undefined && items[previouslySelectedSlot] === undefined;
+
         if(item !== undefined) {
             items[idx] = item;
             icons[idx].sprite = item.icon;
             icons[idx].frame = item.iconFrame;
+
+            if(selectedSlotWasEmpty) {
+                if(previouslySelectedSlot !== idx && previouslySelectedSlot !== undefined) {
+                    slots[previouslySelectedSlot].frame = 0;
+                }
+                slotEquipped = idx;
+                slots[idx].frame = 1;
+                item.onEquip(ctx);
+            }
         } else {
             items[idx] = undefined;
             icons[idx].sprite = "EMPTY";
             icons[idx].frame = 0;
         }
     }
-
     function consume() {
         if(slotEquipped !== undefined) setSlot(slotEquipped, undefined)
     }
-    setSlot(0, knife)
-    setSlot(1, wine)
+    function dropEquipped() {
+        if(slotEquipped === undefined) return;
+
+        const equippedSlot = slotEquipped;
+        const equippedItem = items[equippedSlot];
+        slotEquipped = undefined;
+        slots[equippedSlot].frame = 0;
+        setSlot(equippedSlot, undefined);
+        equippedItem?.onUnequip(ctx);
+    }
     return {
         setSlot,
-        consume
+        consume,
+        dropEquipped
     }
 }
