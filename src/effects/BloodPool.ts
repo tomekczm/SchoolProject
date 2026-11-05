@@ -20,6 +20,7 @@ export async function createBloodPool(ctx: Context, pos: any, isReal = true) {
             game.anchor("center"),
             game.z(0),
             "NonUI",
+            "Stain",
             tag
         ])
         game.tween(

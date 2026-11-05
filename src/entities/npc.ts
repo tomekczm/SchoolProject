@@ -207,20 +207,22 @@ export function createNPC(context: Context) {
             game.debug.log("Npc is checking the stain");
             npc.moveTo(goToBlood, speedNpc);
                 if (npc.pos.dist(goToBlood) == 0) {
-                game.debug.log("Npc is checking the stain");
+                game.debug.log("sss");
                 stan = bloodOrNot;
             }
         }
         function bloodOrNot(){
-            if(isbloodOrNot === true){
+            setFrame(1);
+            npc.wait(3, () => {
+                if(isbloodOrNot === true){
                 game.debug.log("omg to kref");
             }else{
-                npc.wait(3, () => {
                     game.debug.log("To wino");
-                    
-                })     
                 stan = walkingFromPointToPoint;   
             }
+
+            })
+            
         }
 
 
@@ -249,7 +251,7 @@ export function createNPC(context: Context) {
             }
             wasNearBody = isNearBody;
 
-            const BloodSplatt = context.map.get("Blood") as GameObj<PosComp>[]
+            const BloodSplatt = context.map.get("Stain") as GameObj<PosComp>[]
             const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa 
                 (element) => npc.pos.dist(element.pos) < 100
             );
