@@ -11,7 +11,8 @@ export function NpcDialogue(
             const zis = this as unknown as GameObj
             zis.add([
                 game.rect(16,16),
-                game.outline(2, game.rgb(255,255,255))
+                game.anchor("center"),
+                game.outline(2, game.rgb(0,0,0)),
             ])
         }
     }
