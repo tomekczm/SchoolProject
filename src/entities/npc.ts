@@ -215,8 +215,11 @@ export function createNPC(context: Context) {
             if(isbloodOrNot === true){
                 game.debug.log("omg to kref");
             }else{
-                game.debug.log("To wino");
-                stan = walkingFromPointToPoint;
+                npc.wait(3, () => {
+                    game.debug.log("To wino");
+                    
+                })     
+                stan = walkingFromPointToPoint;   
             }
         }
 
@@ -274,6 +277,7 @@ export function createNPC(context: Context) {
 
         })
 
+       return npc
     }
 
     function setOutfitToRandom() {
