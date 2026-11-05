@@ -204,16 +204,12 @@ export function createNPC(context: Context) {
             
         }
         function investigateBlood(){
-            game.debug.log("Npc is checking the stain");
+
             npc.moveTo(goToBlood, speedNpc);
                 if (npc.pos.dist(goToBlood) == 0) {
                 game.debug.log("sss");
                 stan = bloodOrNot;
-            }
-        }
-        function bloodOrNot(){
-            setFrame(1);
-            npc.wait(3, () => {
+                            npc.wait(3, () => {
                 if(isbloodOrNot === true){
                 game.debug.log("omg to kref");
             }else{
@@ -222,6 +218,11 @@ export function createNPC(context: Context) {
             }
 
             })
+            }
+        }
+        function bloodOrNot(){
+            setFrame(1);
+
             
         }
 
