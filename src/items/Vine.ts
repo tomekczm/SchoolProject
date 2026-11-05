@@ -21,10 +21,10 @@ export const wine: Item = {
         useButton.background.onClick(() => {
             if (ctx.player.hidden) return;
             clr?.();
-            createBloodPool(ctx, ctx.player.pos);
+            createBloodPool(ctx, ctx.player.pos, false);
             ctx.inventory.consume();
             ctx.player.frame = 0;
-            ctx.game.debug.log("Zużyłeś wino");
+            ctx.logger.Log("Zużyłeś wino");
         });
 
         const dropButton = await InterfaceButton(ctx, 400);

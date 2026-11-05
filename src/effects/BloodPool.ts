@@ -1,10 +1,12 @@
 import { KAPLAYCtx, Vec2 } from "kaplay";
 import { Context } from "../main";
 
-export async function createBloodPool(ctx: Context, pos: any) {
+export async function createBloodPool(ctx: Context, pos: any, isReal = true) {
     let scale = 30;
     const game = ctx.game
     let count = game.randi(4) + 1;
+
+    const tag = isReal ? "Blood" : "FakeBlood"
 
     for(let i = 0; i < count; i++) {
         let offX = game.rand(10, 25);
@@ -18,7 +20,8 @@ export async function createBloodPool(ctx: Context, pos: any) {
             game.anchor("center"),
             game.z(0),
             "NonUI",
-            "Blood"
+            "Stain",
+            tag
         ])
         game.tween(
             0, scale, 5 + div,
