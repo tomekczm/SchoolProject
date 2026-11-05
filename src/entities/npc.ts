@@ -23,7 +23,6 @@ export function dressUpNpc(ctx: Context, npc: GameObj<SpriteComp>, outfit: NpcOu
     const game = ctx.game;
     for (const clothe of outfit) {
         if (clothe === null) continue;
-        // @ts-ignore
         decorationInst.push(npc.add([
             game.sprite(clothe),
             game.anchor("center")
@@ -64,6 +63,11 @@ export function createNPC(context: Context) {
     let wasNearBlood = false;
     let role = "Runner";
     const safePlace = game.vec2(80,375);
+    let goToBlood = game.vec2(0,0);
+    let isbloodOrNot = false;
+
+
+
 
     function setPoints(newPunkty: Array<Vec2>) {
         punkty = newPunkty;
@@ -109,7 +113,7 @@ export function createNPC(context: Context) {
 
 
 
-        //@ts-ignore
+
         const outfitSprites = dressUpNpc(context,  npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
@@ -191,10 +195,32 @@ export function createNPC(context: Context) {
                 stan = runAway;
             }
             
-            
+        
+        
         }
         function detectedBloodSplit(){
             game.debug.log("Npc saw blood split")
+            stan = investigateBlood;
+            
+        }
+        function investigateBlood(){
+            game.debug.log("Npc is checking the stain");
+            npc.moveTo(goToBlood, speedNpc);
+                if (npc.pos.dist(goToBlood) == 0) {
+                game.debug.log("Npc is checking the stain");
+                stan = bloodOrNot;
+            }
+        }
+        function bloodOrNot(){
+            if(isbloodOrNot === true){
+                game.debug.log("omg to kref");
+            }else{
+                npc.wait(3, () => {
+                    game.debug.log("To wino");
+                    
+                })     
+                stan = walkingFromPointToPoint;   
+            }
         }
 
 
@@ -224,10 +250,15 @@ export function createNPC(context: Context) {
             wasNearBody = isNearBody;
 
             const BloodSplatt = context.map.get("Blood") as GameObj<PosComp>[]
-            const isNearBlood = BloodSplatt.some(
+            const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa 
                 (element) => npc.pos.dist(element.pos) < 100
             );
+            
+
+            const isNearBlood = BloodNearby.length !== 0
              if (isNearBlood && !wasNearBlood) {
+                goToBlood = game.vec2(BloodNearby[0].pos.x, BloodNearby[0].pos.y);
+                isbloodOrNot = BloodNearby[0].is("Blood");
                 detectedBloodSplit();
             }
             wasNearBlood = isNearBlood;
@@ -246,6 +277,7 @@ export function createNPC(context: Context) {
 
         })
 
+       return npc
     }
 
     function setOutfitToRandom() {
