@@ -4,6 +4,7 @@ import { Context } from "../main";
 import { createNPC } from "../entities/npc";
 import { knife } from "../items/Knife";
 import { wine } from "../items/Vine";
+import { createLocker } from "../entities/locker";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -80,6 +81,7 @@ export function testMap(context: Context) {
     npc3.setType("Stander")
     npc3.create()
     npc3.setRole("Runner")
+    createLocker(context, new game.Vec2(350, 300))
     return map
 
 

@@ -16,6 +16,13 @@ export async function KillButton(context: Context) {
     const player = context.player;
     let targetedNpc: GameObj | undefined = undefined 
     background.onUpdate(() => {
+        if (player.hidden) {
+            targetedNpc?.untag("Focused");
+            targetedNpc = undefined;
+            background.hidden = true;
+            return;
+        }
+
         let targetFound = false
         for (const npc of context.map.get("NPC")) {
             const pos: Vec2 = npc.pos;
@@ -39,7 +46,7 @@ export async function KillButton(context: Context) {
 
     background.onClick(() => {
 
-        if(!targetedNpc) return;
+        if (player.hidden || !targetedNpc) return;
         ScreenShake(game)
         createBloodSplatter(game, targetedNpc.pos)
         createBloodPool(context, targetedNpc.pos)
