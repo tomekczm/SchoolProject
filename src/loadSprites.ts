@@ -25,8 +25,8 @@ export async function loadSprites(game: KAPLAYCtx) {
     
     const spriteLoads = [
         loadSpriteAsync(game, "Panda", "sprites/player.png", { sliceX: 3 }),
-        loadSpriteAsync(game, "KNIFE_ICON", "sprites/KNIFE_ICON.png", { sliceX: 2 }),
-        loadSpriteAsync(game, "KNIFE_ICON-highlighted", "sprites/KNIFE_ICON-highlighted.png", { sliceX: 2 }),
+        loadSpriteAsync(game, "KNIFE_ICON", "sprites/KNIFE_ICON.png", { sliceX: 3 }),
+        loadSpriteAsync(game, "KNIFE_ICON-highlighted", "sprites/KNIFE_ICON-highlighted.png", { sliceX: 3 }),
         loadSpriteAsync(game, "EMPTY", "sprites/EMPTY_IMAGE.png"),
         loadSpriteAsync(game, "TARGET", "sprites/target-frame.png"),
         loadSpriteAsync(game, "TARGET_DEAD", "sprites/target-frame-x.png"),
@@ -36,6 +36,8 @@ export async function loadSprites(game: KAPLAYCtx) {
         loadSpriteAsync(game, "Blood", "sprites/BloodYes.png"),
         loadSpriteAsync(game, "Slot", "sprites/slot.png", { sliceX: 2 }),
         loadSpriteAsync(game, "Locker", "sprites/locker-sheet.png", { sliceX: 2 }),
+        loadSpriteAsync(game, "Table", "sprites/table.png"),
+        loadSpriteAsync(game, "Wine_Entity", "sprites/wine-entity.png", { sliceX: 3 }),
     ]
     for(const accessoriumLayer of ACCESSORIUMS) {
         for(const accessory of accessoriumLayer) {
