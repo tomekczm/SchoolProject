@@ -69,7 +69,7 @@ export function createNPC(context: Context) {
     let checkedSplits = new Set();
     
 
-
+    //powodzenia Panie Lopko :)
 
 
 
@@ -188,7 +188,8 @@ export function createNPC(context: Context) {
 
         function runAway() {
             //move to
-
+            debugger;
+            console.log(safePlace)
             npc.setTarget(safePlace);
             if (npc.pos.dist(safePlace) == 0) {
                 npc.destroy;
