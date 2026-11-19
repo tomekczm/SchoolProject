@@ -9,6 +9,7 @@ export function addLogger(ctx: Context, scale = 1, spawnPointArg?: GameObj<PosCo
     let outlineWidth = 4
     const game = ctx.game;
     const messages = new Set<Message>();
+
     const spawnPoint = spawnPointArg ?? game.add([
         game.pos(game.center().add(game.vec2(0, -300))),
         game.fixed(),

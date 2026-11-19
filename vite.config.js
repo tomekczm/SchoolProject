@@ -13,6 +13,16 @@ const kaplayCongrats = () => {
     };
 };
 
+const reloadOnCodeChange = () => ({
+    name: "reload-on-code-change",
+    handleHotUpdate({ file, server }) {
+        if (/\.(?:[cm]?[jt]sx?|css)$/.test(file)) {
+            server.ws.send({ type: "full-reload" });
+            return [];
+        }
+    },
+});
+
 export default defineConfig({
     // index.html out file will start with a relative path for script
     base: "./",
@@ -35,6 +45,7 @@ export default defineConfig({
         },
     },
     plugins: [
+        reloadOnCodeChange(),
         // Disable messages removing this line
         kaplayCongrats(),
     ],
