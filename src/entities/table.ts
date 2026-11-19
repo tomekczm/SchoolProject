@@ -1,5 +1,7 @@
 import { Vec2 } from "kaplay";
 import { Context } from "../main";
+import { wine } from "../items/Vine";
+import { InterfaceButton } from "../interface/InterfaceButton";
 
 const WINE_HIGHLIGHT_RANGE = 80;
 
@@ -14,26 +16,84 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
         "Table",
     ]);
 
-    if (hasWine) {
-        const wineGlass = ctx.map.add([
+    let wineGlass: ReturnType<typeof addWineGlass> | undefined;
+
+    function addWineGlass() {
+        const glass = ctx.map.add([
             game.sprite("Wine_Entity"),
             game.pos(pos),
             game.z(5),
             "WineGlass",
         ]);
+        let pickupButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
+        let isCreatingButton = false;
 
-        wineGlass.onUpdate(() => {
-            if (wineGlass.is("Poisoned")) {
-                wineGlass.frame = 2;
+        glass.onUpdate(() => {
+            const isPoisoned = glass.is("Poisoned");
+            const isPlayerNearby =
+                !ctx.player.hidden &&
+                glass.pos.dist(ctx.player.pos) <= WINE_HIGHLIGHT_RANGE;
+            glass.frame = glass.is("Poisoned") ? 2 : isPlayerNearby ? 1 : 0;
+
+            if (!isPlayerNearby || isPoisoned) {
+                pickupButton?.clear();
+                pickupButton = undefined;
                 return;
             }
 
-            const isPlayerNearby =
-                !ctx.player.hidden &&
-                wineGlass.pos.dist(ctx.player.pos) <= WINE_HIGHLIGHT_RANGE;
-            wineGlass.frame = isPlayerNearby ? 1 : 0;
+            if (pickupButton || isCreatingButton) return;
+            isCreatingButton = true;
+
+            void InterfaceButton(ctx, 200).then((button) => {
+                if (
+                    ctx.player.hidden ||
+                    glass.pos.dist(ctx.player.pos) > WINE_HIGHLIGHT_RANGE
+                ) {
+                    button.clear();
+                    return;
+                }
+
+                pickupButton = button;
+                button.enable();
+                button.text.frame = 2;
+                button.background.onClick(() => {
+                    if (
+                        ctx.player.hidden ||
+                        glass.pos.dist(ctx.player.pos) > WINE_HIGHLIGHT_RANGE ||
+                        ctx.inventory.isEquipped(wine)
+                    ) {
+                        return;
+                    }
+                    pickupButton?.clear();
+                    pickupButton = undefined;
+                    ctx.inventory.setSlot(1, wine);
+                    glass.destroy();
+                    if (wineGlass === glass) wineGlass = undefined;
+                });
+            }).finally(() => {
+                isCreatingButton = false;
+            });
         });
+
+        return glass;
     }
+
+    if (hasWine) wineGlass = addWineGlass();
+
+    game.onKeyPress("e", () => {
+        if (
+            ctx.player.hidden ||
+            wineGlass ||
+            !ctx.inventory.isEquipped(wine) ||
+            table.pos.dist(ctx.player.pos) > WINE_HIGHLIGHT_RANGE
+        ) {
+            return;
+        }
+
+        wine.onUnequip(ctx);
+        ctx.inventory.consume();
+        wineGlass = addWineGlass();
+    });
 
     return table;
 }

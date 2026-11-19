@@ -42,7 +42,6 @@ game.scene("menu", () => {
 });
 game.scene("testMapScene", async () => {
     context.map = testMap(context);
-    context.player = addPlayer(context);
 
     context.logger = addLogger(context)
     context.inventory = await Inventory(context);
