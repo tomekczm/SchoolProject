@@ -33,8 +33,6 @@ export type Globals = typeof globals;
 makeNPC(game,globals, [
         new game.Vec2(80, 200),
         new game.Vec2(400, 200),
-        new game.Vec2(400, 80),
-        new game.Vec2(80, 80),
     ], [
         new game.Vec2(500,250),
     ],
