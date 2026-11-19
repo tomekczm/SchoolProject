@@ -2,6 +2,7 @@ import { AnchorComp, GameObj, OutlineComp, PosComp, RectComp, RotateComp } from 
 import { Context } from "../main";
 import { addLogger } from "../interface/Log";
 
+type NpcDialogue = ReturnType<typeof NpcDialogue>
 export function NpcDialogue(
     ctx: Context
 ) {
@@ -18,21 +19,31 @@ export function NpcDialogue(
                 game.z(100)
             ])
             logger = addLogger(ctx, 16, 4, mountPoint);
-            /*
             background = zis.add([
-                game.rect(32,32),
-                game.pos(0,-25),
-                game.anchor(
-                    game.vec2(0,1)
-                ),
-                game.outline(2, game.rgb(0,0,0)),
+                game.rect(8,8),
+                game.pos(0,0),
+                game.anchor("center"),
+                game.outline(1, game.rgb(0,0,0)),
                 game.rotate(0),
-                game.opacity(0)
+                game.z(100)
             ])
-                */
+            zis.add([
+                game.pos(3,5),
+                game.styledText("F", {
+                    size: 64,
+                    fill: game.rgb(255,255,255),
+                    outline: {
+                        width: 10,
+                        color: game.rgb(0,0,0)
+                    }                    
+                }),
+                game.scale(0.25),
+                game.anchor("center"),
+                game.z(101)
+            ])
         },
         update() {
-            
+            background.angle += 1
         },
         getLogger() {
             return logger;

@@ -112,7 +112,7 @@ export function createNPC(context: Context) {
             })
         ])
         npc.onObjectsSpotted(game.debug.log)
-
+        npc.setTarget(game.vec2(0,0))
 
 
 
