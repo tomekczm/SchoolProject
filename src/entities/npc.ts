@@ -96,7 +96,9 @@ export function createNPC(context: Context) {
         const npc = context.map.add([
             game.pos(punkty[0]),
             game.timer(),
-            game.area(),
+            game.area({
+                scale: 0.5,
+            }),
             game.body(),
             game.color(),
             game.anchor("center"),
@@ -117,8 +119,8 @@ export function createNPC(context: Context) {
             })
         ])
 
-        if (type === "Walker" && punkty.length > 1) npc.setTarget(punkty[1])
-        npc.onObjectsSpotted(game.debug.log)
+        if (reaction === "Runner" && punkty.length > 1) npc.setTarget(punkty[0])
+            //tomek nie badz zly D;
         const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
@@ -166,7 +168,7 @@ export function createNPC(context: Context) {
 
         function walkingFromPointToPoint() {
             setFrame(0)
-            //npc.moveTo(punkty[punkt], speedNpc);
+            npc.moveTo(punkty[punkt], speedNpc);
             if (npc.pos.dist(punkty[punkt]) == 0) {
                 stan = doNothing;
                 npc.wait(2, () => {
@@ -185,24 +187,24 @@ export function createNPC(context: Context) {
             setFrame(1);
         }
 
+        // poprawiony runAway bo byly lagi 
         function runAway() {
-            //move to
-
-            npc.setTarget(safePlace);
-            if (npc.pos.dist(safePlace) == 0) {
-                npc.destroy;
+            if (npc.pos.dist(safePlace) < 8) {
+                npc.destroy();
             }
+        }
+
+        function startRunningAway() {
+            stan = runAway;
+            npc.setTarget(safePlace);
         }
 
         function detectedDeadBody() {
             context.logger.ImportantMessage("Npc saw a dead body");
 
-            if(reaction === "Runner"){
-            stan = runAway;
+            if (reaction === "Runner") {
+                startRunningAway();
             }
-
-
-
         }
         function detectedBloodSplit() {
             context.logger.ImportantMessage("Npc saw smth suspicious")
@@ -211,13 +213,13 @@ export function createNPC(context: Context) {
 
         }
         function investigateBlood() {
-            //npc.moveTo(goToBlood, speedNpc);
+            npc.moveTo(goToBlood, speedNpc);
             if (npc.pos.dist(goToBlood) == 0) {
                 stan = bloodOrNot;
                 npc.wait(3, () => {
                     if (isbloodOrNot === true) {
                         context.logger.ImportantMessage("npc discover the Blood stain!");
-                        stan = runAway;
+                        startRunningAway();
                     } else {
                         context.logger.ImportantMessage("Npc recognize that it was only Wine");
 

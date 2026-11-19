@@ -94,6 +94,9 @@ export function testMap(context: Context) {
     npc3.setType("Stander")
     npc3.setReaction("Runner")
     npc3.create()
+
+
+    
     createLocker(context, new game.Vec2(350, 300));
     createTable(context, new game.Vec2(600, 300), true);
     return map
