@@ -1,15 +1,24 @@
-import { AnchorComp, GameObj, OutlineComp, RectComp, RotateComp } from "kaplay";
+import { AnchorComp, GameObj, OutlineComp, PosComp, RectComp, RotateComp } from "kaplay";
 import { Context } from "../main";
+import { addLogger } from "../interface/Log";
 
 export function NpcDialogue(
     ctx: Context
 ) {
     const game = ctx.game
     let background: GameObj<RectComp | AnchorComp | OutlineComp | RotateComp>;
+    let logger: ReturnType<typeof addLogger>;
     return {
         id: "NpcDialogue",
         add() {
-            const zis = this as unknown as GameObj
+            const zis = this as unknown as GameObj<PosComp>
+            const mountPoint = zis.add([
+                game.pos(7, -25),
+                game.anchor("center"),
+                game.z(100)
+            ])
+            logger = addLogger(ctx, 16, 4, mountPoint);
+            /*
             background = zis.add([
                 game.rect(32,32),
                 game.pos(0,-25),
@@ -20,20 +29,13 @@ export function NpcDialogue(
                 game.rotate(0),
                 game.opacity(0)
             ])
+                */
         },
         update() {
             
         },
-        say(s: string) {
-            const zis = this as unknown as GameObj
-            zis.add([
-                game.styledText(s, {
-                    fill: game.rgb(0,0,0),
-                    size: 16,
-                }),
-                game.anchor("center"),
-                game.pos(0,-20)
-            ])
+        getLogger() {
+            return logger;
         }
     }
 }
