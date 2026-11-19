@@ -18,14 +18,18 @@ export default defineConfig({
     base: "./",
     server: {
         port: 3001,
+        sourcemapIgnoreList: false,
+    },
+    optimizeDeps: {
+        exclude: ["kaplay"],
     },
     build: {
         // disable this for low bundle sizes
         sourcemap: true,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    kaplay: ["kaplay"],
+                manualChunks(id) {
+                    if (id.includes("/node_modules/kaplay/")) return "kaplay";
                 },
             },
         },
