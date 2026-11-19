@@ -38,24 +38,33 @@ export function createNPC(context: Context) {
     const { game } = context
     let outfit: (string | null)[] = [];
 
-    function generateOutfit() { //dodał, tomasz Czarnecki losowy outfit akcesorie
-        let outfit = []
-        for (const accesoriums of ACCESSORIUMS) {
-            let rand = game.randi(0, accesoriums.length + 1)
-            if (rand === 0) {
-                outfit.push(null)
-                continue;
-            };
-            const accessory = accesoriums[rand - 1]
-            outfit.push(accessory)
-        }
-        for (const pastOutfit of alreadyCreatedOutfits) {
-            if (pastOutfit?.every((v, i) => v === outfit[i])) return generateOutfit()
-        }
+    function generateOutfit(): NpcOutfit {
+    const possibleOutfits = ACCESSORIUMS.reduce<NpcOutfit[]>(
+        (outfits, accessories) =>
+            outfits.flatMap((outfit) =>
+                [null, ...accessories].map((accessory) => [...outfit, accessory])
+            ),
+        [[]]
+    );
 
-        alreadyCreatedOutfits.push(outfit)
-        return outfit;
-    }
+    const unusedOutfits = possibleOutfits.filter(
+        (candidate) =>
+            !alreadyCreatedOutfits.some(
+                (past) =>
+                    past.length === candidate.length &&
+                    past.every((item, index) => item === candidate[index])
+            )
+    );
+
+    const choices = unusedOutfits.length > 0 ? unusedOutfits : possibleOutfits;
+    const outfit = choices[game.randi(0, choices.length)];
+
+    alreadyCreatedOutfits.push(outfit);
+    return outfit;
+}
+
+
+
     //punkty, typy, targety
     let punkty: Array<Vec2> = []
     let isTarget = false;
@@ -98,6 +107,7 @@ export function createNPC(context: Context) {
             game.timer(),
             game.area({
                 scale: 0.5,
+                collisionIgnore: ["NPC"]
             }),
             game.body(),
             game.color(),
@@ -112,15 +122,11 @@ export function createNPC(context: Context) {
             }),
             "NonUI",
             "NPC",
-            game.sentry({ include: "DeadBody" }, {
-                lineOfSight: true,
-                raycastExclude: ["npc", "Player"],
-                fieldOfView: 360,
-            })
+            
         ])
 
         if (reaction === "Runner" && punkty.length > 1) npc.setTarget(punkty[0])
-            //tomek nie badz zly D;
+        //tomek nie badz zly D;
         const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
@@ -131,7 +137,7 @@ export function createNPC(context: Context) {
             )
             if (isTarget) onTargetKilled(npc)
             if (isTarget === true) {
-              context.logger.ImportantMessage("Target killed");
+                context.logger.ImportantMessage("Target killed");
             } else {
                 context.logger.ImportantMessage("Non-Target Killed");
             }
@@ -201,7 +207,7 @@ export function createNPC(context: Context) {
 
         function detectedDeadBody() {
             context.logger.ImportantMessage("Npc saw a dead body");
-
+            npc.getLogger().Log("O boże to ciało!");
             if (reaction === "Runner") {
                 startRunningAway();
             }
@@ -209,6 +215,7 @@ export function createNPC(context: Context) {
         function detectedBloodSplit() {
             context.logger.ImportantMessage("Npc saw smth suspicious")
             stan = investigateBlood;
+            
 
 
         }
@@ -219,10 +226,10 @@ export function createNPC(context: Context) {
                 npc.wait(3, () => {
                     if (isbloodOrNot === true) {
                         context.logger.ImportantMessage("npc discover the Blood stain!");
+                        npc.getLogger().Log("To krew!!!!");
                         startRunningAway();
                     } else {
-                        context.logger.ImportantMessage("Npc recognize that it was only Wine");
-
+                        npc.getLogger().Log("To tylko plama po winie");
                         stan = walkingFromPointToPoint;
 
                     }
@@ -245,7 +252,7 @@ export function createNPC(context: Context) {
            */
             const deadBodies = context.map.get("DeadBody") as GameObj<PosComp>[]
             const isNearBody = deadBodies.some(
-                (element) => npc.pos.dist(element.pos) < 100
+                (element) => npc.pos.dist(element.pos) < 250
             );
 
 
@@ -259,7 +266,7 @@ export function createNPC(context: Context) {
 
             const BloodSplatt = context.map.get("Stain") as GameObj<PosComp>[]
             const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa
-                (element) => npc.pos.dist(element.pos) < 100 && !checkedSplits.has(element)
+                (element) => npc.pos.dist(element.pos) < 250 && !checkedSplits.has(element)
             );
 
 

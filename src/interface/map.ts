@@ -95,8 +95,28 @@ export function testMap(context: Context) {
     npc3.setReaction("Runner")
     npc3.create()
 
+    const npc4 = createNPC(context);
+    npc4.setPoints([
+        new game.Vec2(237, 149),
+        new game.Vec2(871, 149),
+    ])
+    npc4.setOutfitToRandom()
+    npc4.setTarget(false)
+    npc4.setType("Walker")
+    npc4.setReaction("Runner")
+    npc4.create()
 
-    
+    const npc5 = createNPC(context);
+    npc5.setPoints([
+        new game.Vec2(99, 283),
+        new game.Vec2(299, 283),
+    ])
+    npc5.setOutfitToRandom()
+    npc5.setTarget(false)
+    npc5.setType("Stander")
+    npc5.setReaction("Runner")
+    npc5.create()
+
     createLocker(context, new game.Vec2(350, 300));
     createTable(context, new game.Vec2(600, 300), true);
     return map
