@@ -4,13 +4,15 @@ import { StyledTextComp } from "kaplay-plugin-text";
 
 type Message = GameObj<PosComp | AnchorComp | StyledTextComp>;
 
-export function addLogger(ctx: Context, textSize = 32, outlineWidth = 4, spawnPointArg?: GameObj<PosComp>) {
+export function addLogger(ctx: Context, scale = 1, spawnPointArg?: GameObj<PosComp>) {
+    let textSize = 32
+    let outlineWidth = 4
     const game = ctx.game;
     const messages = new Set<Message>();
     const spawnPoint = spawnPointArg ?? game.add([
         game.pos(game.center().add(game.vec2(0, -300))),
         game.fixed(),
-        game.z(100)
+        game.z(100),
     ])
 
     function updateList() {
@@ -18,11 +20,11 @@ export function addLogger(ctx: Context, textSize = 32, outlineWidth = 4, spawnPo
         const list = Array.from(messages).reverse()
         for(const message of list) {
             message.pos = game.vec2(0,y)
-            y -= outlineWidth + textSize;
+            y -= outlineWidth + textSize * scale;
         }
     }
     function Log(
-        text: string, 
+        text: string,
         fill=game.rgb(255, 255, 255),
         outlineColor=game.rgb(0,0,0),
     ) {
@@ -37,6 +39,7 @@ export function addLogger(ctx: Context, textSize = 32, outlineWidth = 4, spawnPo
             }),
             game.anchor("center"),
             game.pos(),
+            game.scale(scale),
             game.opacity(1)
         ])
 

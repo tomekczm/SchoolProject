@@ -13,11 +13,11 @@ export function NpcDialogue(
         add() {
             const zis = this as unknown as GameObj<PosComp>
             const mountPoint = zis.add([
-                game.pos(7, -25),
+                game.pos(3, -25),
                 game.anchor("center"),
                 game.z(100)
             ])
-            logger = addLogger(ctx, 10, 1, mountPoint);
+            logger = addLogger(ctx, 0.35, mountPoint);
             /*
             background = zis.add([
                 game.rect(32,32),
@@ -32,7 +32,7 @@ export function NpcDialogue(
                 */
         },
         update() {
-            
+
         },
         getLogger() {
             return logger;

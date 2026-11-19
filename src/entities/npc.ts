@@ -119,9 +119,6 @@ export function createNPC(context: Context) {
 
         if (type === "Walker" && punkty.length > 1) npc.setTarget(punkty[1])
         npc.onObjectsSpotted(game.debug.log)
-
-
-
         const outfitSprites = dressUpNpc(context, npc, outfit);
 
         npc.on("Killed", () => { // Dodane przez Tomasz Czarnecki
@@ -132,7 +129,7 @@ export function createNPC(context: Context) {
             )
             if (isTarget) onTargetKilled(npc)
             if (isTarget === true) {
-                context.logger.ImportantMessage("Target killed");
+              context.logger.ImportantMessage("Target killed");
             } else {
                 context.logger.ImportantMessage("Non-Target Killed");
             }
