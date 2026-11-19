@@ -111,7 +111,6 @@ export function createNPC(context: Context) {
                 fieldOfView: 360,
             })
         ])
-        npc.say("dasdasd")
         npc.onObjectsSpotted(game.debug.log)
 
 
