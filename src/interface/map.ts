@@ -5,6 +5,8 @@ import { createNPC } from "../entities/npc";
 import { knife } from "../items/Knife";
 import { wine } from "../items/Vine";
 import { createLocker } from "../entities/locker";
+import { createTable } from "../entities/table";
+import { poison } from "../items/Poison";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -70,7 +72,8 @@ export function testMap(context: Context) {
     npc2.create()
 
     knife.create(context, new game.Vec2(200, 200));
-    wine.create(context, new game.Vec2(500,200));
+    wine.create(context, new game.Vec2(300, 200));
+    poison.create(context, new game.Vec2(700, 300));
     const npc3 = createNPC(context);
     npc3.setPoints([
         new game.Vec2(200, 280),
@@ -81,7 +84,8 @@ export function testMap(context: Context) {
     npc3.setType("Stander")
     npc3.create()
     npc3.setRole("Runner")
-    createLocker(context, new game.Vec2(350, 300))
+    createLocker(context, new game.Vec2(350, 300));
+    createTable(context, new game.Vec2(600, 300), true);
     return map
 
 
