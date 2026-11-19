@@ -111,9 +111,8 @@ export function createNPC(context: Context) {
                 fieldOfView: 360,
             })
         ])
-        npc.say("dasdasd")
         npc.onObjectsSpotted(game.debug.log)
-
+        npc.setTarget(game.vec2(0,0))
 
 
 
@@ -127,9 +126,9 @@ export function createNPC(context: Context) {
             )
             if (isTarget) onTargetKilled(npc)
             if (isTarget === true) {
-                 context.logger.ImportantMessage("Target killed");
+                context.logger.ImportantMessage("Target killed");
             } else {
-                 context.logger.ImportantMessage("Non-Target Killed");
+                context.logger.ImportantMessage("Non-Target Killed");
             }
             npc.destroy()
         })
@@ -187,16 +186,15 @@ export function createNPC(context: Context) {
             setFrame(0)
             npc.moveTo(safePlace, speedNpc);
             if (npc.pos.dist(safePlace) == 0) {
-                 context.logger.ImportantMessage("Am safe from Palestine")
+                context.logger.ImportantMessage("Am safe from Palestine")
                 stan = doNothing;
             }
         }
 
         function detectedDeadBody() {
             context.logger.ImportantMessage("Npc saw a dead body and is running away");
-            if (role === "Runner") {
-                stan = runAway;
-            }
+            stan = runAway;
+
 
 
 
@@ -205,18 +203,19 @@ export function createNPC(context: Context) {
             context.logger.ImportantMessage("Npc saw smth suspicious")
             stan = investigateBlood;
 
+
         }
         function investigateBlood() {
-
             npc.moveTo(goToBlood, speedNpc);
             if (npc.pos.dist(goToBlood) == 0) {
                 stan = bloodOrNot;
                 npc.wait(3, () => {
                     if (isbloodOrNot === true) {
-                         context.logger.ImportantMessage("npc discover the Blood stain!");
+                        context.logger.ImportantMessage("npc discover the Blood stain!");
+                        stan = runAway;
                     } else {
-                         context.logger.ImportantMessage("Npc recognize that it was only Wine");
-                      
+                        context.logger.ImportantMessage("Npc recognize that it was only Wine");
+
                         stan = walkingFromPointToPoint;
 
                     }
@@ -230,12 +229,7 @@ export function createNPC(context: Context) {
 
         }
 
-
-
         if (isTarget) setTargetForGame(context, npc, outfit)
-
-
-
         npc.onUpdate(() => {
 
             /*
@@ -264,10 +258,15 @@ export function createNPC(context: Context) {
 
             const isNearBlood = BloodNearby.length !== 0
             if (isNearBlood && !wasNearBlood) {
-                goToBlood = game.vec2(BloodNearby[0].pos.x, BloodNearby[0].pos.y);
-                isbloodOrNot = BloodNearby[0].is("Blood");
-                checkedSplits.add(BloodNearby[0])
-                detectedBloodSplit();
+                if (stan === runAway) {
+                    stan = runAway;
+                } else if (stan !== runAway) {
+                    goToBlood = game.vec2(BloodNearby[0].pos.x, BloodNearby[0].pos.y);
+                    isbloodOrNot = BloodNearby[0].is("Blood");
+                    checkedSplits.add(BloodNearby[0])
+                    detectedBloodSplit();
+                }
+
             }
             wasNearBlood = isNearBlood;
 
@@ -284,7 +283,7 @@ export function createNPC(context: Context) {
             }
 
         })
-
+        //npc.getLogger();
         return npc
     }
 
