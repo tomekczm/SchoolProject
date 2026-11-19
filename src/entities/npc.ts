@@ -117,7 +117,6 @@ export function createNPC(context: Context) {
             })
         ])
         npc.onObjectsSpotted(game.debug.log)
-        //const path = nav.getPath(npc.pos, safePlace);
 
 
 
@@ -189,7 +188,8 @@ export function createNPC(context: Context) {
 
         function runAway() {
             //move to
-            npc.moveTo(safePlace, speedNpc);
+
+            npc.setTarget(safePlace);
             if (npc.pos.dist(safePlace) == 0) {
                 npc.destroy;
             }
@@ -197,7 +197,7 @@ export function createNPC(context: Context) {
 
         function detectedDeadBody() {
             context.logger.ImportantMessage("Npc saw a dead body");
-            npc.getLogger().ImportantMessage("Boze to cialo, uciekam");
+
             if(reaction === "Runner"){
             stan = runAway;
             }
