@@ -2,6 +2,7 @@
 import { KAPLAYCtx } from "kaplay";
 import { Context } from "../main";
 import { createNPC } from "../entities/npc";
+import { addPlayer } from "../entities/player";
 import { knife } from "../items/Knife";
 import { wine } from "../items/Vine";
 import { createLocker } from "../entities/locker";
@@ -50,6 +51,7 @@ export function testMap(context: Context) {
         }
     })
     context.map = map
+    context.player = addPlayer(context)
     const npc1 = createNPC(context);
     npc1.setPoints([
             new game.Vec2(80, 200),
@@ -72,7 +74,7 @@ export function testMap(context: Context) {
     npc2.create()
 
     knife.create(context, new game.Vec2(200, 200));
-    wine.create(context, new game.Vec2(300, 200));
+    //wine.create(context, new game.Vec2(300, 200));
     poison.create(context, new game.Vec2(700, 300));
     const npc3 = createNPC(context);
     npc3.setPoints([

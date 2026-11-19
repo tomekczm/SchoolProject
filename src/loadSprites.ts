@@ -25,8 +25,8 @@ export async function loadSprites(game: KAPLAYCtx) {
     
     const spriteLoads = [
         loadSpriteAsync(game, "Panda", "sprites/player.png", { sliceX: 3 }),
-        loadSpriteAsync(game, "KNIFE_ICON", "sprites/KNIFE_ICON.png", { sliceX: 3 }),
-        loadSpriteAsync(game, "KNIFE_ICON-highlighted", "sprites/KNIFE_ICON-highlighted.png", { sliceX: 3 }),
+        loadSpriteAsync(game, "KNIFE_ICON", "sprites/KNIFE_ICON.png", { sliceX: 4 }),
+        loadSpriteAsync(game, "KNIFE_ICON-highlighted", "sprites/KNIFE_ICON-highlighted.png", { sliceX: 4 }),
         loadSpriteAsync(game, "EMPTY", "sprites/EMPTY_IMAGE.png"),
         loadSpriteAsync(game, "TARGET", "sprites/target-frame.png"),
         loadSpriteAsync(game, "TARGET_DEAD", "sprites/target-frame-x.png"),

@@ -101,9 +101,13 @@ export async function Inventory(ctx: Context) {
         setSlot(equippedSlot, undefined);
         equippedItem?.onUnequip(ctx);
     }
+    function isEquipped(item: Item) {
+        return slotEquipped !== undefined && items[slotEquipped] === item;
+    }
     return {
         setSlot,
         consume,
-        dropEquipped
+        dropEquipped,
+        isEquipped
     }
 }
