@@ -17,7 +17,7 @@ export function NpcDialogue(
                 game.anchor("center"),
                 game.z(100)
             ])
-            logger = addLogger(ctx, 16, 4, mountPoint);
+            logger = addLogger(ctx, 10, 1, mountPoint);
             /*
             background = zis.add([
                 game.rect(32,32),

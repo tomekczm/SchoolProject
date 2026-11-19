@@ -16,24 +16,32 @@ export function testMap(context: Context) {
     )
 
     const map = game.addLevel([
-        "===========================",
-        "=                         =",
-        "=                         =",
-        "=                         =",
-        "=                         =",
-        "=           =             =",
-        "=           =             =",
-        "=           =             =",
-        "=           =             =",
-        "=           =             =",
-        "=           =             =",
-        "=           =             =",
-        "=           =             =",
-        "===========================",
+        "=====================================",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "===         =========================",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=                                   =",
+        "=====================================",
 
     ], {
         tileHeight: 32,
         tileWidth: 32,
+        
         tiles: {
             " ": () => [
                 game.z(-100),
@@ -42,7 +50,7 @@ export function testMap(context: Context) {
             "=": () => [
                 game.sprite("Wall"),
                 game.area(),
-                //game.body({ isStatic: true }),
+                game.body({ isStatic: true }),
                 game.tile({ isObstacle: true }),
                 game.z(4),
                 "Wall"
@@ -53,8 +61,8 @@ export function testMap(context: Context) {
     const npc1 = createNPC(context);
     npc1.setPoints([
             new game.Vec2(80, 200),
-            new game.Vec2(400, 200),
-            new game.Vec2(400, 80),
+            new game.Vec2(300, 200),
+            new game.Vec2(300, 80),
             new game.Vec2(80, 80),
     ])
     npc1.setOutfitToRandom()
@@ -82,8 +90,8 @@ export function testMap(context: Context) {
     npc3.setOutfitToRandom()
     npc3.setTarget(false)
     npc3.setType("Stander")
+    npc3.setReaction("Runner")
     npc3.create()
-    npc3.setRole("Runner")
     createLocker(context, new game.Vec2(350, 300));
     createTable(context, new game.Vec2(600, 300), true);
     return map

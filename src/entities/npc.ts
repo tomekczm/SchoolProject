@@ -62,11 +62,13 @@ export function createNPC(context: Context) {
     let type: string = "Walker";
     let wasNearBody = false;
     let wasNearBlood = false;
-    let role = "Runner";
-    const safePlace = game.vec2(80, 375);
+    let reaction = "Runner";
+    const safePlace = game.vec2(1030, 564);
     let goToBlood = game.vec2(0, 0);
     let isbloodOrNot = false;
     let checkedSplits = new Set();
+    
+
 
 
 
@@ -74,8 +76,8 @@ export function createNPC(context: Context) {
     function setPoints(newPunkty: Array<Vec2>) {
         punkty = newPunkty;
     }
-    function setRole(newRole: string) {
-        role = newRole;
+    function setReaction(newReaction: string) {
+        reaction = newReaction;
     }
 
     function setType(newType: string) {
@@ -102,7 +104,10 @@ export function createNPC(context: Context) {
             NpcDialogue(context),
             game.z(1),
             game.tile(),
-            game.agent({ speed: 150, allowDiagonals: false }),
+            game.agent({
+                speed: speedNpc,
+                allowDiagonals: false,
+            }),
             "NonUI",
             "NPC",
             game.sentry({ include: "DeadBody" }, {
@@ -112,7 +117,7 @@ export function createNPC(context: Context) {
             })
         ])
         npc.onObjectsSpotted(game.debug.log)
-
+        //const path = nav.getPath(npc.pos, safePlace);
 
 
 
@@ -183,18 +188,19 @@ export function createNPC(context: Context) {
         }
 
         function runAway() {
-            setFrame(0)
+            //move to
             npc.moveTo(safePlace, speedNpc);
             if (npc.pos.dist(safePlace) == 0) {
-                context.logger.ImportantMessage("Am safe from Palestine")
-                stan = doNothing;
+                npc.destroy;
             }
         }
 
         function detectedDeadBody() {
-            context.logger.ImportantMessage("Npc saw a dead body and is running away");
+            context.logger.ImportantMessage("Npc saw a dead body");
+            npc.getLogger().ImportantMessage("Boze to cialo, uciekam");
+            if(reaction === "Runner"){
             stan = runAway;
-
+            }
 
 
 
@@ -305,7 +311,7 @@ export function createNPC(context: Context) {
         setTarget,
         setOutfitToRandom,
         create,
-        setRole
+        setReaction
     };
     // dodajemy wampira ktory wyssa kfrew zabbije targeta, bedzie target vampir ktory musi wypic wino z cozsnkiem by umrzec
 }
