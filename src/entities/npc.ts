@@ -67,7 +67,7 @@ export function createNPC(context: Context) {
     let goToBlood = game.vec2(0, 0);
     let isbloodOrNot = false;
     let checkedSplits = new Set();
-    
+
 
 
 
@@ -87,7 +87,7 @@ export function createNPC(context: Context) {
         isTarget = newTarget;
     }
 
-    //tworzenie npc 
+    //tworzenie npc
     function create() {
         let stan: (() => any) | undefined = undefined;
         if (type === "Walker") stan = walkingFromPointToPoint;
@@ -116,6 +116,8 @@ export function createNPC(context: Context) {
                 fieldOfView: 360,
             })
         ])
+
+        if (type === "Walker" && punkty.length > 1) npc.setTarget(punkty[1])
         npc.onObjectsSpotted(game.debug.log)
 
 
@@ -167,7 +169,7 @@ export function createNPC(context: Context) {
 
         function walkingFromPointToPoint() {
             setFrame(0)
-            npc.moveTo(punkty[punkt], speedNpc);
+            //npc.moveTo(punkty[punkt], speedNpc);
             if (npc.pos.dist(punkty[punkt]) == 0) {
                 stan = doNothing;
                 npc.wait(2, () => {
@@ -212,7 +214,7 @@ export function createNPC(context: Context) {
 
         }
         function investigateBlood() {
-            npc.moveTo(goToBlood, speedNpc);
+            //npc.moveTo(goToBlood, speedNpc);
             if (npc.pos.dist(goToBlood) == 0) {
                 stan = bloodOrNot;
                 npc.wait(3, () => {
@@ -257,7 +259,7 @@ export function createNPC(context: Context) {
             wasNearBody = isNearBody;
 
             const BloodSplatt = context.map.get("Stain") as GameObj<PosComp>[]
-            const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa 
+            const BloodNearby = BloodSplatt.filter( // some sprawdza jakie ciala sa
                 (element) => npc.pos.dist(element.pos) < 100 && !checkedSplits.has(element)
             );
 
@@ -315,5 +317,3 @@ export function createNPC(context: Context) {
     };
     // dodajemy wampira ktory wyssa kfrew zabbije targeta, bedzie target vampir ktory musi wypic wino z cozsnkiem by umrzec
 }
-
-

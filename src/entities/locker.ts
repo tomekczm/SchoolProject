@@ -3,6 +3,7 @@ import { Context } from "../main";
 export const createLocker = (ctx: Context, pos: any) => {
     const game = ctx.game;
     const locker = ctx.map.add([
+        game.tile(),
         game.sprite("Locker", { frame: 0 }),
         game.pos(pos),
         game.area(),

@@ -71,6 +71,7 @@ export const poison: Item = {
     create: async function (ctx: Context, pos: Vec2): Promise<void> {
         const game = ctx.game;
         const pickup = ctx.map.add([
+            game.tile(),
             game.sprite("KNIFE_ICON"),
             game.pos(pos),
             game.anchor("center"),

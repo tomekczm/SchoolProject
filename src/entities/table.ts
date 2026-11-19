@@ -8,6 +8,7 @@ const WINE_HIGHLIGHT_RANGE = 80;
 export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
     const game = ctx.game;
     const table = ctx.map.add([
+        game.tile(),
         game.sprite("Table"),
         game.pos(pos),
         game.area(),
@@ -20,6 +21,7 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
 
     function addWineGlass() {
         const glass = ctx.map.add([
+            game.tile(),
             game.sprite("Wine_Entity"),
             game.pos(pos),
             game.z(5),
