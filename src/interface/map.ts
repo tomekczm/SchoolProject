@@ -8,6 +8,7 @@ import { wine } from "../items/Vine";
 import { createLocker } from "../entities/locker";
 import { createTable } from "../entities/table";
 import { poison } from "../items/Poison";
+import { createKeyhintsHandler } from "./KeyHints";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -60,6 +61,9 @@ export function testMap(context: Context) {
     })
     context.map = map
     context.player = addPlayer(context)
+    context.keyHints = createKeyhintsHandler(context)
+    //context.keyHints.enableHint("Kill_Knife")
+    //context.keyHints.enableHint("Talk_Npc")
     const npc1 = createNPC(context);
     npc1.setPoints([
             new game.Vec2(80, 200),

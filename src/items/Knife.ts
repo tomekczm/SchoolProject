@@ -1,7 +1,7 @@
 import { InterfaceButton } from "../interface/InterfaceButton";
 import { KillButton } from "../interface/KillButton";
 import { Context } from "../main";
-import { Item } from "./Item";
+import { createPickup, Item } from "./Item";
 
 let clear: (() => void) | undefined = undefined
 
@@ -12,18 +12,18 @@ export const knife: Item = {
         ctx.player.frame = 1;
         clear?.();
         const killButton = await KillButton(ctx);
-        const dropButton = await InterfaceButton(ctx, 400);
-        dropButton.enable();
-        dropButton.text.frame = 3;
-        dropButton.background.onClick(() => {
-            if (ctx.player.hidden) return;
+        ctx.keyHints.enableHint("Drop");
+
+        const keyDownHandler = ctx.game.onKeyDown("backspace", () => {
             const dropPosition = ctx.game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
-            void knife.create(ctx, dropPosition);
+            knife.create(ctx, dropPosition);
         });
+
         clear = () => {
-            killButton.clear();
-            dropButton.clear();
+            keyDownHandler.cancel();
+            ctx.keyHints.disableHint("Drop");
+            killButton.clear()
         };
     },
     onUnequip: function (ctx: Context): void {
@@ -32,55 +32,8 @@ export const knife: Item = {
         clear = undefined;
     },
     create: async function (ctx: Context, pos): Promise<void> {
-        const game = ctx.game;
-        const pickup = ctx.map.add([
-            game.tile(),
-            game.sprite("KNIFE_ICON"),
-            game.pos(pos),
-            game.anchor("center"),
-            game.area(),
-            game.z(0),
-            "Pickup",
-        ]);
-
-        pickup.frame = 1;
-
-        const PICKUP_RANGE = 80;
-        let pickupButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
-        let isCreatingButton = false;
-
-        pickup.onUpdate(() => {
-            const isPlayerNearby = pickup.pos.dist(ctx.player.pos) <= PICKUP_RANGE;
-
-            if (!isPlayerNearby) {
-                pickupButton?.clear();
-                pickupButton = undefined;
-                pickup.use(game.sprite("KNIFE_ICON", { frame: 1 }));
-                return;
-            }
-
-            if (pickupButton || isCreatingButton) return;
-            isCreatingButton = true;
-
-            void InterfaceButton(ctx, 200).then((button) => {
-                if (pickup.pos.dist(ctx.player.pos) > PICKUP_RANGE) {
-                    button.clear();
-                    return;
-                }
-                pickup.use(game.sprite("KNIFE_ICON-highlighted", { frame: 1 }));
-                pickupButton = button;
-                button.enable();
-                button.text.frame = 2;
-                button.background.onClick(() => {
-                    if (ctx.player.hidden) return;
-                    pickupButton?.clear();
-                    pickupButton = undefined;
-                    ctx.inventory.setSlot(0, knife);
-                    pickup.destroy();
-                });
-            }).finally(() => {
-                isCreatingButton = false;
-            });
-        });
-    }
+        createPickup(ctx, this, pos)
+    },
+    droppedIcon: "KNIFE_ICON",
+    droppedIconHighlighed: "KNIFE_ICON-highlighted"
 }

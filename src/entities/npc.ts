@@ -125,6 +125,9 @@ export function createNPC(context: Context) {
             
         ])
 
+        npc.onHover(() => context.player.trigger("NpcHovered",  npc))
+        npc.onHoverEnd(() => context.player.trigger("NpcHoveredEnd", npc))
+
         if (reaction === "Runner" && punkty.length > 1) npc.setTarget(punkty[0])
         //tomek nie badz zly D;
         const outfitSprites = dressUpNpc(context, npc, outfit);

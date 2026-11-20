@@ -6,6 +6,7 @@ import { loadSprites } from "./loadSprites";
 import { createNPC } from "./entities/npc";
 import { addLogger } from "./interface/Log";
 import { styledTextPlugin } from "kaplay-plugin-text";
+import { createKeyhintsHandler } from "./interface/KeyHints";
 
 
 export const game = kaplay({
@@ -15,6 +16,7 @@ export const game = kaplay({
 await loadSprites(game)
 
 export type Context = {
+    keyHints: ReturnType<typeof  createKeyhintsHandler>;
     logger: ReturnType<typeof  addLogger>;
     inventory: Awaited<ReturnType<typeof Inventory>>;
     game: typeof game,
