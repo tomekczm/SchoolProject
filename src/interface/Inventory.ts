@@ -88,6 +88,14 @@ export async function Inventory(ctx: Context) {
             icons[idx].frame = 0;
         }
     }
+
+    function addItem(item: Item) {
+        for(let i = 0; i < 5; i++) {
+            if(items[i] !== undefined) continue;
+            setSlot(i, item)
+            return;
+        }
+    }
     function consume() {
         if(slotEquipped !== undefined) setSlot(slotEquipped, undefined)
     }
@@ -108,6 +116,7 @@ export async function Inventory(ctx: Context) {
         setSlot,
         consume,
         dropEquipped,
+        addItem,
         isEquipped
     }
 }
