@@ -173,6 +173,7 @@ export function createNPC(context: Context) {
         }
 
         function walkingFromPointToPoint() {
+            
             setFrame(0)
             npc.moveTo(punkty[punkt], speedNpc);
             if (npc.pos.dist(punkty[punkt]) == 0) {
@@ -187,6 +188,20 @@ export function createNPC(context: Context) {
                 }
             }
 
+        }
+        function gotoWine() {
+            if(punkt === 0) {
+                const glass = (context.map.get("WineGlass") as GameObj<PosComp>[])[0];
+
+                if(!glass) {
+                    stan = walkingFromPointToPoint;
+                    return;
+                }
+                if(glass.pos.dist(npc.pos) < 30) {
+                    stan = drinkingWine;
+                    npc.moveTo(glass.pos, speedNpc);
+                }
+            }
         }
 
         function Collision() {
