@@ -1,5 +1,4 @@
 import { GameObj, PosComp, Vec2 } from "kaplay";
-import { InterfaceButton } from "../interface/InterfaceButton";
 import { Context } from "../main";
 import { createPickup, Item } from "./Item";
 
@@ -18,7 +17,12 @@ export const poison: Item = {
         const game = ctx.game;
         clearEquippedState?.();
         let isEquipped = true;
-        let dropButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
+        const dropKeyHandler = game.onKeyDown("backspace", () => {
+            if (!isEquipped || ctx.player.hidden) return;
+            const dropPosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
+            ctx.inventory.dropEquipped();
+            void poison.create(ctx, dropPosition);
+        });
 
         const useKey = game.onKeyPress("e", () => {
             if (!isEquipped || ctx.player.hidden) return;
@@ -39,6 +43,7 @@ export const poison: Item = {
             }
 
             wineGlass.tag("Poisoned");
+            wineGlass.use(game.sprite("Wine_Entity", { frame: 2 }));
             ctx.logger.Log("Zatrułeś wino");
             clearEquippedState?.();
             clearEquippedState = undefined;
@@ -48,22 +53,11 @@ export const poison: Item = {
         clearEquippedState = () => {
             isEquipped = false;
             useKey.cancel();
-            dropButton?.clear();
+            dropKeyHandler.cancel();
+            ctx.keyHints.disableHint("Drop");
         };
 
-        dropButton = await InterfaceButton(ctx, 400);
-        if (!isEquipped) {
-            dropButton.clear();
-            return;
-        }
-        dropButton.enable();
-        dropButton.text.frame = 3;
-        dropButton.background.onClick(() => {
-            if (ctx.player.hidden) return;
-            const dropPosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
-            ctx.inventory.dropEquipped();
-            void poison.create(ctx, dropPosition);
-        });
+        ctx.keyHints.enableHint("Drop");
     },
     onUnequip: function (ctx: Context): void {
         clearEquippedState?.();
@@ -72,6 +66,4 @@ export const poison: Item = {
     create: async function (ctx: Context, pos): Promise<void> {
             createPickup(ctx, this, pos)
         },
-        droppedIcon: "KNIFE_ICON",
-        droppedIconHighlighed: "KNIFE_ICON-highlighted"
 };

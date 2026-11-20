@@ -19,7 +19,7 @@ export function createPickup(ctx: Context, item: Item, pos: Vec2) {
         pickup.onHoverUpdate(() => {
             if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE) {
                 ctx.keyHints.enableHint("Grab")
-                pickup.use(game.sprite("KNIFE_ICON", { frame: item.droppedIconHighlighedFrame }));
+                pickup.use(game.sprite("KNIFE_ICON-highlighted", { frame: item.droppedIconHighlighedFrame }));
                 return;
             } else {
                 pickup.use(game.sprite("KNIFE_ICON", { frame: item.droppedIconFrame }));

@@ -12,28 +12,21 @@ export const wine: Item = {
     droppedIconFrame: 0,
     droppedIconHighlighedFrame: 0,
     onEquip: async function (ctx: Context): Promise<void> {
+        const game = ctx.game;
         clearEquippedState?.();
         let isEquipped = true;
         let useButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
-        let dropButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
+        let dropKeyHandler: ReturnType<typeof game.onKeyDown> | undefined;
         clearEquippedState = () => {
             isEquipped = false;
             useButton?.clear();
-            dropButton?.clear();
+            dropKeyHandler?.cancel();
+            ctx.keyHints.disableHint("Drop");
         };
 
         ctx.player.frame = 2;
-        const game = ctx.game;
-        const createdUseButton = await InterfaceButton(ctx);
-        useButton = createdUseButton;
-        if (!isEquipped) {
-            createdUseButton.clear();
-            return;
-        }
-        createdUseButton.enable();
-        createdUseButton.text.frame = 1;
 
-        createdUseButton.background.onClick(() => {
+        game.onKeyPress("e", () => {
             if (!isEquipped || ctx.player.hidden) return;
             clearEquippedState?.();
             createBloodPool(ctx, ctx.player.pos, false);
@@ -42,15 +35,8 @@ export const wine: Item = {
             ctx.logger.Log("Zużyłeś wino");
         });
 
-        const createdDropButton = await InterfaceButton(ctx, 400);
-        dropButton = createdDropButton;
-        if (!isEquipped) {
-            createdDropButton.clear();
-            return;
-        }
-        createdDropButton.enable();
-        createdDropButton.text.frame = 3;
-        createdDropButton.background.onClick(() => {
+        ctx.keyHints.enableHint("Drop");
+        dropKeyHandler = game.onKeyDown("backspace", () => {
             if (!isEquipped || ctx.player.hidden) return;
             const dropPosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
