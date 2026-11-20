@@ -5,8 +5,7 @@ import { Item } from "./Item";
 
 const POISON_FRAME = 2;
 const POISON_SLOT = 2;
-const USE_RANGE = 80;
-const PICKUP_RANGE = 80;
+const INTERACTION_RANGE = 80;
 
 let clearEquippedState: (() => void) | undefined;
 
@@ -24,7 +23,7 @@ export const poison: Item = {
 
             const wineGlasses = ctx.map.get("WineGlass") as GameObj<PosComp>[];
             const wineGlass = wineGlasses.find(
-                (glass) => glass.pos.dist(ctx.player.pos) <= USE_RANGE,
+                (glass) => glass.pos.dist(ctx.player.pos) <= INTERACTION_RANGE,
             );
 
             if (!wineGlass) {
@@ -85,7 +84,8 @@ export const poison: Item = {
         let isCreatingButton = false;
 
         pickup.onUpdate(() => {
-            const isPlayerNearby = pickup.pos.dist(ctx.player.pos) <= PICKUP_RANGE;
+            const isPlayerNearby =
+                pickup.pos.dist(ctx.player.pos) <= INTERACTION_RANGE;
 
             if (!isPlayerNearby) {
                 pickupButton?.clear();
@@ -98,7 +98,7 @@ export const poison: Item = {
             isCreatingButton = true;
 
             void InterfaceButton(ctx, 200).then((button) => {
-                if (pickup.pos.dist(ctx.player.pos) > PICKUP_RANGE) {
+                if (pickup.pos.dist(ctx.player.pos) > INTERACTION_RANGE) {
                     button.clear();
                     return;
                 }
