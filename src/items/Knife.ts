@@ -8,6 +8,8 @@ let clear: (() => void) | undefined = undefined
 export const knife: Item = {
     icon: "KNIFE_ICON",
     iconFrame: 1,
+    droppedIconFrame: 1,
+    droppedIconHighlighedFrame: 1,
     onEquip: async function (ctx: Context): Promise<void> {
         ctx.player.frame = 1;
         clear?.();
@@ -34,6 +36,5 @@ export const knife: Item = {
     create: async function (ctx: Context, pos): Promise<void> {
         createPickup(ctx, this, pos)
     },
-    droppedIcon: "KNIFE_ICON",
-    droppedIconHighlighed: "KNIFE_ICON-highlighted"
+    
 }

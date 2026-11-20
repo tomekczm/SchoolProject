@@ -1,7 +1,7 @@
 import { createBloodPool } from "../effects/BloodPool";
 import { InterfaceButton } from "../interface/InterfaceButton";
 import { Context } from "../main";
-import { Item } from "./Item";
+import { createPickup, Item } from "./Item";
 
 const INTERACTION_RANGE = 80;
 let clearEquippedState: (() => void) | undefined;
@@ -9,6 +9,8 @@ let clearEquippedState: (() => void) | undefined;
 export const wine: Item = {
     icon: "KNIFE_ICON",
     iconFrame: 0,
+    droppedIconFrame: 0,
+    droppedIconHighlighedFrame: 0,
     onEquip: async function (ctx: Context): Promise<void> {
         clearEquippedState?.();
         let isEquipped = true;
@@ -61,55 +63,6 @@ export const wine: Item = {
         ctx.player.frame = 0;
     },
     create: async function (ctx: Context, pos): Promise<void> {
-        const game = ctx.game;
-        const pickup = ctx.map.add([
-            game.tile(),
-            game.sprite("KNIFE_ICON"),
-            game.pos(pos),
-            game.anchor("center"),
-            game.area(),
-            game.z(0),
-            "Pickup",
-        ]);
-        pickup.frame = 0;
-
-        let pickupButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
-        let isCreatingButton = false;
-
-        pickup.onUpdate(() => {
-            const isPlayerNearby =
-                pickup.pos.dist(ctx.player.pos) <= INTERACTION_RANGE;
-
-            if (!isPlayerNearby) {
-                pickupButton?.clear();
-                pickupButton = undefined;
-                pickup.use(game.sprite("KNIFE_ICON", { frame: 0 }));
-                return;
-            }
-
-            if (pickupButton || isCreatingButton) return;
-            isCreatingButton = true;
-
-            void InterfaceButton(ctx, 200).then((button) => {
-                if (pickup.pos.dist(ctx.player.pos) > INTERACTION_RANGE) {
-                    button.clear();
-                    return;
-                }
-
-                pickup.use(game.sprite("KNIFE_ICON-highlighted", { frame: 0 }));
-                pickupButton = button;
-                button.enable();
-                button.text.frame = 2;
-                button.background.onClick(() => {
-                    if (ctx.player.hidden) return;
-                    pickupButton?.clear();
-                    pickupButton = undefined;
-                    ctx.inventory.setSlot(1, wine);
-                    pickup.destroy();
-                });
-            }).finally(() => {
-                isCreatingButton = false;
-            });
-        });
-    }
+            createPickup(ctx, this, pos)
+        },
 };

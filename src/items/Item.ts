@@ -1,16 +1,11 @@
 import { Vec2 } from "kaplay";
 import { Context } from "../main";
 
-interface Pickup {
-    defaultIcon: string,
-
-}
-
 export function createPickup(ctx: Context, item: Item, pos: Vec2) {
     const game = ctx.game;
         const pickup = ctx.map.add([
             game.tile(),
-            game.sprite(item.droppedIcon),
+            game.sprite("KNIFE_ICON", { frame: item.droppedIconFrame }),
             game.pos(pos),
             game.anchor("center"),
             game.area(),
@@ -18,21 +13,21 @@ export function createPickup(ctx: Context, item: Item, pos: Vec2) {
             "Pickup",
         ]);
 
-        pickup.frame = 1;
+        pickup.frame = item.droppedIconFrame;
 
         const PICKUP_RANGE = 80;
         pickup.onHoverUpdate(() => {
             if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE) {
                 ctx.keyHints.enableHint("Grab")
-                pickup.use(game.sprite(item.droppedIconHighlighed, { frame: 1 }));
+                pickup.use(game.sprite("KNIFE_ICON", { frame: item.droppedIconHighlighedFrame }));
                 return;
             } else {
-                pickup.use(game.sprite(item.droppedIcon, { frame: 1 }));
+                pickup.use(game.sprite("KNIFE_ICON", { frame: item.droppedIconFrame }));
             }
         })
         pickup.onHoverEnd(() => {
             ctx.keyHints.disableHint("Grab")
-            pickup.use(game.sprite(item.droppedIcon, { frame: 1 }));
+            pickup.use(game.sprite("KNIFE_ICON", { frame: item.droppedIconFrame }));
         })
         pickup.onClick(() => {
             if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE) {
@@ -46,8 +41,8 @@ export function createPickup(ctx: Context, item: Item, pos: Vec2) {
 export interface Item {
     icon: string,
     iconFrame: number,
-    droppedIcon: string,
-    droppedIconHighlighed: string,
+    droppedIconFrame: number,
+    droppedIconHighlighedFrame: number,
     onEquip: (ctx: Context) => void,
     onUnequip: (ctx: Context) => void,
     create: (ctx: Context, pos: Vec2) => void
