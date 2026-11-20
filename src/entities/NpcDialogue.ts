@@ -9,6 +9,19 @@ export function NpcDialogue(
     let logger: ReturnType<typeof addLogger>;
     return {
         id: "NpcDialogue",
+        questionPlayer(choices: string[]) {
+            for (const choice of choices) {
+                game.add([
+                    game.styledText(choice, {
+                        size: 64
+                    }),
+                    game.fixed(),
+                    game.pos(game.width(), game.height()-100),
+                    game.anchor("topleft")
+                ])
+
+            }
+        },
         add() {
             const zis = this as unknown as GameObj<PosComp | AreaComp>
             const mountPoint = zis.add([
@@ -17,10 +30,15 @@ export function NpcDialogue(
                 game.z(100)
             ])
             logger = addLogger(ctx, 0.35, mountPoint);
-            
+
+            const e1 = game.onKeyPress("t", () => {
+                if (!zis.isHovering()) return;
+                zis.trigger("Interacted")
+            })
 
             zis.onHover(() => {
                 ctx.keyHints.enableHint("Talk_Npc")
+                this.questionPlayer(['hi'])
             })
 
             zis.onHoverEnd(() => {
@@ -28,10 +46,12 @@ export function NpcDialogue(
             })
 
             zis.onDestroy(() => {
+                e1.cancel()
                 ctx.keyHints.disableHint("Talk_Npc")
             })
 
         },
+
         update() {
             //background.angle += 1;
         },
