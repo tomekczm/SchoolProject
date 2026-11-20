@@ -38,6 +38,10 @@ export async function loadSprites(game: KAPLAYCtx) {
         loadSpriteAsync(game, "Locker", "sprites/locker-sheet.png", { sliceX: 2 }),
         loadSpriteAsync(game, "Table", "sprites/table.png"),
         loadSpriteAsync(game, "Wine_Entity", "sprites/wine-entity.png", { sliceX: 3 }),
+        loadSpriteAsync(game, "KILL_BACKGROUND", "sprites/KILL_BACKGROUND.png"),
+        loadSpriteAsync(game, "KILL_TEXT", "sprites/BUTTON_TEXTS.png", {
+            sliceX: 6
+        })
     ]
     for(const accessoriumLayer of ACCESSORIUMS) {
         for(const accessory of accessoriumLayer) {

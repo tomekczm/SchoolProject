@@ -117,7 +117,7 @@ export function testMap(context: Context) {
     npc5.setReaction("Runner")
     npc5.create()
 
-    createLocker(context, new game.Vec2(350, 300));
+    createLocker(context, new game.Vec2(50, 300));
     createTable(context, new game.Vec2(600, 300), true);
     return map
 

@@ -1,52 +1,64 @@
-import { Vec2 } from "kaplay";
 import { createBloodPool } from "../effects/BloodPool";
 import { InterfaceButton } from "../interface/InterfaceButton";
-import { KillButton } from "../interface/KillButton";
 import { Context } from "../main";
 import { Item } from "./Item";
 
-let clr: (() => void) | undefined = undefined
+const INTERACTION_RANGE = 80;
+let clearEquippedState: (() => void) | undefined;
 
 export const wine: Item = {
     icon: "KNIFE_ICON",
     iconFrame: 0,
     onEquip: async function (ctx: Context): Promise<void> {
-        ctx.player.frame = 2;
-        clr?.();
-        const game = ctx.game;
-        const useButton = await InterfaceButton(ctx);
-        useButton.enable();
-        useButton.text.frame = 1;
+        clearEquippedState?.();
+        let isEquipped = true;
+        let useButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
+        let dropButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
+        clearEquippedState = () => {
+            isEquipped = false;
+            useButton?.clear();
+            dropButton?.clear();
+        };
 
-        useButton.background.onClick(() => {
-            if (ctx.player.hidden) return;
-            clr?.();
+        ctx.player.frame = 2;
+        const game = ctx.game;
+        const createdUseButton = await InterfaceButton(ctx);
+        useButton = createdUseButton;
+        if (!isEquipped) {
+            createdUseButton.clear();
+            return;
+        }
+        createdUseButton.enable();
+        createdUseButton.text.frame = 1;
+
+        createdUseButton.background.onClick(() => {
+            if (!isEquipped || ctx.player.hidden) return;
+            clearEquippedState?.();
             createBloodPool(ctx, ctx.player.pos, false);
             ctx.inventory.consume();
             ctx.player.frame = 0;
             ctx.logger.Log("Zużyłeś wino");
         });
 
-        const dropButton = await InterfaceButton(ctx, 400);
-        dropButton.enable();
-        dropButton.text.frame = 3;
-        dropButton.background.onClick(() => {
-            if (ctx.player.hidden) return;
+        const createdDropButton = await InterfaceButton(ctx, 400);
+        dropButton = createdDropButton;
+        if (!isEquipped) {
+            createdDropButton.clear();
+            return;
+        }
+        createdDropButton.enable();
+        createdDropButton.text.frame = 3;
+        createdDropButton.background.onClick(() => {
+            if (!isEquipped || ctx.player.hidden) return;
             const dropPosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
             void wine.create(ctx, dropPosition);
         });
-
-        clr = () => {
-            useButton.clear();
-            dropButton.clear();
-        };
     },
     onUnequip: function (ctx: Context): void {
-       clr?.();
-       ctx.player.frame = 0;
-       
-       clr = undefined;
+        clearEquippedState?.();
+        clearEquippedState = undefined;
+        ctx.player.frame = 0;
     },
     create: async function (ctx: Context, pos): Promise<void> {
         const game = ctx.game;
@@ -61,12 +73,12 @@ export const wine: Item = {
         ]);
         pickup.frame = 0;
 
-        const PICKUP_RANGE = 80;
         let pickupButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
         let isCreatingButton = false;
 
         pickup.onUpdate(() => {
-            const isPlayerNearby = pickup.pos.dist(ctx.player.pos) <= PICKUP_RANGE;
+            const isPlayerNearby =
+                pickup.pos.dist(ctx.player.pos) <= INTERACTION_RANGE;
 
             if (!isPlayerNearby) {
                 pickupButton?.clear();
@@ -79,7 +91,7 @@ export const wine: Item = {
             isCreatingButton = true;
 
             void InterfaceButton(ctx, 200).then((button) => {
-                if (pickup.pos.dist(ctx.player.pos) > PICKUP_RANGE) {
+                if (pickup.pos.dist(ctx.player.pos) > INTERACTION_RANGE) {
                     button.clear();
                     return;
                 }
@@ -100,4 +112,4 @@ export const wine: Item = {
             });
         });
     }
-}
+};

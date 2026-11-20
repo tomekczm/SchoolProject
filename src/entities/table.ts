@@ -35,7 +35,7 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
             const isPlayerNearby =
                 !ctx.player.hidden &&
                 glass.pos.dist(ctx.player.pos) <= WINE_HIGHLIGHT_RANGE;
-            glass.frame = glass.is("Poisoned") ? 2 : isPlayerNearby ? 1 : 0;
+            glass.frame = isPoisoned ? 2 : isPlayerNearby ? 1 : 0;
 
             if (!isPlayerNearby || isPoisoned) {
                 pickupButton?.clear();
