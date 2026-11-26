@@ -13,19 +13,22 @@ export const knife: Item = {
     onEquip: async function (ctx: Context): Promise<void> {
         ctx.player.frame = 1;
         clear?.();
-        const killButton = await KillButton(ctx);
+        let isEquipped = true;
         ctx.keyHints.enableHint("Drop");
 
         const keyDownHandler = ctx.game.onKeyDown("backspace", () => {
+            if(!isEquipped || ctx.player.hidden) return;
             const dropPosition = ctx.game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
             knife.create(ctx, dropPosition);
         });
+        const killButton = KillButton(ctx);
 
         clear = () => {
+            isEquipped = false;
             keyDownHandler.cancel();
+            killButton.clear();
             ctx.keyHints.disableHint("Drop");
-            killButton.clear()
         };
     },
     onUnequip: function (ctx: Context): void {

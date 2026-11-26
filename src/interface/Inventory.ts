@@ -112,11 +112,20 @@ export async function Inventory(ctx: Context) {
     function isEquipped(item: Item) {
         return slotEquipped !== undefined && items[slotEquipped] === item;
     }
+    function unequipAll() {
+        if(slotEquipped === undefined) return;
+
+        const equippedSlot = slotEquipped;
+        slotEquipped = undefined;
+        slots[equippedSlot].frame = 0;
+        items[equippedSlot]?.onUnequip(ctx);
+    }
     return {
         setSlot,
         consume,
         dropEquipped,
         addItem,
-        isEquipped
+        isEquipped,
+        unequipAll
     }
 }

@@ -1,6 +1,7 @@
 import { Vec2 } from "kaplay";
 import { Context } from "../main";
 import { wine } from "../items/Vine";
+import { poison } from "../items/Poison";
 
 const WINE_HIGHLIGHT_RANGE = 80;
 
@@ -34,10 +35,18 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
                 !ctx.player.hidden &&
                 ctx.player.pos.dist(glass.pos) <= WINE_HIGHLIGHT_RANGE;
 
-            if (isInRange && !isPoisoned) {
+            if (
+                isInRange &&
+                !isPoisoned &&
+                ctx.inventory.isEquipped(poison)
+            ) {
+                ctx.keyHints.enableHint("Use");
+                ctx.keyHints.enableHint("Grab");
+            } else if (isInRange && !isPoisoned) {
                 ctx.keyHints.enableHint("Grab");
             } else {
                 ctx.keyHints.disableHint("Grab");
+                ctx.keyHints.disableHint("Use");
             }
 
             const frame = isPoisoned ? 2 : isInRange ? 1 : 0;
@@ -45,6 +54,7 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
         });
         glass.onHoverEnd(() => {
             ctx.keyHints.disableHint("Grab");
+            ctx.keyHints.disableHint("Use");
             glass.use(
                 game.sprite("Wine_Entity", {
                     frame: glass.is("Poisoned") ? 2 : 0,
@@ -63,6 +73,7 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
             ctx.inventory.addItem(wine);
             glass.destroy();
             ctx.keyHints.disableHint("Grab");
+            ctx.keyHints.disableHint("Use");
             if (wineGlass === glass) wineGlass = undefined;
         });
 
@@ -84,6 +95,29 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
         wine.onUnequip(ctx);
         ctx.inventory.consume();
         wineGlass = addWineGlass();
+    });
+    table.onUpdate(() => {
+         const isInRange =
+            !ctx.player.hidden &&
+            ctx.player.pos.dist(table.pos) <= WINE_HIGHLIGHT_RANGE;
+        if(isInRange && !wineGlass && ctx.inventory.isEquipped(wine)) {
+            ctx.keyHints.enableHint("Place");
+        } else {
+            ctx.keyHints.disableHint("Place");
+        }
+        game.onKeyPress("e", () => {
+            if (
+                !ctx.player.hidden &&
+                isInRange &&
+                ctx.inventory.isEquipped(wine) &&
+                !wineGlass
+            ) {
+                addWineGlass();
+                wine.onUnequip(ctx);
+                ctx.inventory.consume();    
+                return;
+            }
+    });
     });
 
     return table;

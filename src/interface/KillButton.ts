@@ -8,39 +8,41 @@ import { ScreenShake } from "../effects/ScreenShake";
 const KNIFE_DISTANCE = 100;
 
 type Npc = GameObj<PosComp>
-export async function KillButton(context: Context) {
+export function KillButton(context: Context) {
     const game = context.game;
 
 
     const player = context.player;
 
 
-    let npcsHovered = new Set()
+    const npcsHovered = new Set<Npc>()
 
     function update() {
         if(npcsHovered.size === 0) context.keyHints.disableHint("Kill_Knife")
         else context.keyHints.enableHint("Kill_Knife")
     }
     const e1 = player.on("NpcHovered", (npc: Npc) => {
+        context.keyHints.enableHint("Kill_Knife");
         npcsHovered.add(npc)
         update()
         npc.tag("Focused")
     })
     const e2 = player.on("NpcHoveredEnd", (npc: Npc) => {
+        context.keyHints.disableHint("Kill_Knife");
         npcsHovered.delete(npc)
         update()
         npc.untag("Focused")
     })
 
-    function getFirstNpc() {
-        return npcsHovered.values().next().value as unknown as GameObj<PosComp>
+    function getFirstNpc(): Npc | undefined {
+        return npcsHovered.values().next().value
     }
 
     const e3 = context.game.onMousePress("left", () => {
         const targetedNpc = getFirstNpc()
+        if (player.hidden || !targetedNpc) return;
         npcsHovered.delete(targetedNpc)
         update()
-        if (player.hidden || !targetedNpc) return;
         ScreenShake(game)
         createBloodSplatter(game, targetedNpc.pos)
         createBloodPool(context, targetedNpc.pos)
@@ -48,9 +50,11 @@ export async function KillButton(context: Context) {
     })
 
     function clr() {
-        const targetedNpc = getFirstNpc()
         context.keyHints.disableHint("Kill_Knife")
-        targetedNpc?.untag("Focused")
+        for (const npc of npcsHovered) {
+            npc.untag("Focused")
+        }
+        npcsHovered.clear()
         e1.cancel()
         e2.cancel()
         e3.cancel()

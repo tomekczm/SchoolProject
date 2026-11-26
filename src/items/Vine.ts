@@ -15,17 +15,16 @@ export const wine: Item = {
         const game = ctx.game;
         clearEquippedState?.();
         let isEquipped = true;
-        let useButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
         let dropKeyHandler: ReturnType<typeof game.onKeyDown> | undefined;
         clearEquippedState = () => {
             isEquipped = false;
-            useButton?.clear();
             dropKeyHandler?.cancel();
             ctx.keyHints.disableHint("Drop");
+            ctx.keyHints.disableHint("Use");
         };
 
         ctx.player.frame = 2;
-
+        ctx.keyHints.enableHint("Use");
         game.onKeyPress("e", () => {
             if (!isEquipped || ctx.player.hidden) return;
             clearEquippedState?.();
