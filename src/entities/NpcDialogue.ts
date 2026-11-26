@@ -17,6 +17,8 @@ export function Response(line: string) {
     }
 }
 
+export type NpcDialogueComp = ReturnType<typeof NpcDialogue>;
+
 export function NpcDialogue(
     ctx: Context
 ) {
