@@ -81,11 +81,6 @@ export function createNPC(context: Context) {
     let spoke = false;
     let number = 0;
 
-
-    //powodzenia Panie Lopko :)
-
-
-
     function setPoints(newPunkty: Array<Vec2>) {
         punkty = newPunkty;
     }
@@ -107,8 +102,10 @@ export function createNPC(context: Context) {
     //tworzenie npc
     function create() {
         let stan: (() => any) | undefined = undefined;
+
         if (type === "Walker") stan = walkingFromPointToPoint;
         if (type === "Stander") stan = Standing;
+        
 
         const npcDialogueComponent = customNpcDialogueComponent || NpcDialogue(context)
 
@@ -277,11 +274,12 @@ export function createNPC(context: Context) {
         function investigate(){
 
             if(isInvestigate){
+                stan = Standing;
                 if(number === 5){
                     if(reaction === "Runner" ){
                     npc.getLogger().Log("jestes chory!");
                     startRunningAway();
-                    }else if(reaction === "Caller" ){
+                    }else if(reaction === "Caller"){
                     npc.getLogger().Log("Dzwonie na policje!");
                     startRunningAway();
                     }number = 0; 
@@ -289,12 +287,19 @@ export function createNPC(context: Context) {
                 if(spoke === true){
                     
                 }else if(spoke === false){
+                    
                     npc.getLogger().Log("Co ty trzymasz?");
                     spoke = true;
                     npc.wait(5, () => {
                         spoke = false;
                         number++;
                     })
+                }
+            }else{
+                if(type == "Walker"){
+                    stan = walkingFromPointToPoint
+                }else if(type == "Stander"){
+                    stan = Standing;
                 }
             }
         }
