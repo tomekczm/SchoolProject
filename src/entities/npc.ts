@@ -39,29 +39,29 @@ export function createNPC(context: Context) {
     let outfit: (string | null)[] = [];
 
     function generateOutfit(): NpcOutfit {
-    const possibleOutfits = ACCESSORIUMS.reduce<NpcOutfit[]>(
-        (outfits, accessories) =>
-            outfits.flatMap((outfit) =>
-                [null, ...accessories].map((accessory) => [...outfit, accessory])
-            ),
-        [[]]
-    );
+        const possibleOutfits = ACCESSORIUMS.reduce<NpcOutfit[]>(
+            (outfits, accessories) =>
+                outfits.flatMap((outfit) =>
+                    [null, ...accessories].map((accessory) => [...outfit, accessory])
+                ),
+            [[]]
+        );
 
-    const unusedOutfits = possibleOutfits.filter(
-        (candidate) =>
-            !alreadyCreatedOutfits.some(
-                (past) =>
-                    past.length === candidate.length &&
-                    past.every((item, index) => item === candidate[index])
-            )
-    );
+        const unusedOutfits = possibleOutfits.filter(
+            (candidate) =>
+                !alreadyCreatedOutfits.some(
+                    (past) =>
+                        past.length === candidate.length &&
+                        past.every((item, index) => item === candidate[index])
+                )
+        );
 
-    const choices = unusedOutfits.length > 0 ? unusedOutfits : possibleOutfits;
-    const outfit = choices[game.randi(0, choices.length)];
+        const choices = unusedOutfits.length > 0 ? unusedOutfits : possibleOutfits;
+        const outfit = choices[game.randi(0, choices.length)];
 
-    alreadyCreatedOutfits.push(outfit);
-    return outfit;
-}
+        alreadyCreatedOutfits.push(outfit);
+        return outfit;
+    }
 
 
 
@@ -76,9 +76,12 @@ export function createNPC(context: Context) {
     let goToBlood = game.vec2(0, 0);
     let isbloodOrNot = false;
     let checkedSplits = new Set();
+    let isInvestigate = false;
+    let spoke = false;
+    let number = 0;
 
 
-
+    //powodzenia Panie Lopko :)
 
 
 
@@ -96,11 +99,13 @@ export function createNPC(context: Context) {
         isTarget = newTarget;
     }
 
+
     //tworzenie npc
     function create() {
         let stan: (() => any) | undefined = undefined;
         if (type === "Walker") stan = walkingFromPointToPoint;
         if (type === "Stander") stan = Standing;
+
 
         const npc = context.map.add([
             game.pos(punkty[0]),
@@ -122,10 +127,10 @@ export function createNPC(context: Context) {
             }),
             "NonUI",
             "NPC",
-            
+
         ])
 
-        npc.onHover(() => context.player.trigger("NpcHovered",  npc))
+        npc.onHover(() => context.player.trigger("NpcHovered", npc))
         npc.onHoverEnd(() => context.player.trigger("NpcHoveredEnd", npc))
 
         if (reaction === "Runner" && punkty.length > 1) npc.setTarget(punkty[0])
@@ -176,7 +181,7 @@ export function createNPC(context: Context) {
         }
 
         function walkingFromPointToPoint() {
-            
+
             setFrame(0)
             npc.moveTo(punkty[punkt], speedNpc);
             if (npc.pos.dist(punkty[punkt]) == 0) {
@@ -193,15 +198,15 @@ export function createNPC(context: Context) {
 
         }
         function gotoWine() {
-            if(punkt === 0) {
+            if (punkt === 0) {
                 const glass = (context.map.get("WineGlass") as GameObj<PosComp>[])[0];
 
-                if(!glass) {
+                if (!glass) {
                     stan = walkingFromPointToPoint;
                     return;
                 }
-                if(glass.pos.dist(npc.pos) < 30) {
-                    stan = drinkingWine;
+                if (glass.pos.dist(npc.pos) < 30) {
+                    //stan = drinkingWine;
                     npc.moveTo(glass.pos, speedNpc);
                 }
             }
@@ -213,8 +218,11 @@ export function createNPC(context: Context) {
 
         // poprawiony runAway bo byly lagi 
         function runAway() {
-            if (npc.pos.dist(safePlace) < 8) {
-                npc.destroy();
+            //move to
+
+            npc.setTarget(safePlace);
+            if (npc.pos.dist(safePlace) == 0) {
+                npc.destroy;
             }
         }
 
@@ -233,7 +241,7 @@ export function createNPC(context: Context) {
         function detectedBloodSplit() {
             context.logger.ImportantMessage("Npc saw smth suspicious")
             stan = investigateBlood;
-            
+
 
 
         }
@@ -261,9 +269,43 @@ export function createNPC(context: Context) {
 
         }
 
-        if (isTarget) setTargetForGame(context, npc, outfit)
-        npc.onUpdate(() => {
+        function investigate(){
 
+            if(isInvestigate){
+                if(number === 5){
+                    npc.getLogger().Log("jestes chory!");
+                    startRunningAway();
+                    number = 0;
+                }
+                if(spoke === true){
+                    
+                }else if(spoke === false){
+                    npc.getLogger().Log("Co ty trzymasz?");
+                    spoke = true;
+                    npc.wait(5, () => {
+                        spoke = false;
+                        number++;
+                    })
+                }
+            }
+        }
+        function isPlayerSuspicious() {
+            if (context.player.pos.dist(npc.pos) < 100 && context.player.frame === 1) {
+                isInvestigate = true;
+                investigate();
+                
+            }else{
+                isInvestigate = false;
+            }
+        }
+        
+
+        if (isTarget) setTargetForGame(context, npc, outfit)
+
+
+
+        npc.onUpdate(() => {
+            isPlayerSuspicious();
             /*
                to gowno sentry nie działa, narazie npc widzi przez sciany ale moze
                to sie pozniej naprawi albo gre sie zbuduje pod ta mechanike, *dzwieki*

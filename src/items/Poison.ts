@@ -48,6 +48,7 @@ export const poison: Item = {
             clearEquippedState?.();
             clearEquippedState = undefined;
             ctx.inventory.consume();
+            
         });
 
         clearEquippedState = () => {
