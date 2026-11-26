@@ -9,6 +9,7 @@ import { createLocker } from "../entities/locker";
 import { createTable } from "../entities/table";
 import { poison } from "../items/Poison";
 import { createKeyhintsHandler } from "./KeyHints";
+import { NpcDialogue, Response } from "../entities/NpcDialogue";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -72,7 +73,7 @@ export function testMap(context: Context) {
             new game.Vec2(80, 80),
     ])
     npc1.setOutfitToRandom()
-    npc1.create()
+
     const npc2 = createNPC(context);
     npc2.setPoints([
         new game.Vec2(500, 200),
@@ -83,7 +84,6 @@ export function testMap(context: Context) {
     npc2.setOutfitToRandom()
     npc2.setTarget(true)
     npc2.setType("Walker")
-    npc2.create()
 
     knife.create(context, new game.Vec2(200, 200));
     //wine.create(context, new game.Vec2(300, 200));
@@ -97,7 +97,6 @@ export function testMap(context: Context) {
     npc3.setTarget(false)
     npc3.setType("Stander")
     npc3.setReaction("Runner")
-    npc3.create()
 
     const npc4 = createNPC(context);
     npc4.setPoints([
@@ -119,10 +118,36 @@ export function testMap(context: Context) {
     npc5.setTarget(false)
     npc5.setType("Stander")
     npc5.setReaction("Runner")
-    npc5.create()
+
 
     createLocker(context, new game.Vec2(50, 300));
     createTable(context, new game.Vec2(600, 300), true);
+
+
+    const dialogues = ['I love this party!!!!!💀💀', 'Aint no party like this!!!', "Hi", "Do i know you?", "Ok"]
+    function createSimpleDialogue(idx: number) {
+        const simpleDialogue = NpcDialogue(context); // properly componentized
+        simpleDialogue.onDialogueStarted(() => {
+            simpleDialogue.getLogger().Log(dialogues[idx])
+            simpleDialogue.questionPlayer(
+                Response("*End conversation*")
+            )
+        })
+        return simpleDialogue;
+    }
+
+    npc1.setNpcDialogue(createSimpleDialogue(0))
+    npc2.setNpcDialogue(createSimpleDialogue(1))
+    npc3.setNpcDialogue(createSimpleDialogue(2))
+    npc4.setNpcDialogue(createSimpleDialogue(3))
+    npc5.setNpcDialogue(createSimpleDialogue(4))
+
+    npc1.create()
+    npc2.create()
+    npc3.create()
+    npc4.create()
+    npc5.create()
+
     return map
 
 

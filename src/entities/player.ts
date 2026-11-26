@@ -6,6 +6,7 @@ const SPEED = 200
 const SHIFT_SPEED_MOVEMENT_MODIFIER = 1/2;
 const PUSH_SPEED = 100;
 const KNIFE_DISTANCE = 100;
+let suspiciousMovement = false;
 export function addPlayer(context: Context) {
     const {game , map} = context
     game.setCamScale(2.5)
@@ -55,6 +56,7 @@ export function addPlayer(context: Context) {
     })
 
     game.onUpdate(() => {
+        
         const smoothing = 1 - Math.exp(-6 * game.dt());
         const targetScale = player.hidden ? 5 : 2.5;
         game.setCamScale(
@@ -76,4 +78,5 @@ export function addPlayer(context: Context) {
         game.setCamPos(game.getCamPos().lerp(player.pos, 0.1))
     })
     return player
+    
 }

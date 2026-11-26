@@ -3,7 +3,7 @@ import { Context } from "../main";
 import { StyledTextComp } from "kaplay-plugin-text";
 
 type Message = GameObj<PosComp | AnchorComp | StyledTextComp>;
-
+export type Logger = ReturnType<typeof addLogger>;
 export function addLogger(ctx: Context, scale = 1, spawnPointArg?: GameObj<PosComp>) {
     let textSize = 32
     let outlineWidth = 4
