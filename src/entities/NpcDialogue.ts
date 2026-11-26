@@ -1,6 +1,6 @@
-import { AnchorComp, AreaComp, GameObj, KEventController, OpacityComp, OutlineComp, PosComp, RectComp, RotateComp } from "kaplay";
+import { AnchorComp, AreaComp, Comp, GameObj, KEventController, OpacityComp, OutlineComp, PosComp, RectComp, RotateComp } from "kaplay";
 import { Context } from "../main";
-import { addLogger } from "../interface/Log";
+import { addLogger, Logger } from "../interface/Log";
 import { UIHoverEffect } from "../effects/UIHover";
 import { createNPC } from "./npc";
 
@@ -17,17 +17,22 @@ export function Response(line: string) {
     }
 }
 
-export type NpcDialogueComp = ReturnType<typeof NpcDialogue>;
+export interface NpcDialogueComp extends Comp {
+    onDialogueStarted(callback: Callback): void,
+    questionPlayer(...choices: NpcResponse[]): void,
+    getLogger(): Logger
+}
 
 export function NpcDialogue(
     ctx: Context
-) {
+): NpcDialogueComp {
     const game = ctx.game
-    let logger: ReturnType<typeof addLogger>;
+    let logger: Logger;
     let onKeyDown: KEventController;
     let onDialogueStart: Callback | undefined
     return {
         id: "NpcDialogue",
+        require: ["area"],
         onDialogueStarted(callback: Callback) {
             onDialogueStart = callback;
         },
@@ -67,7 +72,7 @@ export function NpcDialogue(
                 })
             }
         },
-        add() {
+        add(this: GameObj<NpcDialogueComp | AreaComp>) {
             const zis = this as unknown as GameObj<PosComp | AreaComp>
             const mountPoint = zis.add([
                 game.pos(3, -25),
@@ -94,8 +99,9 @@ export function NpcDialogue(
                 ctx.keyHints.disableHint("Talk_Npc")
             })
 
-            onKeyDown = game.onKeyDown("f", () => {
-                onDialogueStart?.()
+            onKeyDown = game.onKeyPress("f", () => {
+                if(zis.isHovering())
+                    onDialogueStart?.()
             })
             
 

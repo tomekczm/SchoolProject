@@ -124,7 +124,7 @@ export function createNPC(context: Context) {
             game.anchor("center"),
             game.sprite("NPC_anim"),
             npcDialogueComponent,
-            game.z(1),
+            game.z(10),
             game.tile(),
             game.agent({
                 speed: speedNpc,
