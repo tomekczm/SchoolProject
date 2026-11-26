@@ -273,9 +273,13 @@ export function createNPC(context: Context) {
 
             if(isInvestigate){
                 if(number === 5){
+                    if(reaction === "Runner" ){
                     npc.getLogger().Log("jestes chory!");
                     startRunningAway();
-                    number = 0;
+                    }else if(reaction === "Caller" ){
+                    npc.getLogger().Log("Dzwonie na policje!");
+                    startRunningAway();
+                    }number = 0; 
                 }
                 if(spoke === true){
                     
