@@ -17,7 +17,7 @@ export function createPickup(ctx: Context, item: Item, pos: Vec2) {
 
         const PICKUP_RANGE = 80;
         pickup.onHoverUpdate(() => {
-            if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE) {
+            if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE && !ctx.player.hidden) {
                 ctx.keyHints.enableHint("Grab")
                 pickup.use(game.sprite("KNIFE_ICON-highlighted", { frame: item.droppedIconHighlighedFrame }));
                 return;
@@ -30,14 +30,13 @@ export function createPickup(ctx: Context, item: Item, pos: Vec2) {
             pickup.use(game.sprite("KNIFE_ICON", { frame: item.droppedIconFrame }));
         })
         pickup.onClick(() => {
-            if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE) {
+            if(ctx.player.pos.dist(pickup.pos) <= PICKUP_RANGE && !ctx.player.hidden) {
                 ctx.inventory.addItem(item);
                 pickup.destroy()
                 ctx.keyHints.disableHint("Grab")
             }
         })
 }
-
 export interface Item {
     icon: string,
     iconFrame: number,

@@ -6,7 +6,7 @@ interface KeyHint {
     text: string
 }
 
-type HintNames = "Kill_Knife" | "Talk_Npc" | "Drop" | "Grab"
+type HintNames = "Kill_Knife" | "Talk_Npc" | "Drop" | "Grab" | "Exit" | "Use" | "Place"
 
 const KeyHints: Record<HintNames, KeyHint> = {
     "Kill_Knife": {
@@ -24,6 +24,18 @@ const KeyHints: Record<HintNames, KeyHint> = {
     "Drop": {
         icon_idx: 2,
         text: "Drop",
+    },
+    "Exit": {
+        icon_idx: 3,
+        text: "Exit"
+    },
+    "Use": {
+        icon_idx: 4,
+        text: "Use"
+    },
+    "Place": {
+        icon_idx: 5,
+        text: "Place"
     }
 }
 
@@ -35,6 +47,7 @@ export function createKeyhintsHandler(ctx: Context) {
     ])
     const map = new Map<string, GameObj<PosComp>>()
     function enableHint(name: HintNames) {
+        if(ctx.player.hidden) return;
         map.get(name)?.destroy()
         const hint = KeyHints[name];
         const newInstance = holder.add([
@@ -77,9 +90,16 @@ export function createKeyhintsHandler(ctx: Context) {
         map.delete(name)
         reorder()
     }
+    function disableAll() {
+        for (const hint of map.values()) {
+            hint.destroy()
+        }
+        reorder()
+    }
 
     return {
         enableHint,
-        disableHint
+        disableHint,
+        disableAll
     }
 }

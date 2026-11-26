@@ -1,5 +1,4 @@
 import { Context } from "../main";
-
 export const createLocker = (ctx: Context, pos: any) => {
     const game = ctx.game;
     const locker = ctx.map.add([
@@ -14,7 +13,8 @@ export const createLocker = (ctx: Context, pos: any) => {
     const USE_RANGE = 80;
     let playerInLocker = false;
 
-    locker.onUpdate(() => {
+    locker.onHoverUpdate(() => {
+        ctx.keyHints.enableHint("Use");
         const isPlayerNearby = locker.pos.dist(ctx.player.pos) <= USE_RANGE;
 
         if (!isPlayerNearby || playerInLocker) {
@@ -22,12 +22,19 @@ export const createLocker = (ctx: Context, pos: any) => {
             return;
         }
         locker.use(game.sprite("Locker", { frame: 1 }));
+        
     });
+    locker.onHoverEnd(() => {
+        ctx.keyHints.disableHint("Use");
+        locker.use(game.sprite("Locker", { frame: 0 }));
 
+    });
     game.onKeyPress("e", () => {
         if (playerInLocker) {
             playerInLocker = false;
             ctx.player.hidden = false;
+            ctx.inventory.unequipAll();
+            ctx.keyHints.disableHint("Exit");
             return;
         }
 
@@ -35,8 +42,10 @@ export const createLocker = (ctx: Context, pos: any) => {
             playerInLocker = true;
             ctx.player.hidden = true;
             game.setCamPos(pos.x+16, pos.y+32);
+            ctx.keyHints.enableHint("Exit");
         }
-    });
 
+    });
     return locker;
-}
+};
+
