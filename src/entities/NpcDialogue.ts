@@ -6,11 +6,12 @@ import { createNPC } from "./npc";
 
 type NpcResponse = ReturnType<typeof Response>;
 type Callback = () => void;
+type BooleanCallback = () => boolean;
 export function Response(line: string) {
     return { 
         line,
-        _actionOnChoosen: undefined as undefined | Callback,
-        onChoosen(action: Callback) {
+        _actionOnChoosen: undefined as undefined | BooleanCallback,
+        onChoosen(action: BooleanCallback) {
             this._actionOnChoosen = action;
             return this;
         }
@@ -67,7 +68,8 @@ export function NpcDialogue(
                 })
                 obj.pos = game.vec2(game.width()-obj.width/2, game.height()-(70*(idx+1)))
                 obj.onClick(() => {
-                    choice._actionOnChoosen?.()
+                    const finishDialogue = choice._actionOnChoosen?.()
+                    if(finishDialogue || finishDialogue === undefined) ctx.player.untag("In_Dialogue");
                     objs.forEach((o) => o.destroy())
                 })
             }
@@ -100,8 +102,10 @@ export function NpcDialogue(
             })
 
             onKeyDown = game.onKeyPress("f", () => {
-                if(zis.isHovering())
+                if(zis.isHovering() && !ctx.player.is("In_Dialogue")) {
                     onDialogueStart?.()
+                    ctx.player.tag("In_Dialogue");
+                }
             })
             
 

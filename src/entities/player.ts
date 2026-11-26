@@ -12,7 +12,7 @@ export function addPlayer(context: Context) {
     game.setCamScale(2.5)
     const player = map.add([
         game.tile(),
-        game.z(3),
+        game.z(11),
         game.area(),
         game.pos(100, 100),
         game.rotate(0),
@@ -64,6 +64,9 @@ export function addPlayer(context: Context) {
         );
 
         if (player.hidden) return;
+
+        if(player.is("In_Dialogue")) return;
+
         //player.rotateTo(player.pos.angle(game.toWorld(game.mousePos())))
         let motion = new game.Vec2(0,0)
         if(game.isKeyDown("d")) motion = motion.add(1, 0);
