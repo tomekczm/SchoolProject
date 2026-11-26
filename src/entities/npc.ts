@@ -6,7 +6,7 @@ import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
 import { onTargetKilled, setTargetForGame } from "./target";
-import { NpcDialogue } from "./NpcDialogue";
+import { NpcDialogue, NpcDialogueComp } from "./NpcDialogue";
 
 
 export type NpcOutfit = (string | null)[];
@@ -35,6 +35,7 @@ export function dressUpNpc(ctx: Context, npc: GameObj<SpriteComp>, outfit: NpcOu
 export function createNPC(context: Context) {
 
 
+    let customNpcDialogueComponent: undefined | NpcDialogueComp;
     const { game } = context
     let outfit: (string | null)[] = [];
 
@@ -98,6 +99,9 @@ export function createNPC(context: Context) {
     function setTarget(newTarget: boolean) {
         isTarget = newTarget;
     }
+    function setNpcDialogue(newDialogueComp: NpcDialogueComp) {
+        customNpcDialogueComponent = newDialogueComp;
+    }
 
 
     //tworzenie npc
@@ -106,6 +110,7 @@ export function createNPC(context: Context) {
         if (type === "Walker") stan = walkingFromPointToPoint;
         if (type === "Stander") stan = Standing;
 
+        const npcDialogueComponent = customNpcDialogueComponent || NpcDialogue(context)
 
         const npc = context.map.add([
             game.pos(punkty[0]),
@@ -118,7 +123,7 @@ export function createNPC(context: Context) {
             game.color(),
             game.anchor("center"),
             game.sprite("NPC_anim"),
-            NpcDialogue(context),
+            npcDialogueComponent,
             game.z(1),
             game.tile(),
             game.agent({
@@ -383,7 +388,8 @@ export function createNPC(context: Context) {
         setTarget,
         setOutfitToRandom,
         create,
-        setReaction
+        setReaction,
+        setNpcDialogue
     };
     // dodajemy wampira ktory wyssa kfrew zabbije targeta, bedzie target vampir ktory musi wypic wino z cozsnkiem by umrzec
 }

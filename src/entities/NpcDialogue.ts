@@ -1,25 +1,70 @@
-import { AnchorComp, AreaComp, GameObj, OpacityComp, OutlineComp, PosComp, RectComp, RotateComp } from "kaplay";
+import { AnchorComp, AreaComp, GameObj, KEventController, OpacityComp, OutlineComp, PosComp, RectComp, RotateComp } from "kaplay";
 import { Context } from "../main";
 import { addLogger } from "../interface/Log";
+import { UIHoverEffect } from "../effects/UIHover";
+import { createNPC } from "./npc";
+
+type NpcResponse = ReturnType<typeof Response>;
+type Callback = () => void;
+export function Response(line: string) {
+    return { 
+        line,
+        _actionOnChoosen: undefined as undefined | Callback,
+        onChoosen(action: Callback) {
+            this._actionOnChoosen = action;
+            return this;
+        }
+    }
+}
+
+export type NpcDialogueComp = ReturnType<typeof NpcDialogue>;
 
 export function NpcDialogue(
     ctx: Context
 ) {
     const game = ctx.game
     let logger: ReturnType<typeof addLogger>;
+    let onKeyDown: KEventController;
+    let onDialogueStart: Callback | undefined
     return {
         id: "NpcDialogue",
-        questionPlayer(choices: string[]) {
-            for (const choice of choices) {
-                game.add([
-                    game.styledText(choice, {
-                        size: 64
+        onDialogueStarted(callback: Callback) {
+            onDialogueStart = callback;
+        },
+        questionPlayer(...choices: NpcResponse[]) {
+            let objs = []
+            for(let idx = 0; idx < choices.length; idx++) {
+                const choice = choices[idx]
+                let obj = game.add([
+                    game.styledText(choice.line, {
+                        size: 64,
+                        outline: {
+                            width: 12,
+                            color: game.rgb(0,0,0),
+                        }
                     }),
                     game.fixed(),
-                    game.pos(game.width(), game.height()-100),
-                    game.anchor("topleft")
+                    game.pos(),
+                    game.anchor("center"),
+                    game.z(100000),
+                    game.area(),
+                    game.scale(1),
+                    game.timer(),
+                    game.color(125,125,125)
                 ])
-
+                objs.push(obj)
+                //UIHoverEffect(game, obj, 1.1, 0.25)
+                obj.onHover(() => {
+                    game.tween(obj.color, game.rgb(255,255,255), 0.25, (v) => obj.color = v)
+                })
+                obj.onHoverEnd(() => {
+                    game.tween(obj.color, game.rgb(125,125,125), 0.25, (v) => obj.color = v)
+                })
+                obj.pos = game.vec2(game.width()-obj.width/2, game.height()-(70*(idx+1)))
+                obj.onClick(() => {
+                    choice._actionOnChoosen?.()
+                    objs.forEach((o) => o.destroy())
+                })
             }
         },
         add() {
@@ -38,7 +83,6 @@ export function NpcDialogue(
 
             zis.onHover(() => {
                 ctx.keyHints.enableHint("Talk_Npc")
-                this.questionPlayer(['hi'])
             })
 
             zis.onHoverEnd(() => {
@@ -50,8 +94,15 @@ export function NpcDialogue(
                 ctx.keyHints.disableHint("Talk_Npc")
             })
 
-        },
+            onKeyDown = game.onKeyDown("f", () => {
+                onDialogueStart?.()
+            })
+            
 
+        },
+        destroy() {
+            onKeyDown.cancel()
+        },
         update() {
             //background.angle += 1;
         },
