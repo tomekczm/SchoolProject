@@ -14,6 +14,7 @@ export async function createBloodPool(ctx: Context, pos: any, isReal = true) {
         let div = i+1
         let offset = i === 0 ? game.vec2(0) : game.vec2(offX, offY)
         const blood = ctx.map.add([
+            game.tile(),
             game.circle(0),
             game.pos(pos.add(offset)),
             game.color(255,0,0),

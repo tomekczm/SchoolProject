@@ -8,6 +8,7 @@ import { wine } from "../items/Vine";
 import { createLocker } from "../entities/locker";
 import { createTable } from "../entities/table";
 import { poison } from "../items/Poison";
+import { createKeyhintsHandler } from "./KeyHints";
 
 export function testMap(context: Context) {
     const {game} = context;
@@ -60,6 +61,9 @@ export function testMap(context: Context) {
     })
     context.map = map
     context.player = addPlayer(context)
+    context.keyHints = createKeyhintsHandler(context)
+    //context.keyHints.enableHint("Kill_Knife")
+    //context.keyHints.enableHint("Talk_Npc")
     const npc1 = createNPC(context);
     npc1.setPoints([
             new game.Vec2(80, 200),
@@ -94,7 +98,30 @@ export function testMap(context: Context) {
     npc3.setType("Stander")
     npc3.setReaction("Runner")
     npc3.create()
-    createLocker(context, new game.Vec2(350, 300));
+
+    const npc4 = createNPC(context);
+    npc4.setPoints([
+        new game.Vec2(237, 149),
+        new game.Vec2(871, 149),
+    ])
+    npc4.setOutfitToRandom()
+    npc4.setTarget(false)
+    npc4.setType("Walker")
+    npc4.setReaction("Runner")
+    npc4.create()
+
+    const npc5 = createNPC(context);
+    npc5.setPoints([
+        new game.Vec2(99, 283),
+        new game.Vec2(299, 283),
+    ])
+    npc5.setOutfitToRandom()
+    npc5.setTarget(false)
+    npc5.setType("Stander")
+    npc5.setReaction("Runner")
+    npc5.create()
+
+    createLocker(context, new game.Vec2(50, 300));
     createTable(context, new game.Vec2(600, 300), true);
     return map
 

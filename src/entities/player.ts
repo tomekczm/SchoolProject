@@ -10,6 +10,7 @@ export function addPlayer(context: Context) {
     const {game , map} = context
     game.setCamScale(2.5)
     const player = map.add([
+        game.tile(),
         game.z(3),
         game.area(),
         game.pos(100, 100),

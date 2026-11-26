@@ -1,102 +1,54 @@
-import { Vec2 } from "kaplay";
 import { createBloodPool } from "../effects/BloodPool";
 import { InterfaceButton } from "../interface/InterfaceButton";
-import { KillButton } from "../interface/KillButton";
 import { Context } from "../main";
-import { Item } from "./Item";
+import { createPickup, Item } from "./Item";
 
-let clr: (() => void) | undefined = undefined
+const INTERACTION_RANGE = 80;
+let clearEquippedState: (() => void) | undefined;
 
 export const wine: Item = {
     icon: "KNIFE_ICON",
     iconFrame: 0,
+    droppedIconFrame: 0,
+    droppedIconHighlighedFrame: 0,
     onEquip: async function (ctx: Context): Promise<void> {
-        ctx.player.frame = 2;
-        clr?.();
         const game = ctx.game;
-        const useButton = await InterfaceButton(ctx);
-        useButton.enable();
-        useButton.text.frame = 1;
+        clearEquippedState?.();
+        let isEquipped = true;
+        let useButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
+        let dropKeyHandler: ReturnType<typeof game.onKeyDown> | undefined;
+        clearEquippedState = () => {
+            isEquipped = false;
+            useButton?.clear();
+            dropKeyHandler?.cancel();
+            ctx.keyHints.disableHint("Drop");
+        };
 
-        useButton.background.onClick(() => {
-            if (ctx.player.hidden) return;
-            clr?.();
+        ctx.player.frame = 2;
+
+        game.onKeyPress("e", () => {
+            if (!isEquipped || ctx.player.hidden) return;
+            clearEquippedState?.();
             createBloodPool(ctx, ctx.player.pos, false);
             ctx.inventory.consume();
             ctx.player.frame = 0;
             ctx.logger.Log("Zużyłeś wino");
         });
 
-        const dropButton = await InterfaceButton(ctx, 400);
-        dropButton.enable();
-        dropButton.text.frame = 3;
-        dropButton.background.onClick(() => {
-            if (ctx.player.hidden) return;
+        ctx.keyHints.enableHint("Drop");
+        dropKeyHandler = game.onKeyDown("backspace", () => {
+            if (!isEquipped || ctx.player.hidden) return;
             const dropPosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             ctx.inventory.dropEquipped();
             void wine.create(ctx, dropPosition);
         });
-
-        clr = () => {
-            useButton.clear();
-            dropButton.clear();
-        };
     },
     onUnequip: function (ctx: Context): void {
-       clr?.();
-       ctx.player.frame = 0;
-       
-       clr = undefined;
+        clearEquippedState?.();
+        clearEquippedState = undefined;
+        ctx.player.frame = 0;
     },
     create: async function (ctx: Context, pos): Promise<void> {
-        const game = ctx.game;
-        const pickup = ctx.map.add([
-            game.sprite("KNIFE_ICON"),
-            game.pos(pos),
-            game.anchor("center"),
-            game.area(),
-            game.z(0),
-            "Pickup",
-        ]);
-        pickup.frame = 0;
-
-        const PICKUP_RANGE = 80;
-        let pickupButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
-        let isCreatingButton = false;
-
-        pickup.onUpdate(() => {
-            const isPlayerNearby = pickup.pos.dist(ctx.player.pos) <= PICKUP_RANGE;
-
-            if (!isPlayerNearby) {
-                pickupButton?.clear();
-                pickupButton = undefined;
-                pickup.use(game.sprite("KNIFE_ICON", { frame: 0 }));
-                return;
-            }
-
-            if (pickupButton || isCreatingButton) return;
-            isCreatingButton = true;
-
-            void InterfaceButton(ctx, 200).then((button) => {
-                if (pickup.pos.dist(ctx.player.pos) > PICKUP_RANGE) {
-                    button.clear();
-                    return;
-                }
-
-                pickup.use(game.sprite("KNIFE_ICON-highlighted", { frame: 0 }));
-                pickupButton = button;
-                button.enable();
-                button.text.frame = 2;
-                button.background.onClick(() => {
-                    if (ctx.player.hidden) return;
-                    pickupButton?.clear();
-                    pickupButton = undefined;
-                    ctx.inventory.setSlot(1, wine);
-                    pickup.destroy();
-                });
-            }).finally(() => {
-                isCreatingButton = false;
-            });
-        });
-    }
-}
+            createPickup(ctx, this, pos)
+        },
+};

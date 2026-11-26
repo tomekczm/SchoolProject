@@ -13,24 +13,39 @@ const kaplayCongrats = () => {
     };
 };
 
+const reloadOnCodeChange = () => ({
+    name: "reload-on-code-change",
+    handleHotUpdate({ file, server }) {
+        if (/\.(?:[cm]?[jt]sx?|css)$/.test(file)) {
+            server.ws.send({ type: "full-reload" });
+            return [];
+        }
+    },
+});
+
 export default defineConfig({
     // index.html out file will start with a relative path for script
     base: "./",
     server: {
         port: 3001,
+        sourcemapIgnoreList: false,
+    },
+    optimizeDeps: {
+        exclude: ["kaplay"],
     },
     build: {
         // disable this for low bundle sizes
         sourcemap: true,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    kaplay: ["kaplay"],
+                manualChunks(id) {
+                    if (id.includes("/node_modules/kaplay/")) return "kaplay";
                 },
             },
         },
     },
     plugins: [
+        reloadOnCodeChange(),
         // Disable messages removing this line
         kaplayCongrats(),
     ],

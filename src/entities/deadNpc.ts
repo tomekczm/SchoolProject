@@ -5,6 +5,7 @@ import { dressUpNpc, NpcOutfit } from "./npc";
 export function spawnDeadNpc(ctx: Context, pos: any, outfit: NpcOutfit) {
     const game = ctx.game
     let DeadBody = ctx.map.add([
+        game.tile(),
         game.anchor("center"),
         game.sprite("NPC_anim"),
         game.layer("bodies"),

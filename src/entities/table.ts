@@ -1,13 +1,13 @@
 import { Vec2 } from "kaplay";
 import { Context } from "../main";
 import { wine } from "../items/Vine";
-import { InterfaceButton } from "../interface/InterfaceButton";
 
 const WINE_HIGHLIGHT_RANGE = 80;
 
 export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
     const game = ctx.game;
     const table = ctx.map.add([
+        game.tile(),
         game.sprite("Table"),
         game.pos(pos),
         game.area(),
@@ -20,59 +20,50 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
 
     function addWineGlass() {
         const glass = ctx.map.add([
+            game.tile(),
             game.sprite("Wine_Entity"),
             game.pos(pos),
+            game.area(),
             game.z(5),
             "WineGlass",
         ]);
-        let pickupButton: Awaited<ReturnType<typeof InterfaceButton>> | undefined;
-        let isCreatingButton = false;
-
-        glass.onUpdate(() => {
+        glass.frame = 0;
+        glass.onHoverUpdate(() => {
             const isPoisoned = glass.is("Poisoned");
-            const isPlayerNearby =
+            const isInRange =
                 !ctx.player.hidden &&
-                glass.pos.dist(ctx.player.pos) <= WINE_HIGHLIGHT_RANGE;
-            glass.frame = glass.is("Poisoned") ? 2 : isPlayerNearby ? 1 : 0;
+                ctx.player.pos.dist(glass.pos) <= WINE_HIGHLIGHT_RANGE;
 
-            if (!isPlayerNearby || isPoisoned) {
-                pickupButton?.clear();
-                pickupButton = undefined;
+            if (isInRange && !isPoisoned) {
+                ctx.keyHints.enableHint("Grab");
+            } else {
+                ctx.keyHints.disableHint("Grab");
+            }
+
+            const frame = isPoisoned ? 2 : isInRange ? 1 : 0;
+            glass.use(game.sprite("Wine_Entity", { frame }));
+        });
+        glass.onHoverEnd(() => {
+            ctx.keyHints.disableHint("Grab");
+            glass.use(
+                game.sprite("Wine_Entity", {
+                    frame: glass.is("Poisoned") ? 2 : 0,
+                }),
+            );
+        });
+        glass.onClick(() => {
+            if (
+                ctx.player.hidden ||
+                ctx.player.pos.dist(glass.pos) > WINE_HIGHLIGHT_RANGE ||
+                glass.is("Poisoned")
+            ) {
                 return;
             }
 
-            if (pickupButton || isCreatingButton) return;
-            isCreatingButton = true;
-
-            void InterfaceButton(ctx, 200).then((button) => {
-                if (
-                    ctx.player.hidden ||
-                    glass.pos.dist(ctx.player.pos) > WINE_HIGHLIGHT_RANGE
-                ) {
-                    button.clear();
-                    return;
-                }
-
-                pickupButton = button;
-                button.enable();
-                button.text.frame = 2;
-                button.background.onClick(() => {
-                    if (
-                        ctx.player.hidden ||
-                        glass.pos.dist(ctx.player.pos) > WINE_HIGHLIGHT_RANGE ||
-                        ctx.inventory.isEquipped(wine)
-                    ) {
-                        return;
-                    }
-                    pickupButton?.clear();
-                    pickupButton = undefined;
-                    ctx.inventory.setSlot(1, wine);
-                    glass.destroy();
-                    if (wineGlass === glass) wineGlass = undefined;
-                });
-            }).finally(() => {
-                isCreatingButton = false;
-            });
+            ctx.inventory.addItem(wine);
+            glass.destroy();
+            ctx.keyHints.disableHint("Grab");
+            if (wineGlass === glass) wineGlass = undefined;
         });
 
         return glass;
