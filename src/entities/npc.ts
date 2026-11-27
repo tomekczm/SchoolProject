@@ -107,6 +107,7 @@ export function createNPC(context: Context) {
         let punkt = 0;
         let completedLoops = 0;
         let hasGoneToWine = false;
+        let currentTarget: undefined | Vec2;
 
         if (type === "Walker" || type === "Drinker") stan = walkingFromPointToPoint;
         if (type === "Stander") stan = Standing;
@@ -140,7 +141,7 @@ export function createNPC(context: Context) {
         npc.onHover(() => context.player.trigger("NpcHovered", npc))
         npc.onHoverEnd(() => context.player.trigger("NpcHoveredEnd", npc))
 
-        if (reaction === "Runner" && punkty.length > 1) npc.setTarget(punkty[0])
+        if (reaction === "Runner" && punkty.length > 1) setTargetSafe(punkty[0])
         //tomek nie badz zly D;
         const outfitSprites = dressUpNpc(context, npc, outfit);
 
@@ -265,11 +266,17 @@ export function createNPC(context: Context) {
             setFrame(1);
         }
 
+        function setTargetSafe(target: Vec2) {
+            if(currentTarget && target.dist(currentTarget) === 0) return
+            currentTarget = target;
+            npc.setTarget(target)
+        }
+
         // poprawiony runAway bo byly lagi 
         function runAway() {
             //move to
 
-            npc.setTarget(safePlace);
+            setTargetSafe(safePlace);
             if (npc.pos.dist(safePlace) == 0) {
                 npc.destroy();
             }
@@ -277,7 +284,7 @@ export function createNPC(context: Context) {
 
         function startRunningAway() {
             stan = runAway;
-            npc.setTarget(safePlace);
+            setTargetSafe(safePlace);
         }
 
         function detectedDeadBody() {
