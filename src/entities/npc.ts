@@ -2,6 +2,7 @@
 // jezeli jest cos w type script to tomek to robil yoyoyo
 
 import { Game, GameObj, KAPLAYCtx, PosComp, SpriteComp, Vec2 } from "kaplay";
+import { createBloodPool } from "../effects/BloodPool";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
@@ -10,6 +11,7 @@ import { NpcDialogue, NpcDialogueComp } from "./NpcDialogue";
 
 
 export type NpcOutfit = (string | null)[];
+type NpcType = "Walker" | "Stander" | "Drinker";
 
 export const alreadyCreatedOutfits: NpcOutfit[] = [];
 
@@ -69,7 +71,7 @@ export function createNPC(context: Context) {
     //punkty, typy, targety
     let punkty: Array<Vec2> = []
     let isTarget = false;
-    let type: string = "Walker";
+    let type: NpcType = "Walker";
     let wasNearBody = false;
     let wasNearBlood = false;
     let reaction = "Runner";
@@ -88,7 +90,7 @@ export function createNPC(context: Context) {
         reaction = newReaction;
     }
 
-    function setType(newType: string) {
+    function setType(newType: NpcType) {
         type = newType;
     }
     function setTarget(newTarget: boolean) {
@@ -102,8 +104,11 @@ export function createNPC(context: Context) {
     //tworzenie npc
     function create() {
         let stan: (() => any) | undefined = undefined;
+        let punkt = 0;
+        let completedLoops = 0;
+        let hasGoneToWine = false;
 
-        if (type === "Walker") stan = walkingFromPointToPoint;
+        if (type === "Walker" || type === "Drinker") stan = walkingFromPointToPoint;
         if (type === "Stander") stan = Standing;
         
 
@@ -187,31 +192,73 @@ export function createNPC(context: Context) {
             setFrame(0)
             npc.moveTo(punkty[punkt], speedNpc);
             if (npc.pos.dist(punkty[punkt]) == 0) {
+                punkt++;
+                if (punkt == punkty.length) {
+                    punkt = 0;
+                    completedLoops++;
+                }
+
+                if (type === "Drinker" && completedLoops >= 1 && !hasGoneToWine) {
+                    hasGoneToWine = true;
+                    stan = gotoWine;
+                    return;
+                }
+
                 stan = doNothing;
                 npc.wait(2, () => {
                     if (stan != doNothing) return
                     stan = walkingFromPointToPoint;
                 })
-                punkt++;
-                if (punkt == punkty.length) {
-                    punkt = 0;
-                }
             }
-
         }
         function gotoWine() {
-            if (punkt === 0) {
-                const glass = (context.map.get("WineGlass") as GameObj<PosComp>[])[0];
-
-                if (!glass) {
-                    stan = walkingFromPointToPoint;
-                    return;
-                }
-                if (glass.pos.dist(npc.pos) < 30) {
-                    //stan = drinkingWine;
-                    npc.moveTo(glass.pos, speedNpc);
-                }
+            if (type !== "Drinker") {
+                stan = type === "Stander" ? Standing : walkingFromPointToPoint;
+                return;
             }
+
+            const glasses = context.map.get("WineGlass") as GameObj<PosComp>[];
+            const glass = glasses.reduce<GameObj<PosComp> | undefined>(
+                (nearest, candidate) =>
+                    !nearest || npc.pos.dist(candidate.pos) < npc.pos.dist(nearest.pos)
+                        ? candidate
+                        : nearest,
+                undefined
+            );
+            if (!glass) {
+                stan = walkingFromPointToPoint;
+                return;
+            }
+
+            setFrame(0);
+            if (npc.pos.dist(glass.pos) > 50) {
+                npc.moveTo(glass.pos, speedNpc);
+                return;
+            }
+
+            const isPoisoned = glass.is("Poisoned");
+            stan = doNothing;
+            
+            
+            if (!isPoisoned) {
+                context.logger.ImportantMessage("Npc drinks the wine");
+                glass.destroy();
+                npc.wait(2, () => {
+                stan = walkingFromPointToPoint;
+                })
+                
+                return;
+            }
+
+
+            context.logger.ImportantMessage("Npc drinks the poisoned wine");
+            glass.destroy();
+            npc.wait(1, () => {
+                npc.trigger("Killed");
+                
+            })
+            
+            stan = doNothing;
         }
 
         function Collision() {
@@ -224,7 +271,7 @@ export function createNPC(context: Context) {
 
             npc.setTarget(safePlace);
             if (npc.pos.dist(safePlace) == 0) {
-                npc.destroy;
+                npc.destroy();
             }
         }
 
@@ -381,10 +428,6 @@ export function createNPC(context: Context) {
 
 
     const speedNpc = 200;
-    let punkt = 0;
-
-
-
     return {
         setPoints,
         isTarget,

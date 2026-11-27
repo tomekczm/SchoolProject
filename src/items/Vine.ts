@@ -15,9 +15,11 @@ export const wine: Item = {
         const game = ctx.game;
         clearEquippedState?.();
         let isEquipped = true;
+        let useKeyHandler: ReturnType<typeof game.onKeyPress> | undefined;
         let dropKeyHandler: ReturnType<typeof game.onKeyDown> | undefined;
         clearEquippedState = () => {
             isEquipped = false;
+            useKeyHandler?.cancel();
             dropKeyHandler?.cancel();
             ctx.keyHints.disableHint("Drop");
             ctx.keyHints.disableHint("Use");
@@ -25,10 +27,11 @@ export const wine: Item = {
 
         ctx.player.frame = 2;
         ctx.keyHints.enableHint("Use");
-        game.onKeyPress("e", () => {
+        useKeyHandler = game.onKeyPress("e", () => {
             if (!isEquipped || ctx.player.hidden) return;
+            const winePosition = game.vec2(ctx.player.pos.x, ctx.player.pos.y);
             clearEquippedState?.();
-            createBloodPool(ctx, ctx.player.pos, false);
+            void createBloodPool(ctx, winePosition, false);
             ctx.inventory.consume();
             ctx.player.frame = 0;
             ctx.logger.Log("Zużyłeś wino");

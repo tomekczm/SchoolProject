@@ -105,7 +105,7 @@ export function testMap(context: Context) {
     ])
     npc4.setOutfitToRandom()
     npc4.setTarget(false)
-    npc4.setType("Walker")
+    npc4.setType("Drinker")
     npc4.setReaction("Runner")
     npc4.create()
 

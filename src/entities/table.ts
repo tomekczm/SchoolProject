@@ -105,19 +105,6 @@ export const createTable = (ctx: Context, pos: Vec2, hasWine = false) => {
         } else {
             ctx.keyHints.disableHint("Place");
         }
-        game.onKeyPress("e", () => {
-            if (
-                !ctx.player.hidden &&
-                isInRange &&
-                ctx.inventory.isEquipped(wine) &&
-                !wineGlass
-            ) {
-                addWineGlass();
-                wine.onUnequip(ctx);
-                ctx.inventory.consume();    
-                return;
-            }
-    });
     });
 
     return table;
