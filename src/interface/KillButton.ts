@@ -1,4 +1,4 @@
-import { ColorComp, Game, GameObj, PosComp, Vec2 } from "kaplay";
+import { AreaComp, ColorComp, Game, GameObj, PosComp, Vec2 } from "kaplay";
 import { Context } from "../main";
 import { InterfaceButton } from "./InterfaceButton";
 import { createBloodSplatter } from "../effects/BloodSplatter";
@@ -7,7 +7,7 @@ import { ScreenShake } from "../effects/ScreenShake";
 
 const KNIFE_DISTANCE = 100;
 
-type Npc = GameObj<PosComp>
+type Npc = GameObj<PosComp | AreaComp>
 export function KillButton(context: Context) {
     const game = context.game;
 
@@ -21,12 +21,22 @@ export function KillButton(context: Context) {
         if(npcsHovered.size === 0) context.keyHints.disableHint("Kill_Knife")
         else context.keyHints.enableHint("Kill_Knife")
     }
-    const e1 = player.on("NpcHovered", (npc: Npc) => {
+
+    const npcHovered = context.map.get("NPC") as Npc[];
+
+    function onHovered(npc: Npc) {
         context.keyHints.enableHint("Kill_Knife");
         npcsHovered.add(npc)
         update()
         npc.tag("Focused")
+    }
+
+    npcHovered.forEach((n) => {
+        game.debug.log(n.isHovering())
+        if(n.isHovering()) onHovered(n)
     })
+
+    const e1 = player.on("NpcHovered", onHovered)
     const e2 = player.on("NpcHoveredEnd", (npc: Npc) => {
         context.keyHints.disableHint("Kill_Knife");
         npcsHovered.delete(npc)
