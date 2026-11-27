@@ -124,10 +124,11 @@ export function testMap(context: Context) {
     createTable(context, new game.Vec2(600, 300), true);
 
 
-    const dialogues = ['I love this party!!!!!💀💀', 'Aint no party like this!!!', "Hi", "Do i know you?", "Ok"]
+    const dialogues = ['I love this party!!!!!💀💀', 'Aint no party like this!!!', "Hi", "Do i know you?", "Ok", "Yon"]
     function createSimpleDialogue(idx: number) {
         const simpleDialogue = NpcDialogue(context); // properly componentized
         simpleDialogue.onDialogueStarted(() => {
+            game.debug.log("aa")
             simpleDialogue.getLogger().Log(dialogues[idx])
             simpleDialogue.questionPlayer(
                 Response("*End conversation*")
