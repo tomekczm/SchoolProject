@@ -21,7 +21,8 @@ export function Response(line: string) {
 export interface NpcDialogueComp extends Comp {
     onDialogueStarted(callback: Callback): void,
     questionPlayer(...choices: NpcResponse[]): void,
-    getLogger(): Logger
+    getLogger(): Logger,
+    isInDialogue: () => boolean,
 }
 
 export function NpcDialogue(
@@ -30,12 +31,16 @@ export function NpcDialogue(
     const game = ctx.game
     let logger: Logger;
     let onKeyDown: KEventController;
-    let onDialogueStart: Callback | undefined
+    let onDialogueStart: Callback | undefined;
+    let isInDialogue = false
     return {
         id: "NpcDialogue",
         require: ["area"],
         onDialogueStarted(callback: Callback) {
             onDialogueStart = callback;
+        },
+        isInDialogue() {
+            return isInDialogue;
         },
         questionPlayer(...choices: NpcResponse[]) {
             let objs = []
@@ -69,7 +74,10 @@ export function NpcDialogue(
                 obj.pos = game.vec2(game.width()-obj.width/2, game.height()-(70*(idx+1)))
                 obj.onClick(() => {
                     const finishDialogue = choice._actionOnChoosen?.()
-                    if(finishDialogue || finishDialogue === undefined) ctx.player.untag("In_Dialogue");
+                    if(finishDialogue || finishDialogue === undefined) { 
+                        ctx.player.untag("In_Dialogue");
+                        isInDialogue = false;
+                    }
                     objs.forEach((o) => o.destroy())
                 })
             }
@@ -105,6 +113,7 @@ export function NpcDialogue(
                 if(zis.isHovering() && !ctx.player.is("In_Dialogue")) {
                     onDialogueStart?.()
                     ctx.player.tag("In_Dialogue");
+                    isInDialogue = true;
                 }
             })
             
