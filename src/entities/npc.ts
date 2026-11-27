@@ -2,6 +2,7 @@
 // jezeli jest cos w type script to tomek to robil yoyoyo
 
 import { Game, GameObj, KAPLAYCtx, PosComp, SpriteComp, Vec2 } from "kaplay";
+import { createBloodPool } from "../effects/BloodPool";
 import { createBloodSplatter } from "../effects/BloodSplatter";
 import { spawnDeadNpc } from "./deadNpc";
 import { Context } from "../main";
@@ -197,7 +198,7 @@ export function createNPC(context: Context) {
                     completedLoops++;
                 }
 
-                if (type === "Drinker" && completedLoops >= 2 && !hasGoneToWine) {
+                if (type === "Drinker" && completedLoops >= 1 && !hasGoneToWine) {
                     hasGoneToWine = true;
                     stan = gotoWine;
                     return;
@@ -236,15 +237,27 @@ export function createNPC(context: Context) {
             }
 
             const isPoisoned = glass.is("Poisoned");
-            glass.destroy();
+            stan = doNothing;
+            
+            
             if (!isPoisoned) {
-                context.logger.ImportantMessage("Npc drank the wine");
+                context.logger.ImportantMessage("Npc drinks the wine");
+                glass.destroy();
+                npc.wait(2, () => {
                 stan = walkingFromPointToPoint;
+                })
+                
                 return;
             }
 
-            context.logger.ImportantMessage("Npc drank the poisoned wine");
-            npc.trigger("Killed");
+
+            context.logger.ImportantMessage("Npc drinks the poisoned wine");
+            glass.destroy();
+            npc.wait(1, () => {
+                npc.trigger("Killed");
+                
+            })
+            
             stan = doNothing;
         }
 
